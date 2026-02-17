@@ -87,6 +87,14 @@ export function send(component, callback) {
         return;
       }
 
+      if (responseJson.epoch) {
+        if (responseJson.epoch > component.latestActionEpoch) {
+          component.latestActionEpoch = responseJson.epoch;
+        } else {
+          return;
+        }
+      }
+
       if (responseJson.error) {
         if (responseJson.error === "Checksum does not match") {
           // Reset the models if the checksum doesn't match
