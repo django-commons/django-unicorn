@@ -103,13 +103,20 @@ export function getComponent(html, id, name, data) {
     data = { name: "World" };
   }
 
-  const mockHistory = { urls: [] };
+  const mockHistory = { urls: [], states: [] };
   mockHistory.pushState = (state, title, url) => {
     mockHistory.urls.push(url);
+    mockHistory.states.push(state);
   };
   mockHistory.get = () => {
     return mockHistory.urls[0];
   };
+  mockHistory.getState = () => {
+    return mockHistory.states[0];
+  };
+
+  // Track registered event listeners so tests can fire popstate manually
+  const windowEventListeners = {};
 
   const component = new Component({
     id,
@@ -123,8 +130,17 @@ export function getComponent(html, id, name, data) {
       document: { title: "" },
       history: mockHistory,
       location: { href: "" },
+      addEventListener: (type, handler) => {
+        if (!windowEventListeners[type]) {
+          windowEventListeners[type] = [];
+        }
+        windowEventListeners[type].push(handler);
+      },
     },
   });
+
+  // Expose so tests can trigger window events (e.g. popstate)
+  component._windowEventListeners = windowEventListeners;
 
   // Set the document explicitly for unit test purposes
   component.document = getDocument(html);

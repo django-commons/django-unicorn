@@ -54,6 +54,7 @@ export class Component {
     this.attachedModelEvents = [];
 
     this.init();
+    this.initHistoryState();
     this.refreshEventListeners();
     this.initVisibility();
     this.initPolling();
@@ -371,6 +372,33 @@ export class Component {
       // Call the method once before the timer starts
       this.startPolling(true);
     }
+  }
+
+  /**
+   * Listens for browser `popstate` events (Back/Forward navigation) and restores
+   * the component state that was stored in the history entry. When a `LocationUpdate`
+   * is used, the component state is saved in `history.pushState`; this method
+   * retrieves that state and triggers `$refresh` so the server re-renders the
+   * component with the restored data.
+   */
+  initHistoryState() {
+    this.window.addEventListener("popstate", (event) => {
+      if (
+        event.state &&
+        event.state.unicorn &&
+        event.state.unicorn.componentId === this.id
+      ) {
+        // Merge the stored state back into the component data
+        Object.assign(this.data, event.state.unicorn.data);
+
+        // Ask the server to re-render with the restored data
+        this.callMethod("$refresh", 0, null, (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
+      }
+    });
   }
 
   /**

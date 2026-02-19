@@ -108,7 +108,12 @@ export function send(component, callback) {
             }
 
             component.window.history.pushState(
-              {},
+              {
+                unicorn: {
+                  componentId: component.id,
+                  data: component.data,
+                },
+              },
               "",
               responseJson.redirect.url
             );

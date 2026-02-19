@@ -80,6 +80,13 @@ test("call_method refresh redirect", async (t) => {
       t.true(err === null);
       t.is(component.window.history.get(), "/test/text-inputs?some=query");
       t.is(component.window.document.title, "new title");
+
+      // The history state should contain the component id and data
+      const state = component.window.history.getState();
+      t.truthy(state.unicorn);
+      t.is(state.unicorn.componentId, component.id);
+      t.deepEqual(state.unicorn.data, component.data);
+
       fetchMock.reset();
       resolve();
     });
