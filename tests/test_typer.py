@@ -170,3 +170,57 @@ def test_cast_value_list_pydantic():
     type_hint = type_hints["pydantic_list_data"]
     actual = cast_value(type_hint, [{"name": "foo"}])
     assert actual == [test_data]
+
+class ComponentWithRanks:
+    ranks: tuple[dict[str, float | str]]
+
+
+def test_cast_value_tuple_of_dicts_gh641():
+    """cast_value restores float values inside tuple[dict[str, float|str]] (#641)."""
+    type_hints = typing_get_type_hints(ComponentWithRanks)
+    type_hint = type_hints["ranks"]
+
+    # Simulates data arriving from browser: floats were stringified by _fix_floats
+    value = [{"name": "abc", "score": "3.4"}]
+    actual = cast_value(type_hint, value)
+
+    # Result must be a tuple (not a list)
+    assert isinstance(actual, tuple)
+    assert len(actual) == 1
+    # String "3.4" must be cast back to float 3.4 via the float|str value type hint
+    assert actual[0]["name"] == "abc"
+    assert actual[0]["score"] == 3.4
+    assert isinstance(actual[0]["score"], float)
+
+
+def test_cast_value_dict_float_str_gh641():
+    """cast_value casts string float values inside dict[str, float|str] (#641)."""
+    from typing import get_type_hints as typing_get_type_hints
+
+    class ComponentWithDict:
+        data: dict[str, float | str]
+
+    type_hints = typing_get_type_hints(ComponentWithDict)
+    type_hint = type_hints["data"]
+
+    actual = cast_value(type_hint, {"name": "abc", "score": "3.4"})
+
+    assert actual["name"] == "abc"
+    assert actual["score"] == 3.4
+    assert isinstance(actual["score"], float)
+
+
+class ComponentWithTupleOfDataclasses:
+    items: tuple[DataClass]
+
+
+def test_cast_value_tuple_of_dataclasses_gh641():
+    """cast_value recursively casts items inside a tuple[Dataclass] (#641)."""
+    type_hints = typing_get_type_hints(ComponentWithTupleOfDataclasses)
+    type_hint = type_hints["items"]
+
+    value = [{"name": "foo"}, {"name": "bar"}]
+    actual = cast_value(type_hint, value)
+
+    assert isinstance(actual, tuple)
+    assert actual == (DataClass(name="foo"), DataClass(name="bar"))

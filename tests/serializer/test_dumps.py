@@ -841,3 +841,33 @@ def test_dictionary_with_int_keys_as_strings_no_sort():
     )
 
     assert expected == actual
+
+
+def test_tuple_float():
+    """Float inside a tuple is stringified for safe JS transmission (#641)."""
+    import json
+
+    actual = serializer.dumps({"ranks": ({"name": "abc", "score": 3.4},)})
+    data = json.loads(actual)
+
+    assert data["ranks"][0]["score"] == "3.4"
+
+
+def test_tuple_of_dicts_mixed_types():
+    """Multiple floats and non-floats inside a tuple of dicts are handled (#641)."""
+    import json
+
+    actual = serializer.dumps(
+        {
+            "ranks": (
+                {"name": "abc", "score": 3.4},
+                {"name": "def", "score": 1.0},
+                {"name": "ghi", "score": 5},
+            )
+        }
+    )
+    data = json.loads(actual)
+
+    assert data["ranks"][0]["score"] == "3.4"
+    assert data["ranks"][1]["score"] == "1.0"
+    assert data["ranks"][2]["score"] == 5  # int stays as int

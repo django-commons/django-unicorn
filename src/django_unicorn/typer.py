@@ -145,6 +145,25 @@ def cast_value(type_hint, value):
             # casting each item individually
             return [cast_value(arg, item) for item in value]
 
+    if get_origin(type_hint) is tuple:
+        type_args = get_args(type_hint)
+        if len(type_args) == 1:
+            # Homogeneous tuple hint like tuple[dict[str, float|str]] —
+            # the single arg applies to every element
+            arg = type_args[0]
+            return tuple(cast_value(arg, item) for item in value)
+        elif len(type_args) >= 2 and type_args[-1] is not Ellipsis:
+            # Fixed-length heterogeneous tuple: tuple[str, int, float]
+            return tuple(cast_value(t, item) for t, item in zip(type_args, value))
+
+    if get_origin(type_hint) is dict:
+        type_args = get_args(type_hint)
+        if len(type_args) == 2 and isinstance(value, dict):
+            # dict[K, V] — cast each value to the V type so that e.g.
+            # dict[str, float|str] converts string "3.4" back to float 3.4
+            value_type = type_args[1]
+            return {k: cast_value(value_type, v) for k, v in value.items()}
+
     # Handle Optional type hint and the value is None
     if type(None) in type_hints and value is None:
         return value
@@ -178,8 +197,13 @@ def cast_value(type_hint, value):
                 value = _type_hint(**value)
                 break
 
-            value = _type_hint(value)
-            break
+            try:
+                value = _type_hint(value)
+                break
+            except ValueError:
+                # float("abc") raises ValueError; continue to the next type in a
+                # Union (e.g. the `str` in float|str) before giving up.
+                continue
 
     return value
 
