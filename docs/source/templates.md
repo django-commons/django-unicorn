@@ -5,6 +5,8 @@ Templates are normal Django HTML templates, so anything you could normally do in
 ```{warning}
 `Unicorn` requires there to be one root element that contains the component HTML. Valid HTML and a wrapper element is required for the DOM diffing algorithm to work correctly, so `Unicorn` will try to log a warning message if they seem invalid.
 
+One common issue is when a component is a table row (`tr`). Since `tr` elements can only contain `td` or `th` elements, any other element (like a `div`) will be "foster parented" out of the table structure by the browser. This will cause the DOM diffing to fail since the element structure is not what `Unicorn` expects.
+
 For example, this is an **invalid** template:
 :::{code} html
 :force: true

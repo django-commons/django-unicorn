@@ -22,6 +22,7 @@ templates
 actions
 child-components
 django-models
+table-limitations
 ```
 
 ```{toctree}
