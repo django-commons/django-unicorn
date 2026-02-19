@@ -141,6 +141,18 @@ export function addActionEventListener(component, eventType) {
       targetElement = targetElement.getUnicornParent();
     }
 
+    // If the target element is a unicorn element but has no actions
+    // (e.g. it only has u:loading), traverse up to find the nearest
+    // ancestor that has actions for this event type.
+    // Fixes: u:loading on child elements intercepting clicks meant for parent u:click
+    if (
+      targetElement &&
+      targetElement.isUnicorn &&
+      targetElement.actions.length === 0
+    ) {
+      targetElement = targetElement.getUnicornParent();
+    }
+
     if (
       targetElement &&
       targetElement.isUnicorn &&
