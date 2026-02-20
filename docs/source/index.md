@@ -93,6 +93,79 @@ Want to add some component-based magic to your front-end, but don't need the ove
   </a>
 </p>
 
+
+---
+
+## Incremental Adoption — No Full Migration Required
+
+```{important}
+You do **NOT** need to migrate your entire page or application to use Unicorn.
+```
+
+```{note}
+Unicorn is designed for **progressive enhancement**.  
+You can introduce it into an existing Django project one small component at a time.
+```
+
+```{warning}
+Many developers assume reactive component frameworks require:
+
+- Rewriting entire pages
+- Moving to an API-driven architecture
+- Converting everything into components
+- Adopting a SPA-style workflow
+
+**Unicorn requires none of that.**
+```
+
+Unicorn works alongside traditional Django views and templates. You can start
+with a single interactive element — such as:
+
+- A live-search input
+- A dropdown
+- A modal
+- A counter
+- A form with validation
+- A small dashboard widget
+
+while keeping the rest of your page completely unchanged.
+
+---
+
+### Example: Enhancing Just One Part of a Template
+
+Your existing Django template:
+
+```html
+<h1>Products</h1>
+
+{% for product in products %}
+  <p>{{ product.name }}</p>
+{% endfor %}
+```
+
+Now enhance just one piece with Unicorn:
+
+```html
+<h1>Products</h1>
+
+{% unicorn 'product-search' %}
+
+{% for product in products %}
+  <p>{{ product.name }}</p>
+{% endfor %}
+```
+
+That’s it.
+
+- No SPA  
+- No routing changes  
+- No large refactor  
+
+Unicorn allows gradual adoption. Start small and expand only where it makes sense.
+
+---
+
 Here are a few reasons to consider `Unicorn`.
 
 1. **Reactive Components**: With `Unicorn`, you can create reactive components that dynamically update the HTML DOM without the need for complex JavaScript. This makes it easier to build interactive web pages and enhances the user experience.
