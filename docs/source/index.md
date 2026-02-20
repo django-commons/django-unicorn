@@ -22,7 +22,7 @@ templates
 actions
 child-components
 django-models
-table-limitations
+
 ```
 
 ```{toctree}
@@ -59,6 +59,14 @@ custom-morphers
 
 cli
 settings
+```
+
+```{toctree}
+:caption: Troubleshooting
+:maxdepth: 3
+:hidden:
+
+table-limitations
 ```
 
 ```{toctree}
