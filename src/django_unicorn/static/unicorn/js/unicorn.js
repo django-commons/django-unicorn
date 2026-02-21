@@ -2,6 +2,7 @@ import { Component } from "./component.js";
 import { isEmpty, hasValue } from "./utils.js";
 import { components, lifecycleEvents } from "./store.js";
 import { getMorpher } from "./morpher.js";
+import { handleLoading } from "./eventListeners.js";
 
 let messageUrl = "";
 let csrfTokenHeaderName = "X-CSRFToken";
@@ -193,6 +194,7 @@ export function call(componentNameOrKey, methodName, ...args) {
     methodName = `${methodName}(${argString})`;
   }
 
+  handleLoading(component, null);
   component.callMethod(methodName, 0, null, (err) => {
     console.error(err);
   });

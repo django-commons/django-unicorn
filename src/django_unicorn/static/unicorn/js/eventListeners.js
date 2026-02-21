@@ -4,14 +4,21 @@ import { Element } from "./element.js";
 /**
  * Handles loading elements in the component.
  * @param {Component} component Component.
- * @param {Element} targetElement Targetted element.
+ * @param {Element} targetElement Targetted element. Can be null when called via Unicorn.call().
  */
-function handleLoading(component, targetElement) {
-  targetElement.handleLoading();
+export function handleLoading(component, targetElement) {
+  if (targetElement) {
+    targetElement.handleLoading();
+  }
 
   // Look at all elements with a loading attribute
   component.loadingEls.forEach((loadingElement) => {
     if (loadingElement.target) {
+      // Targeted loading elements only apply when there is a specific triggering element
+      if (!targetElement) {
+        return;
+      }
+
       // Get all ID matches
       if (loadingElement.target.includes("*")) {
         const targetRegex = toRegExp(loadingElement.target);
