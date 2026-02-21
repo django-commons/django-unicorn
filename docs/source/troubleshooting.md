@@ -16,6 +16,41 @@ if DEBUG:
 
 See this [Windows MIME type detection pitfalls](https://www.taricorp.net/2020/windows-mime-pitfalls/) article, this [StackOverflow answer](https://stackoverflow.com/a/16355034), or [issue #201](https://github.com/adamghill/django-unicorn/issues/201) for more details.
 
+## Components not working on public pages with LoginRequiredMiddleware
+
+Django 5.1 introduced
+[`LoginRequiredMiddleware`](https://docs.djangoproject.com/en/stable/ref/middleware/#django.contrib.auth.middleware.LoginRequiredMiddleware)
+which redirects every unauthenticated request to the login page by default.
+Because Unicorn communicates via AJAX, an unauthenticated user on a public page
+will see a token or parse error in the browser console (the endpoint received a
+redirect instead of the expected JSON response).
+
+**Fix: mark the component as public with `login_not_required = True`.**
+
+```python
+# newsletter_signup.py
+from django_unicorn.components import UnicornView
+
+class NewsletterSignupView(UnicornView):
+    login_not_required = True  # allow unauthenticated users
+
+    email = ""
+
+    def subscribe(self):
+        ...
+```
+
+Unicorn checks this attribute at request time and returns a `401` JSON response
+(instead of a redirect) for any component that does *not* set
+`login_not_required = True` when the middleware is active and the user is not
+authenticated. Components that require login can leave the attribute unset and
+rely on the default protected behaviour.
+
+```{note}
+`login_not_required` has no effect on Django versions older than 5.1 because
+`LoginRequiredMiddleware` was not available before that release.
+```
+
 ## Missing CSRF token or 403 Forbidden errors
 
 `Unicorn` uses CSRF to protect its endpoint from malicious actors. The two parts that are required for CSRF are `"django.middleware.csrf.CsrfViewMiddleware"` in `MIDDLEWARE` and `{% csrf_token %}` in the template that includes any `Unicorn` components.
