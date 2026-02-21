@@ -206,3 +206,27 @@ class BugComponent(UnicornView):
 
     def set_flavor(self, value: str = ""):
         self.flavor = value
+
+
+class FakeBookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ("title", "date_published")
+
+
+class FakeFormClassesComponent(UnicornView):
+    """Component that uses ``form_classes`` to validate an object field."""
+
+    template_name = "templates/test_component.html"
+    form_classes = {"book": FakeBookForm}  # noqa: RUF012
+
+    book: Book = None  # type: ignore[assignment]
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if self.book is None:
+            self.book = Book()
+
+    def save(self):
+        self.validate()
+
