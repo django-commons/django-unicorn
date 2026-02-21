@@ -123,6 +123,38 @@ Never put sensitive data into a public property because that information will pu
 
 ## Class properties
 
+### login_not_required
+
+By default, every component requires the user to be authenticated when Django's
+[`LoginRequiredMiddleware`](https://docs.djangoproject.com/en/stable/ref/middleware/#django.contrib.auth.middleware.LoginRequiredMiddleware)
+is active (Django 5.1+). Set `login_not_required = True` on a component to allow
+unauthenticated users to interact with it on public pages.
+
+```python
+# newsletter_signup.py
+from django_unicorn.components import UnicornView
+
+class NewsletterSignupView(UnicornView):
+    login_not_required = True  # accessible without logging in
+
+    email = ""
+
+    def subscribe(self):
+        ...
+```
+
+```{note}
+This attribute has no effect on Django versions older than 5.1 because
+`LoginRequiredMiddleware` was not available before that release.
+```
+
+```{warning}
+Only set `login_not_required = True` on components whose actions are safe to
+execute without authentication. Any sensitive operation (e.g. accessing private
+data, modifying records) should still verify `self.request.user.is_authenticated`
+inside the relevant component methods.
+```
+
 ### template_name
 
 By default, the component name is used to determine what template should be used. For example, `hello_world.HelloWorldView` would by default use `unicorn/hello-world.html`. However, you can specify a particular template by setting `template_name` in the component.
