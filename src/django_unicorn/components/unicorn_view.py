@@ -147,8 +147,6 @@ def construct_component(
     )
 
     component.calls = []
-    
-
     component._mount_result = component.mount()
     component.hydrate()
     component.complete()
@@ -561,8 +559,12 @@ class Component(TemplateView):
     def _get_form(self, data):
         if hasattr(self, "form_class"):
             try:
-                form = cast(Callable, self.form_class)(data=data)
+                files = getattr(self.request, "FILES", None) if self.request else None
+                form = cast(Callable, self.form_class)(data=data, files=files)
                 form.is_valid()
+
+                # Cache on self.form so component methods can call self.form.save()
+                self.form = form
 
                 return form
             except Exception as e:

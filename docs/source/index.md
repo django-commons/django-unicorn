@@ -31,6 +31,7 @@ django-models
 
 direct-view
 validation
+file-uploads
 redirecting
 loading-states
 dirty-states

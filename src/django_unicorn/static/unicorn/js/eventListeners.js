@@ -153,15 +153,36 @@ export function addActionEventListener(component, eventType) {
             );
 
             modelElsInTargetScope.forEach((modelElement) => {
-              if (hasValue(modelElement.model) && modelElement.model.isLazy) {
-                const actionForQueue = {
-                  type: "syncInput",
-                  payload: {
-                    name: modelElement.model.name,
-                    value: modelElement.getValue(),
-                  },
-                };
-                component.actionQueue.push(actionForQueue);
+              // Include lazy models (existing behaviour) AND file inputs so that
+              // the selected file travels in the same request as the submit action.
+              if (
+                hasValue(modelElement.model) &&
+                (modelElement.model.isLazy || modelElement.el.type === "file")
+              ) {
+                const currentValue = modelElement.getValue();
+                // Deduplicate: if a syncInput for this model is already in the
+                // queue (e.g. from a deferred model listener), update its value
+                // rather than adding a second action.
+                let updated = false;
+                component.actionQueue.forEach((a) => {
+                  if (
+                    a.type === "syncInput" &&
+                    a.payload &&
+                    a.payload.name === modelElement.model.name
+                  ) {
+                    a.payload.value = currentValue;
+                    updated = true;
+                  }
+                });
+                if (!updated) {
+                  component.actionQueue.push({
+                    type: "syncInput",
+                    payload: {
+                      name: modelElement.model.name,
+                      value: currentValue,
+                    },
+                  });
+                }
               }
             });
           });

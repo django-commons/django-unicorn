@@ -2,8 +2,16 @@ from django.utils.timezone import now
 
 from django_unicorn.components import UnicornView
 
+from ..forms import DocumentForm
+
 
 class JsView(UnicornView):
+    form_class = DocumentForm
+
+    document = None
+    upload_success = False
+    uploaded_filename = ""
+
     states = (
         "Alabama",
         "Alaska",
@@ -37,6 +45,15 @@ class JsView(UnicornView):
             return False
 
         self.scroll_counter += 1
+
+    def upload_file(self):
+        self.upload_success = False
+        self.uploaded_filename = ""
+        if self.is_valid():
+            instance = self.form.save()
+            self.uploaded_filename = instance.document.name
+            self.upload_success = True
+            self.document = None  # clear the file input after a successful save
 
     class Meta:
         javascript_excludes = ("states",)

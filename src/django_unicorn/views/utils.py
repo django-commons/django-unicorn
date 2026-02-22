@@ -2,7 +2,7 @@ import logging
 from dataclasses import is_dataclass
 from typing import Any, Union, cast, get_args, get_origin
 
-from django.db.models import Model
+from django.db.models import Field, Model
 
 from django_unicorn.components import UnicornField, UnicornView
 from django_unicorn.decorators import timed
@@ -53,11 +53,11 @@ def set_property_from_data(
             if model_field.is_relation and model_field.many_to_one:
                 if isinstance(value, Model):
                     setattr(component_or_field, name, value)
-                else:
+                elif isinstance(model_field, Field):
                     setattr(component_or_field, model_field.attname, value)
                 return
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.exception(exc)
 
     # UnicornField and Models are always a dictionary (can be nested)
     if component_field_is_model_or_unicorn_field:

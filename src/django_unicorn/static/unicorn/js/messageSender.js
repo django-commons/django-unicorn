@@ -39,10 +39,55 @@ export function send(component, callback) {
   };
   headers[component.csrfTokenHeaderName] = getCsrfToken(component);
 
+  let bodyPayload;
+
+  if (hasFiles(component)) {
+    const formData = new FormData();
+
+    // Append entire JSON payload as a nested field
+    formData.append("body", JSON.stringify(body));
+
+    // Append files from component.data (e.g. set programmatically)
+    Object.keys(component.data).forEach((key) => {
+      const value = component.data[key];
+
+      if (value instanceof File) {
+        formData.append(key, value);
+      } else if (typeof FileList !== "undefined" && value instanceof FileList && value.length > 0) {
+        Array.from(value).forEach((file, index) => {
+          formData.append(`${key}[${index}]`, file);
+        });
+      }
+    });
+
+    // Append files from syncInput action payloads (the normal path: file inputs
+    // store the FileList in the action payload, not in component.data).
+    (component.currentActionQueue || []).forEach((action) => {
+      if (action.type !== "syncInput" || !action.payload) return;
+      const fieldName = action.payload.name;
+      const value = action.payload.value;
+      if (value instanceof File) {
+        formData.append(fieldName, value);
+      } else if (typeof FileList !== "undefined" && value instanceof FileList && value.length > 0) {
+        Array.from(value).forEach((file, index) => {
+          formData.append(`${fieldName}[${index}]`, file);
+        });
+      }
+    });
+
+    bodyPayload = formData;
+
+    // IMPORTANT: remove content-type so browser sets multipart boundary
+    delete headers["Content-Type"];
+  } else {
+    bodyPayload = JSON.stringify(body);
+    headers["Content-Type"] = "application/json";
+  }
+
   return fetch(component.syncUrl, {
     method: "POST",
     headers,
-    body: JSON.stringify(body),
+    body: bodyPayload,
   })
     .then((response) => {
       if (response.ok) {
@@ -309,4 +354,33 @@ export function send(component, callback) {
         callback(null, null, err);
       }
     });
+}
+
+
+function hasFiles(component) {
+  // Check component.data
+  for (const key in component.data) {
+    const value = component.data[key];
+
+    if (value instanceof File || (typeof FileList !== "undefined" && value instanceof FileList && value.length > 0)) {
+      return true;
+    }
+
+    if (Array.isArray(value)) {
+      if (value.some((v) => v instanceof File)) {
+        return true;
+      }
+    }
+  }
+
+  // Check currentActionQueue payloads — the queue is moved to currentActionQueue
+  // before hasFiles is called, so actionQueue is empty at this point.
+  const queue = component.currentActionQueue || [];
+  return queue.some((action) => {
+    if (!action.payload) return false;
+
+    return Object.values(action.payload).some(
+      (v) => (v instanceof File) || (typeof FileList !== "undefined" && v instanceof FileList && v.length > 0)
+    );
+  });
 }

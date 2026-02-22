@@ -84,4 +84,19 @@
     <script src="{% static "js/console.js" %}"></script>
     {% endif %}
   </div>
+
+  <div>
+    <h3>File Upload</h3>
+    <form u:submit.prevent="upload_file">
+      <input type="file" u:model="document" />
+      {% if unicorn.errors.document %}
+        <p style="color: red;">{{ unicorn.errors.document.0.message }}</p>
+      {% endif %}
+      <button type="submit" u:loading.attr="disabled">Upload</button>
+      <span u:loading>Uploading…</span>
+    </form>
+    {% if upload_success %}
+      <p style="color: green;">Uploaded: {{ uploaded_filename }}</p>
+    {% endif %}
+  </div>
 </div>

@@ -30,8 +30,17 @@ class ComponentRequest:
         self.body = {}
         self.request = request
 
+        content_type = request.META.get("CONTENT_TYPE", "") or ""
+
         try:
-            self.body = loads(request.body)
+            if isinstance(content_type, str) and "multipart/form-data" in content_type:
+                # JS sends the full JSON payload as a 'body' field in FormData;
+                body_str = request.POST.get("body", "")
+                if not body_str:
+                    raise UnicornViewError("Body could not be parsed")
+                self.body = loads(body_str)
+            else:
+                self.body = loads(request.body)
 
             if not self.body:
                 raise AssertionError("Invalid JSON body")

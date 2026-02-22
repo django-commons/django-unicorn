@@ -35,6 +35,7 @@ export class Element {
     this.key = null;
     this.events = [];
     this.errors = [];
+    this.file = {};
 
     if (!this.el.attributes) {
       return;
@@ -58,6 +59,19 @@ export class Element {
         this[key].debounceTime = attribute.modifiers.debounce
           ? parseInt(attribute.modifiers.debounce, 10) || -1
           : -1;
+
+        if (this.el.type === "file") {
+          this.file = {
+            accept: this.el.accept,
+            multiple: this.el.multiple,
+          };
+
+          // console.log("this.file", this.file);
+        }
+      } else if (attribute.isDb) {
+        this.db.name = attribute.value;
+      } else if (attribute.isPK) {
+        this.db.pk = attribute.value;
       } else if (attribute.isPoll) {
         this.poll.method = attribute.value ? attribute.value : "refresh";
         this.poll.timing = 2000;
@@ -323,6 +337,10 @@ export class Element {
         for (let i = 0; i < this.el.selectedOptions.length; i++) {
           value.push(this.el.selectedOptions[i].value);
         }
+      }
+      else if (this.el.type.toLowerCase() === "file") {
+        // Handle file inputs
+        value = this.el.files;
       }
     }
 

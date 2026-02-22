@@ -1,13 +1,14 @@
-
 import pytest
+
 from django_unicorn.views.utils import set_property_from_data
 from example.coffee.models import Flavor
+
 
 @pytest.mark.django_db
 def test_set_property_fk_with_pk_int():
     # Arrange
     parent = Flavor.objects.create(name="Parent")
-    child = Flavor.objects.create(name="Child") # No parent initially
+    child = Flavor.objects.create(name="Child")  # No parent initially
 
     # Act
     # Try to set the parent FK using the parent's PK (int)
@@ -16,11 +17,12 @@ def test_set_property_fk_with_pk_int():
     # Assert
     assert child.parent_id == parent.pk
 
+
 @pytest.mark.django_db
 def test_set_property_fk_with_pk_str():
     # Arrange
     parent = Flavor.objects.create(name="Parent")
-    child = Flavor.objects.create(name="Child") 
+    child = Flavor.objects.create(name="Child")
 
     # Act
     # Try to set the parent FK using the parent's PK (str)
@@ -29,6 +31,7 @@ def test_set_property_fk_with_pk_str():
 
     # Assert
     assert str(child.parent_id) == str(parent.pk)
+
 
 @pytest.mark.django_db
 def test_set_property_fk_with_model_instance():
@@ -43,6 +46,7 @@ def test_set_property_fk_with_model_instance():
     assert child.parent == parent
     assert child.parent_id == parent.pk
 
+
 @pytest.mark.django_db
 def test_set_property_fk_none():
     # Arrange
@@ -56,6 +60,7 @@ def test_set_property_fk_none():
     assert child.parent_id is None
     assert child.parent is None
 
+
 @pytest.mark.django_db
 def test_set_property_fk_invalid_field_ignored():
     # Arrange
@@ -64,6 +69,7 @@ def test_set_property_fk_invalid_field_ignored():
     # Act
     # Should not raise error
     set_property_from_data(child, "non_existent_field", 123)
+
 
 @pytest.mark.django_db
 def test_set_property_non_fk_field():
