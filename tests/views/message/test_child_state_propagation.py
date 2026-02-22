@@ -14,9 +14,10 @@ that they always see the parent's current state.
 
 import shortuuid
 from django.core.cache import caches
+from django.test import RequestFactory
 from tests.views.message.utils import post_and_get_response
 
-from django_unicorn.cacher import cache_full_tree, restore_from_cache
+from django_unicorn.cacher import cache_full_tree
 from django_unicorn.components import UnicornView
 from django_unicorn.settings import get_cache_alias
 
@@ -89,7 +90,7 @@ def test_parent_method_child_state_persisted_in_cache(client):
     )
 
 
-def test_child_self_parent_is_in_memory_parent_after_create(client):
+def test_child_self_parent_is_in_memory_parent_after_create():
     """
     Issue #685: when UnicornView.create() returns a cached child component,
     its self.parent must be the *exact same Python object* as the in-memory parent
@@ -98,10 +99,6 @@ def test_child_self_parent_is_in_memory_parent_after_create(client):
     We verify this by calling create() with an updated in-memory parent and
     checking that the returned child's .parent IS that same object.
     """
-    from django.test import RequestFactory
-
-    from django_unicorn.components import UnicornView
-
     parent_id = shortuuid.uuid()[:8]
     child_id = f"{parent_id}:{CHILD_NAME}"
 
