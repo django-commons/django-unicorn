@@ -228,6 +228,12 @@ class Component(TemplateView):
         self._init_script: str = ""
         self._validate_called = False
         self.errors: dict[Any, Any] = {}
+
+        # Apply Meta.component_key as a class-level default when the template
+        # tag has not provided a key (i.e. self.component_key is still empty).
+        if not self.component_key and hasattr(self, "Meta") and hasattr(self.Meta, "component_key"):
+            self.component_key = self.Meta.component_key
+
         self._set_default_template_name()
         self._set_caches()
 
@@ -235,14 +241,25 @@ class Component(TemplateView):
     def _set_default_template_name(self) -> None:
         """Sets a default template name based on component's name if necessary.
 
-        Also handles `template_html` if it is set on the component which overrides `template_name`.
+        Also handles `template_html` (via Meta or direct attribute) which overrides
+        `template_name`. Meta attributes take precedence over direct class attributes.
         """
 
-        if hasattr(self, "template_html"):
+        # Resolve template_html — Meta takes precedence over direct attribute
+        template_html = None
+        if hasattr(self, "Meta") and hasattr(self.Meta, "template_html"):
+            template_html = self.Meta.template_html
+        elif hasattr(self, "template_html"):
+            template_html = self.template_html
+
+        if template_html:
             try:
-                self.template_name = create_template(self.template_html)  # type: ignore
+                self.template_name = create_template(template_html)  # type: ignore
             except AssertionError:
                 pass
+        elif hasattr(self, "Meta") and hasattr(self.Meta, "template_name"):
+            # Meta.template_name overrides a direct class attribute when set
+            self.template_name = self.Meta.template_name
 
         get_template_names_is_valid = False
 
@@ -560,9 +577,15 @@ class Component(TemplateView):
 
     @timed
     def _get_form(self, data):
-        if hasattr(self, "form_class"):
+        form_class = None
+        if hasattr(self, "Meta") and hasattr(self.Meta, "form_class"):
+            form_class = self.Meta.form_class
+        elif hasattr(self, "form_class"):
+            form_class = self.form_class
+
+        if form_class:
             try:
-                form = cast(Callable, self.form_class)(data=data)
+                form = cast(Callable, form_class)(data=data)
                 form.is_valid()
 
                 return form
@@ -853,12 +876,25 @@ class Component(TemplateView):
             "calling",
             "called",
             "login_not_required",
+            "form_class",
         )
         excludes = []
 
         if hasattr(self, "Meta") and hasattr(self.Meta, "login_not_required"):
             if not isinstance(self.Meta.login_not_required, bool):
                 raise AssertionError("Meta.login_not_required should be a bool")
+
+        if hasattr(self, "Meta") and hasattr(self.Meta, "template_name"):
+            if not isinstance(self.Meta.template_name, str):
+                raise AssertionError("Meta.template_name should be a str")
+
+        if hasattr(self, "Meta") and hasattr(self.Meta, "template_html"):
+            if not isinstance(self.Meta.template_html, str):
+                raise AssertionError("Meta.template_html should be a str")
+
+        if hasattr(self, "Meta") and hasattr(self.Meta, "component_key"):
+            if not isinstance(self.Meta.component_key, str):
+                raise AssertionError("Meta.component_key should be a str")
 
         if hasattr(self, "Meta") and hasattr(self.Meta, "exclude"):
             if not is_non_string_sequence(self.Meta.exclude):

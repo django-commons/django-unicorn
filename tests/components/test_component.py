@@ -345,3 +345,136 @@ def test_get_frontend_context_variables_authentication_form(component):
     )
 
     component.get_frontend_context_variables()
+
+
+# ── Meta: template_name ───────────────────────────────────────────────────────
+
+
+def test_meta_template_name():
+    class TestComponent(UnicornView):
+        class Meta:
+            template_name = "unicorn/meta-template.html"
+
+    component = TestComponent(component_id="test_meta_template_name", component_name="test")
+    assert component.template_name == "unicorn/meta-template.html"
+
+
+def test_meta_template_name_overrides_direct_attribute():
+    """Meta.template_name takes precedence over a direct class attribute."""
+
+    class TestComponent(UnicornView):
+        template_name = "unicorn/direct.html"
+
+        class Meta:
+            template_name = "unicorn/meta.html"
+
+    component = TestComponent(component_id="test_meta_template_name_override", component_name="test")
+    assert component.template_name == "unicorn/meta.html"
+
+
+def test_meta_template_name_invalid_type():
+    class TestComponent(UnicornView):
+        class Meta:
+            template_name = 123
+
+    with pytest.raises(AssertionError, match="Meta.template_name should be a str"):
+        TestComponent(component_id="test_meta_template_name_invalid", component_name="test")
+
+
+# ── Meta: template_html ───────────────────────────────────────────────────────
+
+
+def test_meta_template_html():
+    class TestComponent(UnicornView):
+        class Meta:
+            template_html = "<div>hello</div>"
+
+    component = TestComponent(component_id="test_meta_template_html", component_name="test")
+    # template_html is converted to a Template object and assigned to template_name
+    assert component.template_name is not None
+    assert not isinstance(component.template_name, str)
+
+
+def test_meta_template_html_invalid_type():
+    class TestComponent(UnicornView):
+        class Meta:
+            template_html = ["<div>oops</div>"]
+
+    with pytest.raises(AssertionError, match="Meta.template_html should be a str"):
+        TestComponent(component_id="test_meta_template_html_invalid", component_name="test")
+
+
+# ── Meta: component_key ───────────────────────────────────────────────────────
+
+
+def test_meta_component_key_used_as_default():
+    class TestComponent(UnicornView):
+        template_name = "unicorn/test.html"
+
+        class Meta:
+            component_key = "default-key"
+
+    component = TestComponent(
+        component_id="test_meta_component_key", component_name="test", component_key=""
+    )
+    assert component.component_key == "default-key"
+
+
+def test_meta_component_key_not_applied_when_tag_provides_key():
+    """The template-tag key always wins over Meta.component_key."""
+
+    class TestComponent(UnicornView):
+        template_name = "unicorn/test.html"
+
+        class Meta:
+            component_key = "default-key"
+
+    component = TestComponent(
+        component_id="test_meta_component_key_override", component_name="test", component_key="tag-key"
+    )
+    assert component.component_key == "tag-key"
+
+
+def test_meta_component_key_invalid_type():
+    class TestComponent(UnicornView):
+        template_name = "unicorn/test.html"
+
+        class Meta:
+            component_key = 42
+
+    with pytest.raises(AssertionError, match="Meta.component_key should be a str"):
+        TestComponent(component_id="test_meta_component_key_invalid", component_name="test")
+
+
+# ── Meta: form_class ──────────────────────────────────────────────────────────
+
+
+def test_meta_form_class_validates():
+    from tests.views.fake_components import FakeValidationForm
+
+    class TestComponent(UnicornView):
+        template_name = "unicorn/test.html"
+        text = "hi"
+        number = ""
+        date_time = ""
+        permanent = True
+
+        class Meta:
+            form_class = FakeValidationForm
+
+    component = TestComponent(component_id="test_meta_form_class", component_name="test")
+    errors = component.validate()
+    # number, date_time are invalid → errors present
+    assert errors
+
+
+def test_meta_form_class_not_in_frontend_context():
+    """form_class must never appear in the component's public attributes."""
+    from tests.views.fake_components import FakeValidationComponent
+
+    component = FakeValidationComponent(
+        component_id="test_form_class_not_in_context", component_name="example"
+    )
+    assert "form_class" not in component._attributes()
+
+

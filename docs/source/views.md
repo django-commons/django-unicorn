@@ -125,26 +125,32 @@ Never put sensitive data into a public property because that information will pu
 
 ### template_name
 
-By default, the component name is used to determine what template should be used. For example, `hello_world.HelloWorldView` would by default use `unicorn/hello-world.html`. However, you can specify a particular template by setting `template_name` in the component.
+By default, the component name is used to determine what template should be used. For example, `hello_world.HelloWorldView` would by default use `unicorn/hello-world.html`. Set `template_name` inside `Meta` to override it.
 
 ```python
 # hello_world.py
 from django_unicorn.components import UnicornView
 
 class HelloWorldView(UnicornView):
-    template_name = "unicorn/hello-world.html"
+    class Meta:
+        template_name = "unicorn/hello-world.html"
+```
+
+```{note}
+Setting `template_name` directly as a class attribute also works and is supported for backwards compatibility.
 ```
 
 ### template_html
 
-Template HTML can be defined inline on the component instead of using an external HTML file.
+Template HTML can be defined inline on the component instead of using an external HTML file. Set it inside `Meta`.
 
 ```python
 # hello_world.py
 from django_unicorn.components import UnicornView
 
 class HelloWorldView(UnicornView):
-    template_html = """<div>
+    class Meta:
+        template_html = """<div>
     <div>
         Count: {{ count }}
     </div>
@@ -155,6 +161,10 @@ class HelloWorldView(UnicornView):
 """
 
     ...
+```
+
+```{note}
+Setting `template_html` directly as a class attribute also works and is supported for backwards compatibility.
 ```
 
 ## Instance properties
@@ -486,6 +496,80 @@ Only set `Meta.login_not_required = True` on components whose actions are safe t
 execute without authentication. Any sensitive operation (e.g. accessing private
 data, modifying records) should still verify `self.request.user.is_authenticated`
 inside the relevant component methods.
+```
+
+### template_name
+
+Override the template path used to render the component.
+
+```python
+# hello_world.py
+from django_unicorn.components import UnicornView
+
+class HelloWorldView(UnicornView):
+    class Meta:
+        template_name = "unicorn/hello-world.html"
+```
+
+### template_html
+
+Define the component template as an inline HTML string instead of a separate file.
+
+```python
+# hello_world.py
+from django_unicorn.components import UnicornView
+
+class HelloWorldView(UnicornView):
+    count = 0
+
+    class Meta:
+        template_html = """<div>
+    <div>Count: {{ count }}</div>
+    <button unicorn:click="increment">+</button>
+</div>"""
+```
+
+### component_key
+
+Set a default key for the component class. This is applied when the template tag
+does not supply a `key=` argument and is useful when you always want a specific
+component to be keyed the same way.
+
+```python
+# signup.py
+from django_unicorn.components import UnicornView
+
+class SignupView(UnicornView):
+    class Meta:
+        component_key = "signup"
+```
+
+```{note}
+A `key=` value provided in the template tag always takes precedence over
+`Meta.component_key`.
+```
+
+### form_class
+
+Attach a Django form for validation. Errors from the form are merged into the
+component's `errors` dict.
+
+```python
+# book_form.py
+from django_unicorn.components import UnicornView
+from .forms import BookForm
+
+class BookFormView(UnicornView):
+    title = ""
+    year = None
+
+    class Meta:
+        form_class = BookForm
+```
+
+```{note}
+Setting `form_class` directly as a class attribute also works and is supported for
+backwards compatibility.
 ```
 
 ## Pickling and Caching
