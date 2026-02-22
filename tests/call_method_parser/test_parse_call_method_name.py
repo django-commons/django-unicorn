@@ -122,3 +122,10 @@ def test_string_with_mixed_quotes_and_parentheses():
     actual = parse_call_method_name("set_name('test(with \\'quotes\\' and \"double\")')")
 
     assert actual == expected
+
+
+def test_parent_method_call():
+    expected = ("$parent.next", (), {})
+    actual = parse_call_method_name("$parent.next()")
+
+    assert actual == expected

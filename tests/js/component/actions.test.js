@@ -12,7 +12,7 @@ test("action", (t) => {
 
 test("multiple of same action eventType", (t) => {
   const html = `
-  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input unicorn:model='name'></input>
     <button unicorn:click='name="world"'></button>
     <button unicorn:click='name="hello"'></button>
@@ -26,7 +26,7 @@ test("multiple of same action eventType", (t) => {
 
 test("multiple action eventTypes", (t) => {
   const html = `
-  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input unicorn:model='name'></input>
     <button unicorn:click='name="world"'></button>
     <button unicorn:keyup='name="hello"'></button>

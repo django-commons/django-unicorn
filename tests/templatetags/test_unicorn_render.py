@@ -1,10 +1,10 @@
-import re
-
+import orjson
 import pytest
 from django.template import Context
 from django.template.base import Parser, Token, TokenType
 
 from django_unicorn.components import UnicornView
+from django_unicorn.components.unicorn_template_response import get_root_element
 from django_unicorn.errors import ComponentNotValidError
 from django_unicorn.templatetags.unicorn import unicorn
 from django_unicorn.utils import generate_checksum
@@ -102,7 +102,6 @@ def test_unicorn_template_renders(client):
     assert "WSGIRequest" in content
     assert content.startswith("<div unicorn:id")
     assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentKwargs"' in content
-    assert '<script type="application/json" id="unicorn:data:' in content
 
 
 def test_unicorn_template_renders_with_parent_and_child(client):
@@ -115,7 +114,6 @@ def test_unicorn_template_renders_with_parent_and_child(client):
     assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentChild"' in content
     assert "--parent--" in content
     assert "==child==" in content
-    assert '<script type="application/json" id="unicorn:data:' in content
 
 
 def test_unicorn_template_renders_with_parent_and_child_with_templateview(client):
@@ -128,7 +126,6 @@ def test_unicorn_template_renders_with_parent_and_child_with_templateview(client
     assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentChild"' in content
     assert "--parent--" in content
     assert "==child==" in content
-    assert '<script type="application/json" id="unicorn:data:' in content
 
 
 def test_unicorn_template_renders_with_implicit_parent_and_child(client):
@@ -142,7 +139,6 @@ def test_unicorn_template_renders_with_implicit_parent_and_child(client):
     assert "--parent--" in content
     assert "==child==" in content
     assert "has_parent:True" in content
-    assert '<script type="application/json" id="unicorn:data:' in content
 
 
 def test_unicorn_render_arg():
@@ -335,8 +331,7 @@ def test_unicorn_render_component_one_script_tag(settings):
     context = {}
     html = unicorn_node.render(Context(context))
 
-    assert '<script type="module"' in html
-    assert len(re.findall('<script type="module"', html)) == 1
+    assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentKwargs"' in html
 
 
 def test_unicorn_render_component_minify_html(settings):
@@ -350,8 +345,7 @@ def test_unicorn_render_component_minify_html(settings):
     context = {}
     html = unicorn_node.render(Context(context))
 
-    assert "<script type=module" in html
-    assert len(re.findall("<script type=module", html)) == 1
+    assert "unicorn:name=tests.templatetags.test_unicorn_render.FakeComponentKwargs" in html
 
     settings.UNICORN = {**settings.UNICORN, "MINIFY_HTML": False}
 
@@ -382,8 +376,7 @@ def test_unicorn_render_parent_component_one_script_tag(settings):
     context = {}
     html = unicorn_node.render(Context(context))
 
-    assert '<script type="module"' in html
-    assert len(re.findall('<script type="module"', html)) == 1
+    assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentParent"' in html
 
 
 def test_unicorn_render_calls(settings):
@@ -396,9 +389,7 @@ def test_unicorn_render_calls(settings):
     context = {}
     html = unicorn_node.render(Context(context))
 
-    assert '<script type="module"' in html
-    assert len(re.findall('<script type="module"', html)) == 1
-    assert '"calls":[{"fn":"testCall","args":[]}]' in html
+    assert 'unicorn:calls=\'[{"fn":"testCall","args":[]}]\'' in html
 
 
 def test_unicorn_render_calls_with_arg(settings):
@@ -411,9 +402,7 @@ def test_unicorn_render_calls_with_arg(settings):
     context = {}
     html = unicorn_node.render(Context(context))
 
-    assert '<script type="module"' in html
-    assert len(re.findall('<script type="module"', html)) == 1
-    assert '"calls":[{"fn":"testCall2","args":["hello"]}]' in html
+    assert 'unicorn:calls=\'[{"fn":"testCall2","args":["hello"]}]\'' in html
 
 
 def test_unicorn_render_calls_no_mount_call(settings):
@@ -426,9 +415,7 @@ def test_unicorn_render_calls_no_mount_call(settings):
     context = {}
     html = unicorn_node.render(Context(context))
 
-    assert '<script type="module"' in html
-    assert len(re.findall('<script type="module"', html)) == 1
-    assert '"calls":[]' in html
+    assert 'unicorn:calls="[]"' in html
 
 
 def test_unicorn_render_hash(settings):
@@ -443,15 +430,16 @@ def test_unicorn_render_hash(settings):
     context = {}
     html = unicorn_node.render(Context(context))
 
-    assert '<script type="module"' in html
-    assert len(re.findall('<script type="module"', html)) == 1
-    assert '"hash":"' in html
+    # Assert that the data checksum is correct
+    root_element = get_root_element(html)
+    actual_checksum = root_element.attrib.get("unicorn:meta")
 
-    # Assert that the content hash is correct
-    script_idx = html.index("<script")
-    rendered_content_without_inserted_after_script = html[:script_idx]
-    expected_hash = generate_checksum(rendered_content_without_inserted_after_script)
-    assert f'"hash":"{expected_hash}"' in html
+    # Calculate what the data checksum should be
+    frontend_context_variables = unicorn_node.view.get_frontend_context_variables()
+    frontend_context_variables_dict = orjson.loads(frontend_context_variables)
+    expected_data_checksum = generate_checksum(frontend_context_variables_dict)
+
+    assert actual_checksum == expected_data_checksum
 
 
 def test_unicorn_render_hash_append(settings):
@@ -466,15 +454,16 @@ def test_unicorn_render_hash_append(settings):
     context = {}
     html = unicorn_node.render(Context(context))
 
-    assert '<script type="module"' in html
-    assert len(re.findall('<script type="module"', html)) == 1
-    assert '"hash":"' in html
+    # Assert that the data checksum is correct
+    root_element = get_root_element(html)
+    actual_checksum = root_element.attrib.get("unicorn:meta")
 
-    # Assert that the content hash is correct
-    script_idx = html.index("<script")
-    rendered_content_without_appended_script = html[:script_idx] + "</div>"
-    expected_hash = generate_checksum(rendered_content_without_appended_script)
-    assert f'"hash":"{expected_hash}"' in html
+    # Calculate what the data checksum should be
+    frontend_context_variables = unicorn_node.view.get_frontend_context_variables()
+    frontend_context_variables_dict = orjson.loads(frontend_context_variables)
+    expected_data_checksum = generate_checksum(frontend_context_variables_dict)
+
+    assert actual_checksum == expected_data_checksum
 
 
 def test_unicorn_render_with_component_name_from_context():
@@ -486,8 +475,7 @@ def test_unicorn_render_with_component_name_from_context():
     context = {"component_name": "tests.templatetags.test_unicorn_render.FakeComponent"}
     html = unicorn_node.render(Context(context))
 
-    assert '<script type="module"' in html
-    assert len(re.findall('<script type="module"', html)) == 1
+    assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponent"' in html
 
 
 def test_unicorn_render_with_invalid_component_name_from_context():

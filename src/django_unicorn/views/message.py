@@ -224,7 +224,7 @@ class UnicornMessageHandler:
         self._handle_queued_messages(component, return_data)
 
         # Render
-        rendered_component = component.render(request=self.request)
+        rendered_component = component.render(request=self.request, epoch=component_request.epoch)
         component.rendered(rendered_component)
 
         # Restore queued messages

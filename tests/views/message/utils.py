@@ -22,13 +22,15 @@ def post_and_get_response(
     if not component_id:
         component_id = shortuuid.uuid()[:8]
 
+    data_checksum = generate_checksum(data)
+    meta = f"{data_checksum}:{hash or ''}:{time.time()}"
+
     message = {
         "actionQueue": action_queue,
         "data": data,
-        "checksum": generate_checksum(data),
+        "meta": meta,
         "id": component_id,
         "epoch": time.time(),
-        "hash": hash,
     }
 
     response = client.post(

@@ -3,7 +3,7 @@ import { getComponent } from "../utils.js";
 
 test("action disable modifier", async (t) => {
   const html = `
-    <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+    <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
       <button unicorn:click.disable="test()"></button>
     </div>
   `;
@@ -34,7 +34,7 @@ test("action disable modifier", async (t) => {
 
 test("action disable modifier with error", async (t) => {
   const html = `
-      <div unicorn:id="error-test" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+      <div unicorn:id="error-test" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
         <button unicorn:click.disable="test()"></button>
       </div>
     `;
