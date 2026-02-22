@@ -165,7 +165,6 @@ export function send(component, callback) {
       let parent = responseJson.parent || {};
       const rerenderedComponent = responseJson.dom || "";
       const partials = responseJson.partials || [];
-      const { meta } = responseJson;
 
       if (meta && meta.indexOf(":") > -1) {
         const parts = meta.split(":");
