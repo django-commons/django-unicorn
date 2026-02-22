@@ -126,7 +126,8 @@ class UnicornMessageHandler:
         if login_required_middleware in getattr(settings, "MIDDLEWARE", []):
             user = getattr(self.request, "user", None)
             if user is not None and not getattr(user, "is_authenticated", True):
-                if not getattr(component, "login_not_required", False):
+                meta = getattr(component, "Meta", None)
+                if not (meta is not None and getattr(meta, "login_not_required", False)):
                     raise UnicornAuthenticationError("Authentication required")
 
         # Make sure that there is always a request on the component if needed

@@ -1,6 +1,17 @@
 import logging
 from functools import wraps
 
+try:
+    # Django 5.1+ — exempts the message endpoint from LoginRequiredMiddleware
+    # so AJAX calls from public pages reach it. Per-component access control
+    # is enforced in UnicornMessageHandler via `Meta.login_not_required`.
+    from django.contrib.auth.decorators import login_not_required
+except ImportError:
+    # Django < 5.1 — LoginRequiredMiddleware does not exist, nothing to do.
+    def login_not_required(func):  # type: ignore[misc]
+        return func
+
+
 from django.http import HttpRequest, JsonResponse
 from django.http.response import HttpResponseNotModified
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
@@ -40,6 +51,7 @@ def handle_error(view_func):
 @ensure_csrf_cookie
 @csrf_protect  # type: ignore
 @require_POST  # type: ignore
+@login_not_required
 def message(request: HttpRequest, component_name: str | None = None) -> JsonResponse:  # type: ignore
     """
     Endpoint that instantiates the component and does the correct action
@@ -69,16 +81,3 @@ def message(request: HttpRequest, component_name: str | None = None) -> JsonResp
     json_result = handler.handle(component_request)
 
     return JsonResponse(json_result, json_dumps_params={"separators": (",", ":")})
-
-
-# Django 5.1 introduced LoginRequiredMiddleware which blocks all unauthenticated
-# requests by default. The message endpoint must be exempt at the middleware level
-# so that AJAX calls from public pages can reach it; per-component access control
-# is then enforced inside UnicornMessageHandler via the `login_not_required` class
-# attribute on UnicornView subclasses.
-try:
-    from django.contrib.auth.decorators import login_not_required as _login_not_required
-
-    message = _login_not_required(message)
-except ImportError:
-    pass  # Django < 5.1 -- LoginRequiredMiddleware does not exist, nothing to do.

@@ -850,8 +850,13 @@ class Component(TemplateView):
             "resolved",
             "calling",
             "called",
+            "login_not_required",
         )
         excludes = []
+
+        if hasattr(self, "Meta") and hasattr(self.Meta, "login_not_required"):
+            if not isinstance(self.Meta.login_not_required, bool):
+                raise AssertionError("Meta.login_not_required should be a bool")
 
         if hasattr(self, "Meta") and hasattr(self.Meta, "exclude"):
             if not is_non_string_sequence(self.Meta.exclude):
