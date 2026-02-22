@@ -1,9 +1,15 @@
 """
-Regression tests for issue #666: updating child components via a parent method.
+Regression tests for:
+  - Issue #666: updating child components via a parent method.
+  - Issue #685: self.parent reference not updating in child components.
 
 When a parent component's method modifies children's state (e.g., setting
 is_editing=True on all children), the changes must be persisted to cache before
 the parent re-renders so that template tags retrieve the updated children.
+
+Additionally, when children are rendered via template tags during a parent's
+re-render, their self.parent must point to the exact in-memory parent object so
+that they always see the parent's current state.
 """
 
 import shortuuid
@@ -22,11 +28,15 @@ class ChildView(UnicornView):
 
 class ParentView(UnicornView):
     template_name = "templates/test_component.html"
+    current_page: str = "root"
 
     def begin_edit_all(self):
         for child in self.children:
             if hasattr(child, "is_editing"):
                 child.is_editing = True
+
+    def walk(self, page: str):
+        self.current_page = page
 
 
 PARENT_NAME = "tests.views.message.test_child_state_propagation.ParentView"
@@ -79,6 +89,50 @@ def test_parent_method_child_state_persisted_in_cache(client):
     )
 
 
+def test_child_self_parent_is_in_memory_parent_after_create(client):
+    """
+    Issue #685: when UnicornView.create() returns a cached child component,
+    its self.parent must be the *exact same Python object* as the in-memory parent
+    being rendered, not a stale copy restored from the Django cache.
+
+    We verify this by calling create() with an updated in-memory parent and
+    checking that the returned child's .parent IS that same object.
+    """
+    from django.test import RequestFactory
+
+    from django_unicorn.components import UnicornView
+
+    parent_id = shortuuid.uuid()[:8]
+    child_id = f"{parent_id}:{CHILD_NAME}"
+
+    parent = ParentView(component_id=parent_id, component_name=PARENT_NAME)
+    child = ChildView(component_id=child_id, component_name=CHILD_NAME, parent=parent)
+
+    # Persist to cache (simulates initial page load state)
+    cache_full_tree(parent)
+
+    # Simulate the parent changing state (e.g. walk() was called)
+    parent.current_page = "chapter-2"
+
+    request = RequestFactory().get("/")
+
+    # When the parent template re-renders, the template tag calls create() for the child
+    retrieved_child = UnicornView.create(
+        component_id=child_id,
+        component_name=CHILD_NAME,
+        parent=parent,
+        request=request,
+    )
+
+    assert retrieved_child.parent is parent, (
+        "self.parent in the child should be the exact in-memory parent object, "
+        "not a stale cache-restored copy (issue #685)."
+    )
+    assert retrieved_child.parent.current_page == "chapter-2", (
+        "self.parent.current_page should reflect the parent's current in-memory state."
+    )
+
+
 def test_parent_method_multiple_children_all_updated_in_cache(client):
     """
     All children must be updated in cache, not just the first one.
@@ -115,6 +169,4 @@ def test_parent_method_multiple_children_all_updated_in_cache(client):
     for child in [child1, child2, child3]:
         cached = cache.get(child.component_cache_key)
         assert cached is not None
-        assert cached.is_editing is True, (
-            f"Child {child.component_id} should have is_editing=True after begin_edit_all"
-        )
+        assert cached.is_editing is True, f"Child {child.component_id} should have is_editing=True after begin_edit_all"
