@@ -845,7 +845,6 @@ def test_dictionary_with_int_keys_as_strings_no_sort():
 
 def test_tuple_float():
     """Float inside a tuple is stringified for safe JS transmission (#641)."""
-    import json
 
     actual = serializer.dumps({"ranks": ({"name": "abc", "score": 3.4},)})
     data = json.loads(actual)
@@ -855,7 +854,6 @@ def test_tuple_float():
 
 def test_tuple_of_dicts_mixed_types():
     """Multiple floats and non-floats inside a tuple of dicts are handled (#641)."""
-    import json
 
     actual = serializer.dumps(
         {

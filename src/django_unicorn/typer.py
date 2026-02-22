@@ -152,13 +152,13 @@ def cast_value(type_hint, value):
             # the single arg applies to every element
             arg = type_args[0]
             return tuple(cast_value(arg, item) for item in value)
-        elif len(type_args) >= 2 and type_args[-1] is not Ellipsis:
+        elif len(type_args) >= 2 and type_args[-1] is not Ellipsis:  # noqa: PLR2004
             # Fixed-length heterogeneous tuple: tuple[str, int, float]
-            return tuple(cast_value(t, item) for t, item in zip(type_args, value))
+            return tuple(cast_value(t, item) for t, item in zip(type_args, value, strict=True))
 
     if get_origin(type_hint) is dict:
         type_args = get_args(type_hint)
-        if len(type_args) == 2 and isinstance(value, dict):
+        if len(type_args) == 2 and isinstance(value, dict):  # noqa: PLR2004
             # dict[K, V] — cast each value to the V type so that e.g.
             # dict[str, float|str] converts string "3.4" back to float 3.4
             value_type = type_args[1]

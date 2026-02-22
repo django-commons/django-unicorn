@@ -171,6 +171,7 @@ def test_cast_value_list_pydantic():
     actual = cast_value(type_hint, [{"name": "foo"}])
     assert actual == [test_data]
 
+
 class ComponentWithRanks:
     ranks: tuple[dict[str, float | str]]
 
@@ -195,7 +196,6 @@ def test_cast_value_tuple_of_dicts_gh641():
 
 def test_cast_value_dict_float_str_gh641():
     """cast_value casts string float values inside dict[str, float|str] (#641)."""
-    from typing import get_type_hints as typing_get_type_hints
 
     class ComponentWithDict:
         data: dict[str, float | str]

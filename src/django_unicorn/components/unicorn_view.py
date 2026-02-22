@@ -147,7 +147,6 @@ def construct_component(
     )
 
     component.calls = []
-    
 
     component._mount_result = component.mount()
     component.hydrate()

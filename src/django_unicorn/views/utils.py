@@ -53,10 +53,11 @@ def set_property_from_data(
             if model_field.is_relation and model_field.many_to_one:
                 if isinstance(value, Model):
                     setattr(component_or_field, name, value)
-                else:
-                    setattr(component_or_field, model_field.attname, value)
+                elif hasattr(model_field, "attname"):
+                    setattr(component_or_field, str(model_field.attname), value)
+
                 return
-        except Exception:
+        except Exception:  # noqa: S110
             pass
 
     # UnicornField and Models are always a dictionary (can be nested)
