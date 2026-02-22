@@ -583,7 +583,7 @@ class Component(TemplateView):
             return {}
 
         result = {}
-        for field_name, form_cls in self.form_classes.items():
+        for field_name, form_cls in cast(dict, self.form_classes).items():
             obj = getattr(self, field_name, None)
             if obj is None:
                 form_data = {}
@@ -714,17 +714,12 @@ class Component(TemplateView):
             # Re-map each sub-form error key to its dotted path, e.g.
             # "title" → "book.title" when field_name == "book".
             obj_form_errors = obj_form.errors.get_json_data(escape_html=True)
-            dotted_errors = {
-                f"{field_name}.{sub_key}": sub_errors
-                for sub_key, sub_errors in obj_form_errors.items()
-            }
+            dotted_errors = {f"{field_name}.{sub_key}": sub_errors for sub_key, sub_errors in obj_form_errors.items()}
 
             # Apply the same "persist only errors that are still invalid" logic.
             if self.errors:
                 keys_to_remove = [
-                    key
-                    for key in self.errors
-                    if key.startswith(f"{field_name}.") and key not in dotted_errors
+                    key for key in self.errors if key.startswith(f"{field_name}.") and key not in dotted_errors
                 ]
                 for key in keys_to_remove:
                     self.errors.pop(key)

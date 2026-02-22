@@ -360,9 +360,7 @@ def test_form_classes_validate_all_fields_with_empty_object():
     """
     from tests.views.fake_components import FakeFormClassesComponent
 
-    component = FakeFormClassesComponent(
-        component_id="test_form_classes_validate_all", component_name="example"
-    )
+    component = FakeFormClassesComponent(component_id="test_form_classes_validate_all", component_name="example")
 
     errors = component.validate()
 
@@ -379,9 +377,7 @@ def test_form_classes_validate_model_names_filtered():
     """
     from tests.views.fake_components import FakeFormClassesComponent
 
-    component = FakeFormClassesComponent(
-        component_id="test_form_classes_filtered", component_name="example"
-    )
+    component = FakeFormClassesComponent(component_id="test_form_classes_filtered", component_name="example")
 
     errors = component.validate(model_names=["book.title"])
 
@@ -393,9 +389,7 @@ def test_form_classes_is_valid_with_empty_object():
     """``is_valid()`` should return ``False`` when required object fields are missing."""
     from tests.views.fake_components import FakeFormClassesComponent
 
-    component = FakeFormClassesComponent(
-        component_id="test_form_classes_is_valid_false", component_name="example"
-    )
+    component = FakeFormClassesComponent(component_id="test_form_classes_is_valid_false", component_name="example")
 
     assert component.is_valid() is False
 
@@ -405,13 +399,11 @@ def test_form_classes_validate_stale_errors_removed():
     Errors for an object field that has since become valid should be removed on
     the next ``validate()`` call.
     """
-    from example.books.models import Book
-
     from tests.views.fake_components import FakeFormClassesComponent
 
-    component = FakeFormClassesComponent(
-        component_id="test_form_classes_stale_errors", component_name="example"
-    )
+    from example.books.models import Book
+
+    component = FakeFormClassesComponent(component_id="test_form_classes_stale_errors", component_name="example")
 
     # First validate with empty object — both fields should error.
     component.validate()
@@ -425,4 +417,3 @@ def test_form_classes_validate_stale_errors_removed():
 
     assert "book.title" not in errors
     assert "book.date_published" not in errors
-
