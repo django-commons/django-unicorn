@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_6dad0f429c848504___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.1">coverage.py v7.13.1</a>,
-            created at 2026-02-22 04:26 +0000
+            created at 2026-02-22 16:30 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -203,7 +203,7 @@
     <p class="pln"><span class="n"><a id="t119" href="#t119">119</a></span><span class="t">                <span class="com"># context when the templatetag is rendered, so just return the expr</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t120" href="#t120">120</a></span><span class="t">                <span class="com"># as a string.</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t121" href="#t121">121</a></span><span class="t">                <span class="nam">value</span> <span class="op">=</span> <span class="nam">_get_expr_string</span><span class="op">(</span><span class="nam">assign</span><span class="op">.</span><span class="nam">value</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t122" href="#t122">122</a></span><span class="t">                <span class="key">return</span> <span class="op">{</span><span class="nam">target</span><span class="op">.</span><span class="nam">id</span><span class="op">:</span> <span class="nam">value</span><span class="op">}</span>  <span class="com"># type: ignore</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t122" href="#t122">122</a></span><span class="t">                <span class="key">return</span> <span class="op">{</span><span class="nam">key</span><span class="op">:</span> <span class="nam">value</span><span class="op">}</span>  <span class="com"># type: ignore</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t123" href="#t123">123</a></span><span class="t">        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t124" href="#t124">124</a></span><span class="t">            <span class="key">raise</span> <span class="nam">InvalidKwargError</span><span class="op">(</span><span class="fst">f"</span><span class="fst">'</span><span class="op">{</span><span class="nam">kwarg</span><span class="op">}</span><span class="fst">' is invalid</span><span class="fst">"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t125" href="#t125">125</a></span><span class="t">    <span class="key">except</span> <span class="nam">SyntaxError</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -241,7 +241,7 @@
     <p class="pln"><span class="n"><a id="t157" href="#t157">157</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t158" href="#t158">158</a></span><span class="t">    <span class="key">if</span> <span class="nam">tree</span><span class="op">.</span><span class="nam">body</span> <span class="key">and</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">statement</span><span class="op">,</span> <span class="nam">ast</span><span class="op">.</span><span class="nam">Call</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t159" href="#t159">159</a></span><span class="t">        <span class="nam">call</span> <span class="op">=</span> <span class="nam">tree</span><span class="op">.</span><span class="nam">body</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">.</span><span class="nam">value</span>  <span class="com"># type: ignore</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t160" href="#t160">160</a></span><span class="t">        <span class="nam">method_name</span> <span class="op">=</span> <span class="nam">call</span><span class="op">.</span><span class="nam">func</span><span class="op">.</span><span class="nam">id</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t160" href="#t160">160</a></span><span class="t">        <span class="nam">method_name</span> <span class="op">=</span> <span class="nam">_get_expr_string</span><span class="op">(</span><span class="nam">call</span><span class="op">.</span><span class="nam">func</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t161" href="#t161">161</a></span><span class="t">        <span class="nam">args</span> <span class="op">=</span> <span class="op">[</span><span class="nam">eval_value</span><span class="op">(</span><span class="nam">arg</span><span class="op">)</span> <span class="key">for</span> <span class="nam">arg</span> <span class="key">in</span> <span class="nam">call</span><span class="op">.</span><span class="nam">args</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t162" href="#t162">162</a></span><span class="t">        <span class="nam">kwargs</span> <span class="op">=</span> <span class="op">{</span><span class="nam">kw</span><span class="op">.</span><span class="nam">arg</span><span class="op">:</span> <span class="nam">eval_value</span><span class="op">(</span><span class="nam">kw</span><span class="op">.</span><span class="nam">value</span><span class="op">)</span> <span class="key">for</span> <span class="nam">kw</span> <span class="key">in</span> <span class="nam">call</span><span class="op">.</span><span class="nam">keywords</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t163" href="#t163">163</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -260,7 +260,7 @@
             <a class="nav" href="z_6dad0f429c848504___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.1">coverage.py v7.13.1</a>,
-            created at 2026-02-22 04:26 +0000
+            created at 2026-02-22 16:30 +0000
         </p>
     </div>
 </footer>
