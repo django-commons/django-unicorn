@@ -34,7 +34,7 @@ class ParentView(UnicornView):
     def begin_edit_all(self):
         for child in self.children:
             if hasattr(child, "is_editing"):
-                child.is_editing = True
+                setattr(child, "is_editing", True)  # noqa: B010 - ty can't narrow the type after hasattr
 
     def walk(self, page: str):
         self.current_page = page
