@@ -15,6 +15,9 @@ class FakeCallsComponent(UnicornView):
     def test_call3(self):
         self.call("testCall3", "hello")
 
+    def test_remove(self):
+        self.remove()
+
 
 FAKE_CALLS_COMPONENT_URL = "/message/tests.views.message.test_calls.FakeCallsComponent"
 
@@ -66,6 +69,23 @@ def test_message_calls_with_arg(client):
     response = post_and_get_response(client, url=FAKE_CALLS_COMPONENT_URL, action_queue=action_queue)
 
     assert response.get("calls") == [{"args": ["hello"], "fn": "testCall3"}]
+
+
+def test_message_remove(client):
+    component_id = "test-remove-id"
+    action_queue = [
+        {
+            "payload": {"name": "test_remove"},
+            "type": "callMethod",
+            "target": None,
+        }
+    ]
+
+    response = post_and_get_response(
+        client, url=FAKE_CALLS_COMPONENT_URL, action_queue=action_queue, component_id=component_id
+    )
+
+    assert response.get("calls") == [{"args": [component_id], "fn": "Unicorn.deleteComponent"}]
 
 
 class FakeChildComponent(UnicornView):

@@ -30,6 +30,34 @@ class CallJavascriptView(UnicornView):
 
     def hello(self):
         self.call("hello", self.name)
+```
+
+## Remove a Component
+
+Call `self.remove()` from any view method to remove the component's root element from the DOM. This is useful for list-item components (e.g. table rows or list items) that need to delete themselves without requiring a parent component to manage re-rendering.
+
+```python
+# todo_item.py
+from django_unicorn.components import UnicornView
+
+class TodoItemView(UnicornView):
+    item_id: int = 0
+
+    def delete(self):
+        # perform any server-side cleanup here
+        TodoItem.objects.filter(pk=self.item_id).delete()
+        self.remove()
+```
+
+```html
+<!-- todo-item.html -->
+<li>
+  {{ item_id }}
+  <button unicorn:click="delete">Delete</button>
+</li>
+```
+
+Calling `self.remove()` is shorthand for `self.call("Unicorn.deleteComponent", self.component_id)`. After the server responds, the component's root element is removed from the DOM and cleaned up from the internal component store.
 
 ## Call Method on Other Component
 

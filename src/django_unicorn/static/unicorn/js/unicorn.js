@@ -154,10 +154,17 @@ export function getComponent(componentNameOrKey) {
 }
 
 /**
- * Deletes the component from the component store.
+ * Removes the component's root element from the DOM and deletes it from the
+ * component store.
  * @param {String} componentId.
  */
 export function deleteComponent(componentId) {
+  const root = document.querySelector(`[unicorn\\:id="${componentId}"]`);
+
+  if (root) {
+    root.remove();
+  }
+
   delete components[componentId];
 }
 

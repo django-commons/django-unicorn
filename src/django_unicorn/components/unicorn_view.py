@@ -331,6 +331,14 @@ class Component(TemplateView):
         """
         self.calls.append({"fn": function_name, "args": args})
 
+    def remove(self):
+        """
+        Remove this component's root element from the DOM and delete it from the
+        internal component store. Equivalent to calling
+        ``self.call("Unicorn.deleteComponent", self.component_id)``.
+        """
+        self.call("Unicorn.deleteComponent", self.component_id)
+
     def mount(self):
         """
         Hook that gets called when the component is first created.
@@ -825,6 +833,7 @@ class Component(TemplateView):
             "parent",
             "children",
             "call",
+            "remove",
             "calls",
             "component_cache_key",
             "component_kwargs",
