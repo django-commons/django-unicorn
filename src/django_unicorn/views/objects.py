@@ -65,13 +65,24 @@ class ComponentRequest:
             raise AssertionError("Missing component id")
 
         self.epoch = self.body.get("epoch", "")
+        self.key = self.body.get("key", "")
+        self.hash = self.body.get("hash", "")
+        meta = self.body.get("meta", "")
+
+        if meta and ":" in meta:
+            parts = meta.split(":")
+            meta = parts[0]
+
+            if len(parts) > 1:
+                self.hash = parts[1]
+
+            if len(parts) > 2:  # noqa: PLR2004
+                self.epoch = parts[2]
+
         if not self.epoch:
             raise AssertionError("Missing epoch")
 
-        self.key = self.body.get("key", "")
-        self.hash = self.body.get("hash", "")
-
-        self.validate_checksum()
+        self.validate_checksum(meta)
 
         self.action_queue = []
 
@@ -84,22 +95,23 @@ class ComponentRequest:
             f" epoch={self.epoch} data={self.data} action_queue={self.action_queue} hash={self.hash})"
         )
 
-    def validate_checksum(self):
+    def validate_checksum(self, meta: str | None = None):
         """
         Validates that the checksum in the request matches the data.
 
         Returns:
             Raises `AssertionError` if the checksums don't match.
         """
-        checksum = self.body.get("checksum")
+        if not meta:
+            meta = self.body.get("meta")
 
-        if not checksum:
+        if not meta:
             # TODO: Raise specific exception
-            raise AssertionError("Missing checksum")
+            raise AssertionError("Missing meta")
 
         generated_checksum = generate_checksum(self.data)
 
-        if checksum != generated_checksum:
+        if meta != generated_checksum:
             # TODO: Raise specific exception
             raise AssertionError("Checksum does not match")
 

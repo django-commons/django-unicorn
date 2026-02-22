@@ -62,13 +62,13 @@ class ComponentResponse:
                 key: self.component_request.data[key] for key in sorted(self.component_request.data)
             }
 
+        data_checksum = generate_checksum(self.component_request.data)
         result = {
             "id": self.component_request.id,
             "data": self.component_request.data,
             "errors": self.component.errors,
             "calls": self._collect_all_calls(),
-            "checksum": generate_checksum(self.component_request.data),
-            "epoch": self.component_request.epoch,
+            "meta": f"{data_checksum}::{self.component_request.epoch}",
         }
 
         render_not_modified = False
@@ -78,7 +78,10 @@ class ComponentResponse:
         if self.partials:
             result.update({"partials": self.partials})
         else:
-            rendered_component_hash = generate_checksum(rendered_component)
+            rendered_component_hash = getattr(self.component, "_content_hash", "")
+
+            if not rendered_component_hash:
+                rendered_component_hash = generate_checksum(rendered_component)
 
             if (
                 self.component_request.hash == rendered_component_hash
@@ -90,13 +93,15 @@ class ComponentResponse:
                 else:
                     render_not_modified = True
 
+            full_meta = f"{data_checksum}:{rendered_component_hash}:{self.component_request.epoch}"
             root_element = get_root_element(rendered_component)
+            root_element.set("unicorn:meta", data_checksum)
             rendered_component = html_element_to_string(root_element)
 
             result.update(
                 {
                     "dom": rendered_component,
-                    "hash": rendered_component_hash,
+                    "meta": full_meta,
                 }
             )
 
@@ -132,7 +137,7 @@ class ComponentResponse:
 
                 parent = {
                     "id": parent_component.component_id,
-                    "checksum": parent_checksum,
+                    "meta": f"{parent_checksum}::{self.component_request.epoch}",
                 }
 
                 if not self.partials:
@@ -141,35 +146,47 @@ class ComponentResponse:
                     self.component.parent_rendered(parent_dom)
 
                     if root_element is None:
-                        raise AssertionError("Missing root element")
+                        # Re-get the root_element since it might have been modified
+                        root_element = get_root_element(rendered_component)
 
                     # Use lxml for attribute extraction
-                    child_checksum = root_element.get("unicorn:checksum")
+                    child_meta = root_element.get("unicorn:meta")
                     child_unicorn_id = root_element.get("unicorn:id")
 
                     # Parse parent DOM
                     parent_soup = get_root_element(parent_dom)
 
-                    # Find child in parent and update checksum
+                    # Find child in parent and update meta
                     if parent_soup.get("unicorn:id") == child_unicorn_id:
-                        parent_soup.set("unicorn:checksum", child_checksum)
+                        parent_soup.set("unicorn:meta", child_meta)
                     else:
                         # lxml iter is recursive, so this finds nested components too.
                         for _child in parent_soup.iter():
                             if child_unicorn_id == _child.get("unicorn:id"):
-                                _child.set("unicorn:checksum", child_checksum)
+                                _child.set("unicorn:meta", child_meta)
 
                     parent_dom = html_element_to_string(parent_soup)
 
                     # Remove the child DOM from the payload since the parent DOM supersedes it
                     result["dom"] = None
 
+                    parent_dom_hash = getattr(parent_component, "_content_hash", "")
+
+                    if not parent_dom_hash:
+                        parent_dom_hash = generate_checksum(parent_dom)
+
+                    parent_meta = f"{parent_checksum}:{parent_dom_hash}:{self.component_request.epoch}"
+
+                    # Update the parent DOM with its data checksum
+                    parent_soup.set("unicorn:meta", parent_checksum)
+                    parent_dom = html_element_to_string(parent_soup)
+
                     parent.update(
                         {
                             "dom": parent_dom,
                             "data": parent_frontend_context_variables,
                             "errors": parent_component.errors,
-                            "hash": generate_checksum(parent_dom),
+                            "meta": parent_meta,
                         }
                     )
 
