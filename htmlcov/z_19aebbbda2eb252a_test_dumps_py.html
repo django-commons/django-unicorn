@@ -55,8 +55,8 @@
             </div>
         </aside>
         <h2>
-            <span class="text">330 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">330<span class="text"> run</span></button>
+            <span class="text">342 statements &nbsp;</span>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">342<span class="text"> run</span></button>
             <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">0<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
             <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Toggle lines partially run">0<span class="text"> partial</span></button>
@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_19aebbbda2eb252a_test_exclude_field_attributes_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.1">coverage.py v7.13.1</a>,
-            created at 2026-02-22 02:58 +0000
+            created at 2026-02-22 03:00 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -925,6 +925,36 @@
     <p class="run run2"><span class="n"><a id="t841" href="#t841">841</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t842" href="#t842">842</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t843" href="#t843">843</a></span><span class="t">    <span class="key">assert</span> <span class="nam">expected</span> <span class="op">==</span> <span class="nam">actual</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t844" href="#t844">844</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t845" href="#t845">845</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t846" href="#t846">846</a></span><span class="t"><span class="key">def</span> <span class="nam">test_tuple_float</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t847" href="#t847">847</a></span><span class="t">    <span class="str">"""Float inside a tuple is stringified for safe JS transmission (#641)."""</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t848" href="#t848">848</a></span><span class="t">    <span class="key">import</span> <span class="nam">json</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t849" href="#t849">849</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t850" href="#t850">850</a></span><span class="t">    <span class="nam">actual</span> <span class="op">=</span> <span class="nam">serializer</span><span class="op">.</span><span class="nam">dumps</span><span class="op">(</span><span class="op">{</span><span class="str">"ranks"</span><span class="op">:</span> <span class="op">(</span><span class="op">{</span><span class="str">"name"</span><span class="op">:</span> <span class="str">"abc"</span><span class="op">,</span> <span class="str">"score"</span><span class="op">:</span> <span class="num">3.4</span><span class="op">}</span><span class="op">,</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t851" href="#t851">851</a></span><span class="t">    <span class="nam">data</span> <span class="op">=</span> <span class="nam">json</span><span class="op">.</span><span class="nam">loads</span><span class="op">(</span><span class="nam">actual</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t852" href="#t852">852</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t853" href="#t853">853</a></span><span class="t">    <span class="key">assert</span> <span class="nam">data</span><span class="op">[</span><span class="str">"ranks"</span><span class="op">]</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">[</span><span class="str">"score"</span><span class="op">]</span> <span class="op">==</span> <span class="str">"3.4"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t854" href="#t854">854</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t855" href="#t855">855</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t856" href="#t856">856</a></span><span class="t"><span class="key">def</span> <span class="nam">test_tuple_of_dicts_mixed_types</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t857" href="#t857">857</a></span><span class="t">    <span class="str">"""Multiple floats and non-floats inside a tuple of dicts are handled (#641)."""</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t858" href="#t858">858</a></span><span class="t">    <span class="key">import</span> <span class="nam">json</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t859" href="#t859">859</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t860" href="#t860">860</a></span><span class="t">    <span class="nam">actual</span> <span class="op">=</span> <span class="nam">serializer</span><span class="op">.</span><span class="nam">dumps</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t861" href="#t861">861</a></span><span class="t">        <span class="op">{</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t862" href="#t862">862</a></span><span class="t">            <span class="str">"ranks"</span><span class="op">:</span> <span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t863" href="#t863">863</a></span><span class="t">                <span class="op">{</span><span class="str">"name"</span><span class="op">:</span> <span class="str">"abc"</span><span class="op">,</span> <span class="str">"score"</span><span class="op">:</span> <span class="num">3.4</span><span class="op">}</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t864" href="#t864">864</a></span><span class="t">                <span class="op">{</span><span class="str">"name"</span><span class="op">:</span> <span class="str">"def"</span><span class="op">,</span> <span class="str">"score"</span><span class="op">:</span> <span class="num">1.0</span><span class="op">}</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t865" href="#t865">865</a></span><span class="t">                <span class="op">{</span><span class="str">"name"</span><span class="op">:</span> <span class="str">"ghi"</span><span class="op">,</span> <span class="str">"score"</span><span class="op">:</span> <span class="num">5</span><span class="op">}</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t866" href="#t866">866</a></span><span class="t">            <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t867" href="#t867">867</a></span><span class="t">        <span class="op">}</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t868" href="#t868">868</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t869" href="#t869">869</a></span><span class="t">    <span class="nam">data</span> <span class="op">=</span> <span class="nam">json</span><span class="op">.</span><span class="nam">loads</span><span class="op">(</span><span class="nam">actual</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t870" href="#t870">870</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t871" href="#t871">871</a></span><span class="t">    <span class="key">assert</span> <span class="nam">data</span><span class="op">[</span><span class="str">"ranks"</span><span class="op">]</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">[</span><span class="str">"score"</span><span class="op">]</span> <span class="op">==</span> <span class="str">"3.4"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t872" href="#t872">872</a></span><span class="t">    <span class="key">assert</span> <span class="nam">data</span><span class="op">[</span><span class="str">"ranks"</span><span class="op">]</span><span class="op">[</span><span class="num">1</span><span class="op">]</span><span class="op">[</span><span class="str">"score"</span><span class="op">]</span> <span class="op">==</span> <span class="str">"1.0"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t873" href="#t873">873</a></span><span class="t">    <span class="key">assert</span> <span class="nam">data</span><span class="op">[</span><span class="str">"ranks"</span><span class="op">]</span><span class="op">[</span><span class="num">2</span><span class="op">]</span><span class="op">[</span><span class="str">"score"</span><span class="op">]</span> <span class="op">==</span> <span class="num">5</span>  <span class="com"># int stays as int</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
     <div class="content">
@@ -934,7 +964,7 @@
             <a class="nav" href="z_19aebbbda2eb252a_test_exclude_field_attributes_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.1">coverage.py v7.13.1</a>,
-            created at 2026-02-22 02:58 +0000
+            created at 2026-02-22 03:00 +0000
         </p>
     </div>
 </footer>
