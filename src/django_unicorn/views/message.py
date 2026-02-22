@@ -6,6 +6,7 @@ from django.core.cache import caches
 from django.forms import ValidationError
 from django.http import HttpRequest
 
+from django_unicorn.cacher import cache_full_tree
 from django_unicorn.components import UnicornView
 from django_unicorn.components.unicorn_template_response import get_root_element
 from django_unicorn.errors import RenderNotModifiedError, UnicornViewError
@@ -209,6 +210,11 @@ class UnicornMessageHandler:
 
         # Queued messages handling
         self._handle_queued_messages(component, return_data)
+
+        # Persist any child component state changes to cache before rendering.
+        # Without this, template tags that re-create child components from cache
+        # would retrieve stale state, ignoring changes made by the parent method.
+        cache_full_tree(component)
 
         # Render
         rendered_component = component.render(request=self.request, epoch=component_request.epoch)

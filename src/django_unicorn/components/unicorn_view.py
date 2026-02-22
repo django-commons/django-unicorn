@@ -938,6 +938,16 @@ class Component(TemplateView):
             cached_component.component_args = component_args
             cached_component.component_kwargs = kwargs
 
+            # Update self.parent to the exact in-memory parent being rendered now.
+            # restore_from_cache() sets self.parent to a *copy* restored from the
+            # Django cache.  That copy has correct data (thanks to cache_full_tree
+            # being called in _process_request before rendering), but it is a
+            # different Python object.  Pointing self.parent at the live parent
+            # object means child methods/templates always see current state even for
+            # changes that happen during the same rendering pass (issue #685).
+            if parent is not None:
+                cached_component.parent = parent
+
             # TODO: How should args be handled?
             # Set kwargs onto the cached component
             for key, value in kwargs.items():
