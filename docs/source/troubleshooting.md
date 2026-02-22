@@ -25,29 +25,30 @@ Because Unicorn communicates via AJAX, an unauthenticated user on a public page
 will see a token or parse error in the browser console (the endpoint received a
 redirect instead of the expected JSON response).
 
-**Fix: mark the component as public with `login_not_required = True`.**
+**Fix: mark the component as public via `Meta.login_not_required = True`.**
 
 ```python
 # newsletter_signup.py
 from django_unicorn.components import UnicornView
 
 class NewsletterSignupView(UnicornView):
-    login_not_required = True  # allow unauthenticated users
-
     email = ""
+
+    class Meta:
+        login_not_required = True  # allow unauthenticated users
 
     def subscribe(self):
         ...
 ```
 
-Unicorn checks this attribute at request time and returns a `401` JSON response
+Unicorn checks this flag at request time and returns a `401` JSON response
 (instead of a redirect) for any component that does *not* set
-`login_not_required = True` when the middleware is active and the user is not
-authenticated. Components that require login can leave the attribute unset and
+`Meta.login_not_required = True` when the middleware is active and the user is not
+authenticated. Components that require login can omit the `Meta` flag entirely and
 rely on the default protected behaviour.
 
 ```{note}
-`login_not_required` has no effect on Django versions older than 5.1 because
+`Meta.login_not_required` has no effect on Django versions older than 5.1 because
 `LoginRequiredMiddleware` was not available before that release.
 ```
 
