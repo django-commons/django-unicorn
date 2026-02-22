@@ -76,8 +76,11 @@ export function componentInit(args) {
 
 /**
  * Initialize the component from the DOM element if it hasn't been initialized yet.
+ * If the component already exists, update its data and checksum if the server has
+ * changed them (detected by a different checksum in unicorn:meta).
  *
- * Used to populate the components object with fresh components, created by the server.
+ * Used to populate the components object with fresh components, created by the server,
+ * and to sync child component state when a parent method modifies children.
  *
  * @param {Object} node The node to check for initialization.
  */
@@ -115,6 +118,31 @@ export function insertComponentFromDom(node) {
     };
 
     componentInit(args);
+  } else {
+    // The component already exists in the store. If the server has updated this
+    // component's state (e.g. a parent method modified it), the DOM will have a
+    // different checksum in unicorn:meta. In that case, sync the JS component's
+    // data so the next request doesn't send stale data that overwrites the update.
+    const fullMeta = node.getAttribute("unicorn:meta");
+    if (fullMeta) {
+      const parts = fullMeta.split(":");
+      const newChecksum = parts[0];
+
+      if (newChecksum && newChecksum !== components[nodeId].checksum) {
+        const newDataAttr = node.getAttribute("unicorn:data");
+        if (newDataAttr) {
+          components[nodeId].data = JSON.parse(newDataAttr);
+        }
+        components[nodeId].checksum = newChecksum;
+        if (parts.length > 1) {
+          components[nodeId].hash = parts[1];
+        }
+        if (parts.length > 2) {
+          components[nodeId].epoch = parts[2];
+        }
+        components[nodeId].setModelValues();
+      }
+    }
   }
 }
 
