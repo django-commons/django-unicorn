@@ -1,12 +1,13 @@
-
 import pytest
+from tests.views.message.utils import post_and_get_response
+
 from django_unicorn.components import UnicornView
 from example.coffee.models import Flavor
-from tests.views.message.utils import post_and_get_response
+
 
 class TestIssue732View(UnicornView):
     template_name = "templates/test_component.html"
-    flavor: Flavor = None
+    flavor: Flavor | None = None
 
     def mount(self):
         pass
@@ -15,7 +16,11 @@ class TestIssue732View(UnicornView):
         self.flavor = Flavor.objects.get(pk=flavor_id)
 
     def save(self):
+        if self.flavor is None:
+            return
+
         self.flavor.save()
+
 
 @pytest.mark.django_db
 def test_fk_loading(client):
@@ -35,14 +40,14 @@ def test_fk_loading(client):
         url="/message/tests.views.test_fk_loading.TestIssue732View",
         action_queue=action_queue,
     )
-    
+
     assert not response.get("error")
     data = response["data"]
-    
+
     # Verify flavor is in data
     assert "flavor" in data
     assert data["flavor"]["pk"] == child_flavor.pk
-    
+
     # 2. Execute 'save' with the returned data
     action_queue = [
         {
@@ -50,7 +55,7 @@ def test_fk_loading(client):
             "type": "callMethod",
         }
     ]
-    
+
     # This is where it should fail without the fix
     response = post_and_get_response(
         client,
@@ -60,6 +65,6 @@ def test_fk_loading(client):
     )
 
     if "error" in response:
-        print(f"Error: {response['error']}")
-    
+        print(f"Error: {response['error']}")  # noqa: T201
+
     assert not response.get("error")
