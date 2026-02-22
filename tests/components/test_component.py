@@ -4,11 +4,13 @@ import orjson
 import pytest
 from tests.views.fake_components import (
     FakeAuthenticationComponent,
+    FakeFormClassesComponent,
     FakeValidationComponent,
 )
 
 from django_unicorn.components import UnicornView
 from django_unicorn.serializer import InvalidFieldNameError
+from example.books.models import Book
 
 
 class ExampleComponent(UnicornView):
@@ -345,3 +347,69 @@ def test_get_frontend_context_variables_authentication_form(component):
     )
 
     component.get_frontend_context_variables()
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# form_classes tests
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+def test_form_classes_validate_all_fields_with_empty_object():
+    """
+    When a component has ``form_classes = {"book": BookForm}`` and the book has no
+    title or date_published, calling ``validate()`` should populate errors for
+    both ``book.title`` and ``book.date_published``.
+    """
+
+    component = FakeFormClassesComponent(component_id="test_form_classes_validate_all", component_name="example")
+
+    errors = component.validate()
+
+    assert "book.title" in errors
+    assert errors["book.title"][0]["code"] == "required"
+    assert "book.date_published" in errors
+    assert errors["book.date_published"][0]["code"] == "required"
+
+
+def test_form_classes_validate_model_names_filtered():
+    """
+    When ``model_names`` is specified, only the requested dotted keys should
+    appear in the errors dict.
+    """
+
+    component = FakeFormClassesComponent(component_id="test_form_classes_filtered", component_name="example")
+
+    errors = component.validate(model_names=["book.title"])
+
+    assert "book.title" in errors
+    assert "book.date_published" not in errors
+
+
+def test_form_classes_is_valid_with_empty_object():
+    """``is_valid()`` should return ``False`` when required object fields are missing."""
+
+    component = FakeFormClassesComponent(component_id="test_form_classes_is_valid_false", component_name="example")
+
+    assert component.is_valid() is False
+
+
+def test_form_classes_validate_stale_errors_removed():
+    """
+    Errors for an object field that has since become valid should be removed on
+    the next ``validate()`` call.
+    """
+
+    component = FakeFormClassesComponent(component_id="test_form_classes_stale_errors", component_name="example")
+
+    # First validate with empty object — both fields should error.
+    component.validate()
+    assert "book.title" in component.errors
+
+    # Simulate the user filling in the object; reset the flag and fix the object.
+    component._validate_called = False
+    component.book = Book(title="My Book", date_published="2024-01-01")
+
+    errors = component.validate()
+
+    assert "book.title" not in errors
+    assert "book.date_published" not in errors

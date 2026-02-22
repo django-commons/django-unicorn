@@ -11,6 +11,7 @@ import shortuuid
 from django.apps import apps as django_apps_module
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.db.models import Model
+from django.forms.models import model_to_dict  # lazy import
 from django.forms.widgets import CheckboxInput, Select
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.utils.decorators import classonlymethod
@@ -570,6 +571,55 @@ class Component(TemplateView):
                 logger.exception(e)
 
     @timed
+    def _get_object_forms(self) -> dict:
+        """
+        Builds a dict of ``{field_name: form}`` for every entry in ``form_classes``.
+
+        For each ``(field_name, form_class)`` pair the component attribute named
+        ``field_name`` is read.  Its fields are extracted as a flat dict and used
+        as the form's ``data`` argument.  ``form.is_valid()`` is called so that
+        ``form.errors`` is populated.
+
+        Returns an empty dict when ``form_classes`` is not set.
+        """
+        if not hasattr(self, "form_classes"):
+            return {}
+
+        result = {}
+        for field_name, form_cls in cast(dict, self.form_classes).items():
+            obj = getattr(self, field_name, None)
+            if obj is None:
+                form_data = {}
+            elif isinstance(obj, Model):
+                # Use model-to-dict so we get plain Python values
+
+                form_data = model_to_dict(obj)
+                # model_to_dict skips non-editable fields; also include raw attribute values
+                # for any field declared on the form that is missing from model_to_dict output.
+                try:
+                    form_instance = form_cls()
+                    for form_field_name in form_instance.fields:
+                        if form_field_name not in form_data:
+                            form_data[form_field_name] = getattr(obj, form_field_name, None)
+                except Exception:  # noqa: S110
+                    pass
+            elif isinstance(obj, dict):
+                form_data = obj
+            elif hasattr(obj, "__dict__"):
+                form_data = {k: v for k, v in vars(obj).items() if not k.startswith("_")}
+            else:
+                form_data = {}
+
+            try:
+                form = cast(Callable, form_cls)(data=form_data)
+                form.is_valid()
+                result[field_name] = form
+            except Exception as e:
+                logger.exception(e)
+
+        return result
+
+    @timed
     def get_context_data(self, **kwargs):
         """
         Overrides the standard `get_context_data` to add in publicly available
@@ -602,10 +652,12 @@ class Component(TemplateView):
     @timed
     def validate(self, model_names: list | None = None) -> dict:
         """
-        Validates the data using the `form_class` set on the component.
+        Validates the data using the ``form_class`` or ``form_classes`` set on the component.
 
         Args:
-            model_names: Only include validation errors for specified fields. If none, validate everything.
+            model_names: Only include validation errors for specified fields. If none,
+                validate everything.  For object fields, pass the dotted path
+                (e.g. ``["book.title"]``).
         """
         # TODO: Handle form.non_field_errors()?
 
@@ -614,6 +666,7 @@ class Component(TemplateView):
 
         self._validate_called = True
 
+        # ── Original form_class path ────────────────────────────────────────
         data = self._attributes()
         form = self._get_form(data)
 
@@ -644,7 +697,41 @@ class Component(TemplateView):
             else:
                 self.errors.update(form_errors)
 
+        # ── form_classes path ────────────────────────────────────────────────
+        self._validate_object_forms(model_names)
+
         return self.errors
+
+    @timed
+    def _validate_object_forms(self, model_names: list | None = None) -> None:
+        """
+        Validates object fields using ``form_classes`` and merges dotted-path
+        errors (e.g. ``"book.title"``) into ``self.errors``.
+
+        Called by :meth:`validate`; split out for readability.
+        """
+        object_forms = self._get_object_forms()
+
+        for field_name, obj_form in object_forms.items():
+            # Re-map each sub-form error key to its dotted path, e.g.
+            # "title" → "book.title" when field_name == "book".
+            obj_form_errors = obj_form.errors.get_json_data(escape_html=True)
+            dotted_errors = {f"{field_name}.{sub_key}": sub_errors for sub_key, sub_errors in obj_form_errors.items()}
+
+            # Apply the same "persist only errors that are still invalid" logic.
+            if self.errors:
+                keys_to_remove = [
+                    key for key in self.errors if key.startswith(f"{field_name}.") and key not in dotted_errors
+                ]
+                for key in keys_to_remove:
+                    self.errors.pop(key)
+
+            if model_names is not None:
+                for key, value in dotted_errors.items():
+                    if key in model_names or any(key.startswith(f"{name}.") for name in model_names):
+                        self.errors[key] = value
+            else:
+                self.errors.update(dotted_errors)
 
     @timed
     def _attribute_names(self) -> list[str]:
@@ -852,6 +939,9 @@ class Component(TemplateView):
             "resolved",
             "calling",
             "called",
+            # Form validation configuration (server-side only, not synced to frontend)
+            "form_class",
+            "form_classes",
         )
         excludes = []
 

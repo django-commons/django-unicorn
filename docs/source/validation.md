@@ -146,7 +146,74 @@ There is a `unicorn_errors` template tag that shows all errors for the component
 </div>
 ```
 
+## Validating object fields with `form_classes`
+
+When a component attribute is itself an object — such as a Django Model instance — you can
+use `form_classes` instead of `form_class`.  `form_classes` is a dictionary that maps each
+object field name on the component to a form class that describes how to validate that object's
+sub-fields.
+
+This enables validation of dotted `unicorn:model` paths like `book.title` and surfaces errors
+under the same dotted key (e.g. `book.title`) in `unicorn.errors`.
+
+```python
+# book_component.py
+from django import forms
+from django_unicorn.components import UnicornView
+from .models import Book
+
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ("title", "date_published")
+
+class BookView(UnicornView):
+    form_classes = {"book": BookForm}
+
+    book: Book = None
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if self.book is None:
+            self.book = Book()
+
+    def save(self):
+        if self.is_valid():
+            self.book.save()
+```
+
+```html
+<!-- book-component.html -->
+<div>
+  <input unicorn:model="book.title" type="text" id="title" /><br />
+  <span class="error">{{ unicorn.errors.book.title.0.message }}</span>
+
+  <input unicorn:model="book.date_published" type="text" id="date-published" /><br />
+  <span class="error">{{ unicorn.errors.book.date_published.0.message }}</span>
+
+  <button unicorn:click="save">Save</button>
+</div>
+```
+
+```{note}
+`is_valid()` and `self.validate()` work exactly the same as with `form_class`.
+You can also pass only the dotted names you care about:
+``self.validate(model_names=["book.title"])`` to check a single sub-field.
+```
+
+```{note}
+You can define entries in `form_classes` for multiple object fields at once:
+
+```python
+form_classes = {
+    "book": BookForm,
+    "author": AuthorForm,
+}
+```
+```
+
 ## ValidationError
+
 
 If you do not want to create a form class or you want to specifically target a nested field you can raise a `ValidationError` inside of an action method. The `ValidationError` can be instantiated with a `dict` with the model name as the key and error message as the value. A `code` keyword argument must also be passed in. The typical error codes used are `required` or `invalid`.
 
