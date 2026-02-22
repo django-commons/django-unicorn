@@ -313,15 +313,17 @@ def test_message_call_method_module_cache_disabled(client, monkeypatch, settings
 
     assert method_count == 1
 
-    # Get the component again and it should be found in local memory cache
+    # Get the component again; it should be found in the Django LocMemCache
     view = UnicornView.create(
         component_name="tests.views.fake_components.FakeComponent",
         component_id=component_id,
         use_cache=True,
     )
 
-    # Component is retrieved from the local memory cache
-    assert view.method_count == 0
+    # Component is retrieved from the Django cache with the post-method state.
+    # cache_full_tree() is called before rendering in _process_request, so the
+    # Django cache always reflects the state after the method ran (method_count=1).
+    assert view.method_count == 1
 
 
 def test_message_call_method_cache_backend_dummy(client, monkeypatch, settings):
