@@ -2,13 +2,14 @@ import copy
 import logging
 
 import orjson
+from django.conf import settings
 from django.core.cache import caches
 from django.forms import ValidationError
 from django.http import HttpRequest
 
 from django_unicorn.components import UnicornView
 from django_unicorn.components.unicorn_template_response import get_root_element
-from django_unicorn.errors import RenderNotModifiedError, UnicornViewError
+from django_unicorn.errors import RenderNotModifiedError, UnicornAuthenticationError, UnicornViewError
 from django_unicorn.settings import get_cache_alias, get_serial_enabled, get_serial_timeout
 from django_unicorn.utils import html_element_to_string
 from django_unicorn.views.action import Action, CallMethod, Refresh, Reset, SyncInput, Toggle
@@ -116,6 +117,18 @@ class UnicornMessageHandler:
             component_name=component_request.name,
             request=self.request,
         )
+
+        # Enforce authentication for components that have not opted into public access,
+        # but only when `LoginRequiredMiddleware` is actually enabled in MIDDLEWARE.
+        # If the middleware is not configured this check is irrelevant and is skipped
+        # entirely to avoid any performance or compatibility overhead.
+        login_required_middleware = "django.contrib.auth.middleware.LoginRequiredMiddleware"
+        if login_required_middleware in getattr(settings, "MIDDLEWARE", []):
+            user = getattr(self.request, "user", None)
+            if user is not None and not getattr(user, "is_authenticated", True):
+                meta = getattr(component, "Meta", None)
+                if not (meta is not None and getattr(meta, "login_not_required", False)):
+                    raise UnicornAuthenticationError("Authentication required")
 
         # Make sure that there is always a request on the component if needed
         if component.request is None:

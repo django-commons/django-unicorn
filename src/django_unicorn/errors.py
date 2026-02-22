@@ -2,6 +2,10 @@ class UnicornCacheError(Exception):
     pass
 
 
+class UnicornAuthenticationError(Exception):
+    pass
+
+
 class UnicornViewError(Exception):
     pass
 

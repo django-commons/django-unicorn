@@ -20,10 +20,11 @@ class BookForm(forms.Form):
     publish_date = forms.DateField(required=True)
 
 class BookView(UnicornView):
-    form_class = BookForm
-
     title = ""
     publish_date = ""
+
+    class Meta:
+        form_class = BookForm
 ```
 
 ```html
@@ -35,7 +36,11 @@ class BookView(UnicornView):
 </div>
 ```
 
-Because of the `form_class = BookForm` defined on the `UnicornView` above, `Unicorn` will automatically validate that the title has a value and is less than 100 characters. The `publish_date` will also be converted into a `datetime` from the string representation in the text input.
+Because of the `Meta.form_class = BookForm` defined on the `UnicornView` above, `Unicorn` will automatically validate that the title has a value and is less than 100 characters. The `publish_date` will also be converted into a `datetime` from the string representation in the text input.
+
+```{note}
+Setting `form_class` directly as a class attribute also works and is supported for backwards compatibility.
+```
 
 ### Validate the entire component
 
@@ -60,9 +65,10 @@ class BookForm(forms.Form):
     title = forms.CharField(max_length=6, required=True)
 
 class BookView(UnicornView):
-    form_class = BookForm
-
     text = "hello"
+
+    class Meta:
+        form_class = BookForm
 
     def set_text(self):
         self.text = "hello world"
@@ -80,9 +86,10 @@ class BookForm(forms.Form):
     title = forms.CharField(max_length=6, required=True)
 
 class BookView(UnicornView):
-    form_class = BookForm
-
     text = "hello"
+
+    class Meta:
+        form_class = BookForm
 
     def set_text(self):
         if self.is_valid():

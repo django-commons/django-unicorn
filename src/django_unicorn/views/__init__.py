@@ -1,13 +1,24 @@
 import logging
 from functools import wraps
 
+try:
+    # Django 5.1+ — exempts the message endpoint from LoginRequiredMiddleware
+    # so AJAX calls from public pages reach it. Per-component access control
+    # is enforced in UnicornMessageHandler via `Meta.login_not_required`.
+    from django.contrib.auth.decorators import login_not_required
+except ImportError:
+    # Django < 5.1 — LoginRequiredMiddleware does not exist, nothing to do.
+    def login_not_required(func):  # type: ignore[misc]
+        return func
+
+
 from django.http import HttpRequest, JsonResponse
 from django.http.response import HttpResponseNotModified
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 
 from django_unicorn.decorators import timed
-from django_unicorn.errors import RenderNotModifiedError, UnicornViewError
+from django_unicorn.errors import RenderNotModifiedError, UnicornAuthenticationError, UnicornViewError
 from django_unicorn.views.message import UnicornMessageHandler
 from django_unicorn.views.request import ComponentRequest
 
@@ -23,6 +34,8 @@ def handle_error(view_func):
     def wrapped_view(*args, **kwargs):
         try:
             return view_func(*args, **kwargs)
+        except UnicornAuthenticationError as e:
+            return JsonResponse({"error": str(e)}, status=401)
         except UnicornViewError as e:
             return JsonResponse({"error": str(e)})
         except RenderNotModifiedError:
@@ -38,6 +51,7 @@ def handle_error(view_func):
 @ensure_csrf_cookie
 @csrf_protect  # type: ignore
 @require_POST  # type: ignore
+@login_not_required
 def message(request: HttpRequest, component_name: str | None = None) -> JsonResponse:  # type: ignore
     """
     Endpoint that instantiates the component and does the correct action
