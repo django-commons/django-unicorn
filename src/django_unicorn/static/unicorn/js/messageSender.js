@@ -170,6 +170,10 @@ export function send(component, callback) {
         const parts = meta.split(":");
         component.checksum = parts[0];
         component.hash = parts[1];
+
+        if (parts.length > 2) {
+          component.epoch = parts[2];
+        }
       } else {
         component.checksum = meta;
         component.hash = responseJson.hash;
@@ -221,15 +225,24 @@ export function send(component, callback) {
           }
 
           if (parent.meta) {
-            let parentChecksum = parent.meta;
+            const parentMeta = parent.meta;
 
-            if (parentChecksum.indexOf(":") > -1) {
-              parentChecksum = parentChecksum.split(":")[0];
+            if (parentMeta.indexOf(":") > -1) {
+              const parts = parentMeta.split(":");
+              parentComponent.checksum = parts[0];
+              parentComponent.hash = parts[1];
+
+              if (parts.length > 2) {
+                parentComponent.epoch = parts[2];
+              }
+            } else {
+              parentComponent.checksum = parentMeta;
             }
 
-            parentComponent.root.setAttribute("unicorn:meta", parentChecksum);
-
-            parentComponent.refreshMeta();
+            parentComponent.root.setAttribute(
+              "unicorn:meta",
+              parentComponent.checksum
+            );
           }
 
           // Set parent component hash
@@ -271,7 +284,6 @@ export function send(component, callback) {
 
         if (meta) {
           component.root.setAttribute("unicorn:meta", component.checksum);
-          component.refreshMeta();
         }
       } else if (rerenderedComponent) {
         component.morphRoot(rerenderedComponent);
