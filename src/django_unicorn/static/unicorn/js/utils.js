@@ -104,7 +104,7 @@ export const FilterAny = {
  */
 export const FilterSkipNested = {
   acceptNode: (node) => {
-    if (node.getAttribute("unicorn:checksum")) {
+    if (node.getAttribute("unicorn:meta")) {
       // with a tree walker, child nodes are also rejected
       return NodeFilter.FILTER_REJECT;
     }

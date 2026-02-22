@@ -24,13 +24,12 @@ export function send(component, callback) {
   component.currentActionQueue = component.actionQueue;
   component.actionQueue = [];
 
+  const epoch = Date.now();
   const body = {
     id: component.id,
     data: component.data,
-    checksum: component.checksum,
+    meta: `${component.checksum}:${component.hash}:${epoch}`,
     actionQueue: component.currentActionQueue,
-    epoch: Date.now(),
-    hash: component.hash,
   };
 
   const headers = {
@@ -87,9 +86,20 @@ export function send(component, callback) {
         return;
       }
 
-      if (responseJson.epoch) {
-        if (responseJson.epoch > component.latestActionEpoch) {
-          component.latestActionEpoch = responseJson.epoch;
+      let { meta } = responseJson;
+      let { epoch } = responseJson;
+
+      if (meta && meta.indexOf(":") > -1) {
+        const parts = meta.split(":");
+
+        if (parts.length > 2) {
+          epoch = parts[2];
+        }
+      }
+
+      if (epoch) {
+        if (epoch > component.latestActionEpoch) {
+          component.latestActionEpoch = epoch;
         } else {
           return;
         }
@@ -151,12 +161,20 @@ export function send(component, callback) {
 
       component.errors = responseJson.errors || {};
       component.return = responseJson.return || {};
-      component.hash = responseJson.hash;
 
       let parent = responseJson.parent || {};
       const rerenderedComponent = responseJson.dom || "";
       const partials = responseJson.partials || [];
-      const { checksum } = responseJson;
+      const { meta } = responseJson;
+
+      if (meta && meta.indexOf(":") > -1) {
+        const parts = meta.split(":");
+        component.checksum = parts[0];
+        component.hash = parts[1];
+      } else {
+        component.checksum = meta;
+        component.hash = responseJson.hash;
+      }
 
       // Handle poll
       const poll = responseJson.poll || {};
@@ -203,13 +221,16 @@ export function send(component, callback) {
             });
           }
 
-          if (parent.checksum) {
-            parentComponent.root.setAttribute(
-              "unicorn:checksum",
-              parent.checksum
-            );
+          if (parent.meta) {
+            let parentChecksum = parent.meta;
 
-            parentComponent.refreshChecksum();
+            if (parentChecksum.indexOf(":") > -1) {
+              parentChecksum = parentChecksum.split(":")[0];
+            }
+
+            parentComponent.root.setAttribute("unicorn:meta", parentChecksum);
+
+            parentComponent.refreshMeta();
           }
 
           // Set parent component hash
@@ -249,9 +270,9 @@ export function send(component, callback) {
           }
         }
 
-        if (checksum) {
-          component.root.setAttribute("unicorn:checksum", checksum);
-          component.refreshChecksum();
+        if (meta) {
+          component.root.setAttribute("unicorn:meta", component.checksum);
+          component.refreshMeta();
         }
       } else if (rerenderedComponent) {
         component.morphRoot(rerenderedComponent);
