@@ -154,6 +154,13 @@ export function send(component, callback) {
         element.handleDirty(true);
       });
 
+      // Revert any separate dirty elements (u:dirty without u:model) that
+      // target a model input.  These are not in modelEls so they need to be
+      // reset explicitly after the server has synced state.
+      component.dirtyEls.forEach((dirtyElement) => {
+        dirtyElement.handleDirty(true);
+      });
+
       // Merge the data from the response into the component's data
       Object.keys(responseJson.data || {}).forEach((key) => {
         component.data[key] = responseJson.data[key];
