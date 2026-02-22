@@ -174,6 +174,7 @@ export class Component {
     this.actionEvents = {};
     this.modelEls = [];
     this.loadingEls = [];
+    this.dirtyEls = [];
     this.visibilityEls = [];
 
     try {
@@ -210,6 +211,14 @@ export class Component {
               if (element.loading.show) {
                 element.hide();
               }
+            }
+
+            // Collect elements that carry u:dirty but no u:model so that
+            // handleDirty() can apply/revert their state when a targeted
+            // model input changes.  An element can be in both dirtyEls and
+            // loadingEls if it has both attributes.
+            if (!hasValue(element.model) && hasValue(element.dirty)) {
+              this.dirtyEls.push(element);
             }
 
             if (hasValue(element.key)) {

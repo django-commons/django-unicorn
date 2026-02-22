@@ -80,6 +80,49 @@ export function handleLoading(component, targetElement) {
 }
 
 /**
+ * Handles dirty elements in the component that target a model input element.
+ *
+ * Elements with `u:dirty` (and no `u:model`) are collected into
+ * `component.dirtyEls`.  When a model input changes, this function applies or
+ * reverts the dirty state on every dirty element whose `u:target` matches the
+ * triggering model element.
+ *
+ * Untargeted dirty elements (no `u:target`) are always dirtied on any model
+ * change, but are only cleared after a server response (via messageSender).
+ *
+ * @param {Component} component       Component.
+ * @param {Element}   modelElement    The model Element that changed.
+ * @param {boolean}   revert          Pass `true` to revert the dirty state.
+ */
+export function handleDirty(component, modelElement, revert) {
+  component.dirtyEls.forEach((dirtyElement) => {
+    if (dirtyElement.target) {
+      // Targeted: apply/revert only when the triggering model element
+      // matches the specified target (looked up by id then by unicorn:key).
+      let targetedEl = $(`#${dirtyElement.target}`, component.root);
+
+      if (!targetedEl) {
+        component.keyEls.forEach((keyElement) => {
+          if (!targetedEl && keyElement.key === dirtyElement.target) {
+            targetedEl = keyElement.el;
+          }
+        });
+      }
+
+      if (targetedEl && modelElement.el.isSameNode(targetedEl)) {
+        dirtyElement.handleDirty(revert);
+      }
+    } else {
+      // Untargeted: become dirty on any model change.  Do not auto-revert
+      // during editing — the element is only cleared after a server response.
+      if (!revert) {
+        dirtyElement.handleDirty(false);
+      }
+    }
+  });
+}
+
+/**
  * Parse arguments and deal with nested data.
  *
  * // <button u:click="test($returnValue.hello.trim())">Test</button>
@@ -268,8 +311,10 @@ export function addModelEventListener(component, element, eventType) {
     if (component.data[element.model.name] !== element.getValue()) {
       isDirty = true;
       element.handleDirty();
+      handleDirty(component, element);
     } else {
       element.handleDirty(true);
+      handleDirty(component, element, true);
     }
 
     if (element.model.isLazy) {
