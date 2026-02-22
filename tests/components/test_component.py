@@ -5,6 +5,7 @@ import pytest
 from tests.views.fake_components import (
     FakeAuthenticationComponent,
     FakeValidationComponent,
+    FakeValidationForm,
 )
 
 from django_unicorn.components import UnicornView
@@ -377,7 +378,7 @@ def test_meta_template_name_invalid_type():
         class Meta:
             template_name = 123
 
-    with pytest.raises(AssertionError, match="Meta.template_name should be a str"):
+    with pytest.raises(AssertionError, match=r"Meta\.template_name should be a str"):
         TestComponent(component_id="test_meta_template_name_invalid", component_name="test")
 
 
@@ -398,9 +399,9 @@ def test_meta_template_html():
 def test_meta_template_html_invalid_type():
     class TestComponent(UnicornView):
         class Meta:
-            template_html = ["<div>oops</div>"]
+            template_html = 123
 
-    with pytest.raises(AssertionError, match="Meta.template_html should be a str"):
+    with pytest.raises(AssertionError, match=r"Meta\.template_html should be a str"):
         TestComponent(component_id="test_meta_template_html_invalid", component_name="test")
 
 
@@ -414,9 +415,7 @@ def test_meta_component_key_used_as_default():
         class Meta:
             component_key = "default-key"
 
-    component = TestComponent(
-        component_id="test_meta_component_key", component_name="test", component_key=""
-    )
+    component = TestComponent(component_id="test_meta_component_key", component_name="test", component_key="")
     assert component.component_key == "default-key"
 
 
@@ -442,7 +441,7 @@ def test_meta_component_key_invalid_type():
         class Meta:
             component_key = 42
 
-    with pytest.raises(AssertionError, match="Meta.component_key should be a str"):
+    with pytest.raises(AssertionError, match=r"Meta\.component_key should be a str"):
         TestComponent(component_id="test_meta_component_key_invalid", component_name="test")
 
 
@@ -450,8 +449,6 @@ def test_meta_component_key_invalid_type():
 
 
 def test_meta_form_class_validates():
-    from tests.views.fake_components import FakeValidationForm
-
     class TestComponent(UnicornView):
         template_name = "unicorn/test.html"
         text = "hi"
@@ -470,11 +467,6 @@ def test_meta_form_class_validates():
 
 def test_meta_form_class_not_in_frontend_context():
     """form_class must never appear in the component's public attributes."""
-    from tests.views.fake_components import FakeValidationComponent
 
-    component = FakeValidationComponent(
-        component_id="test_form_class_not_in_context", component_name="example"
-    )
+    component = FakeValidationComponent(component_id="test_form_class_not_in_context", component_name="example")
     assert "form_class" not in component._attributes()
-
-

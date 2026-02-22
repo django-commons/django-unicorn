@@ -232,7 +232,7 @@ class Component(TemplateView):
         # Apply Meta.component_key as a class-level default when the template
         # tag has not provided a key (i.e. self.component_key is still empty).
         if not self.component_key and hasattr(self, "Meta") and hasattr(self.Meta, "component_key"):
-            self.component_key = self.Meta.component_key
+            self.component_key = cast(str, self.Meta.component_key)
 
         self._set_default_template_name()
         self._set_caches()
