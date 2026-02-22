@@ -119,7 +119,7 @@ def parse_kwarg(kwarg: str, *, raise_if_unparseable=False) -> dict[str, Any]:
                 # context when the templatetag is rendered, so just return the expr
                 # as a string.
                 value = _get_expr_string(assign.value)
-                return {target.id: value}  # type: ignore
+                return {key: value}  # type: ignore
         else:
             raise InvalidKwargError(f"'{kwarg}' is invalid")
     except SyntaxError as e:
