@@ -68,7 +68,7 @@ def _build_handler(component_name: str, user) -> tuple:
     payload = {
         "actionQueue": [],
         "data": data,
-        "checksum": generate_checksum(data),
+        "meta": generate_checksum(data),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
         "hash": None,
