@@ -20,7 +20,7 @@
 | src/django\_unicorn/components/fields.py                             |        3 |        1 |        0 |        0 |     67% |         7 |
 | src/django\_unicorn/components/mixins.py                             |        7 |        1 |        2 |        1 |     78% |        15 |
 | src/django\_unicorn/components/unicorn\_template\_response.py        |      150 |       11 |       66 |        9 |     91% |74, 89, 93, 120-122, 140, 186, 195, 201, 208-209, 220->222, 267->271, 300->303 |
-| src/django\_unicorn/components/unicorn\_view.py                      |      479 |       41 |      194 |       23 |     89% |104->107, 205, 245-246, 275, 278->exit, 281, 284, 291->296, 293->292, 298->296, 314-326, 370, 435->438, 445->448, 461-463, 491-492, 508->523, 527->526, 568-569, 599, 628-637, 642, 702->705, 725-726, 778->773, 781-783, 904, 906, 943-944, 1037->1040, 1040->1048 |
+| src/django\_unicorn/components/unicorn\_view.py                      |      479 |       41 |      194 |       23 |     89% |104->107, 204, 244-245, 274, 277->exit, 280, 283, 290->295, 292->291, 297->295, 313-325, 369, 434->437, 444->447, 460-462, 490-491, 507->522, 526->525, 567-568, 598, 627-636, 641, 701->704, 724-725, 777->772, 780-782, 903, 905, 942-943, 1036->1039, 1039->1047 |
 | src/django\_unicorn/components/updaters.py                           |       18 |        0 |        0 |        0 |    100% |           |
 | src/django\_unicorn/decorators.py                                    |       25 |        0 |       10 |        1 |     97% |    35->38 |
 | src/django\_unicorn/errors.py                                        |       24 |        0 |        0 |        0 |    100% |           |
@@ -43,7 +43,7 @@
 | src/django\_unicorn/views/objects.py                                 |       92 |       46 |       32 |        0 |     47% |19-22, 25, 29-35, 44-79, 82, 94-104, 158-161 |
 | src/django\_unicorn/views/request.py                                 |       59 |        4 |       26 |        3 |     92% |43, 47, 83, 86 |
 | src/django\_unicorn/views/response.py                                |       77 |       23 |       32 |        1 |     67% |   130-182 |
-| src/django\_unicorn/views/utils.py                                   |       82 |        5 |       42 |        4 |     93% |18-19, 69->exit, 86, 90-92, 138->143, 139->138 |
+| src/django\_unicorn/views/utils.py                                   |       83 |        5 |       44 |        5 |     92% |18-19, 56->59, 70->exit, 87, 91-93, 139->144, 140->139 |
 | tests/\_\_init\_\_.py                                                |        0 |        0 |        0 |        0 |    100% |           |
 | tests/benchmarks/\_\_init\_\_.py                                     |        0 |        0 |        0 |        0 |    100% |           |
 | tests/benchmarks/serializer/\_\_init\_\_.py                          |        0 |        0 |        0 |        0 |    100% |           |
@@ -69,7 +69,7 @@
 | tests/management/commands/\_\_init\_\_.py                            |        0 |        0 |        0 |        0 |    100% |           |
 | tests/management/commands/startunicorn/\_\_init\_\_.py               |        0 |        0 |        0 |        0 |    100% |           |
 | tests/management/commands/startunicorn/test\_handle.py               |      130 |        0 |        0 |        0 |    100% |           |
-| tests/serializer/test\_dumps.py                                      |      342 |        0 |        0 |        0 |    100% |           |
+| tests/serializer/test\_dumps.py                                      |      340 |        0 |        0 |        0 |    100% |           |
 | tests/serializer/test\_exclude\_field\_attributes.py                 |       24 |        0 |        0 |        0 |    100% |           |
 | tests/serializer/test\_model\_value.py                               |       32 |        0 |        0 |        0 |    100% |           |
 | tests/templatetags/test\_unicorn.py                                  |       15 |        0 |        0 |        0 |    100% |           |
@@ -78,7 +78,7 @@
 | tests/test\_cacher.py                                                |      148 |        4 |       10 |        0 |     97% |133, 136, 254, 286 |
 | tests/test\_model\_lifecycle.py                                      |       64 |        0 |        0 |        0 |    100% |           |
 | tests/test\_settings.py                                              |       49 |        0 |        4 |        2 |     96% |69->72, 90->exit |
-| tests/test\_typer.py                                                 |      130 |        2 |        0 |        0 |     98% |    14, 23 |
+| tests/test\_typer.py                                                 |      129 |        2 |        0 |        0 |     98% |    14, 23 |
 | tests/test\_utils.py                                                 |       60 |        2 |        0 |        0 |     97% |    52, 63 |
 | tests/urls.py                                                        |        8 |        0 |        0 |        0 |    100% |           |
 | tests/views/action\_parsers/\_\_init\_\_.py                          |        0 |        0 |        0 |        0 |    100% |           |
@@ -99,7 +99,7 @@
 | tests/views/message/test\_toggle.py                                  |       20 |        0 |        0 |        0 |    100% |           |
 | tests/views/message/test\_type\_hints.py                             |       48 |        0 |        0 |        0 |    100% |           |
 | tests/views/message/utils.py                                         |       18 |        1 |        8 |        1 |     92% |        21 |
-| tests/views/test\_fk\_loading.py                                     |       28 |        1 |        2 |        1 |     93% |        63 |
+| tests/views/test\_fk\_loading.py                                     |       30 |        2 |        4 |        2 |     88% |    20, 68 |
 | tests/views/test\_is\_component\_field\_model\_or\_unicorn\_field.py |       21 |        0 |        0 |        0 |    100% |           |
 | tests/views/test\_m2m\_overwriting.py                                |       28 |        1 |        4 |        2 |     91% |14, 18->exit |
 | tests/views/test\_process\_component\_request.py                     |       24 |        0 |        0 |        0 |    100% |           |
@@ -113,7 +113,7 @@
 | tests/views/utils/\_\_init\_\_.py                                    |        0 |        0 |        0 |        0 |    100% |           |
 | tests/views/utils/test\_construct\_model.py                          |       47 |       10 |        0 |        0 |     79% |     44-60 |
 | tests/views/utils/test\_set\_property\_from\_data.py                 |      139 |        2 |        0 |        0 |     99% |     29-30 |
-| **TOTAL**                                                            | **6387** |  **554** | **1066** |  **135** | **90%** |           |
+| **TOTAL**                                                            | **6387** |  **555** | **1070** |  **137** | **90%** |           |
 
 
 ## Setup coverage badge
