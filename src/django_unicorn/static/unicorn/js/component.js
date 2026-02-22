@@ -174,6 +174,7 @@ export class Component {
     this.actionEvents = {};
     this.modelEls = [];
     this.loadingEls = [];
+    this.dirtyEls = [];
     this.visibilityEls = [];
 
     try {
@@ -210,6 +211,14 @@ export class Component {
               if (element.loading.show) {
                 element.hide();
               }
+            }
+
+            // Collect elements that carry u:dirty but no u:model so that
+            // handleDirty() can apply/revert their state when a targeted
+            // model input changes.  An element can be in both dirtyEls and
+            // loadingEls if it has both attributes.
+            if (!hasValue(element.model) && hasValue(element.dirty)) {
+              this.dirtyEls.push(element);
             }
 
             if (hasValue(element.key)) {
@@ -642,6 +651,54 @@ export class Component {
     removedComponentIds.forEach((id) => {
       Unicorn.deleteComponent(id);
     });
+
+    // Execute script tags in newly added child components.
+    // Browsers do not execute scripts that are added to the DOM via morphdom's
+    // internal diffing process (scripts created via innerHTML are not executed
+    // when inserted into the document). Replacing each script element with a
+    // freshly-created one forces the browser to fetch/run it, matching the
+    // expected behaviour when a conditionally-rendered child component first
+    // appears in the DOM.
+    //
+    // This step is skipped when RELOAD_SCRIPT_ELEMENTS is enabled on the
+    // morpher, because morphdom's own onNodeAdded hook already handles script
+    // execution in that case and running it here too would cause each script
+    // to execute twice.
+    if (!this.morpher.options?.RELOAD_SCRIPT_ELEMENTS) {
+      const newComponentIds = [...componentIdsAfterMorph].filter(
+        (id) => !componentIdsBeforeMorph.has(id)
+      );
+
+      newComponentIds.forEach((id) => {
+        const componentEl = targetDom.querySelector(`[unicorn\\:id="${id}"]`);
+
+        if (componentEl) {
+          const ownerDocument = componentEl.ownerDocument;
+
+          componentEl.querySelectorAll("script").forEach((script) => {
+            // Skip scripts that belong to a nested child component of this
+            // component — those are handled when that nested component's own
+            // id is processed in this loop.
+            let ancestor = script.parentElement;
+            while (ancestor && ancestor !== componentEl) {
+              if (ancestor.hasAttribute("unicorn:id")) {
+                return;
+              }
+              ancestor = ancestor.parentElement;
+            }
+
+            const newScript = ownerDocument.createElement("script");
+
+            [...script.attributes].forEach((attr) => {
+              newScript.setAttribute(attr.nodeName, attr.nodeValue);
+            });
+
+            newScript.innerHTML = script.innerHTML;
+            script.replaceWith(newScript);
+          });
+        }
+      });
+    }
 
     // Populate Unicorn with new components
     findUnicorns().forEach((el) => {
