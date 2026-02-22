@@ -229,4 +229,3 @@ class FakeFormClassesComponent(UnicornView):
 
     def save(self):
         self.validate()
-
