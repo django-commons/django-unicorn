@@ -6,7 +6,6 @@ These tests post ``syncInput`` and ``callMethod`` actions against
 (e.g. ``book.title``) are correctly surfaced in the response JSON.
 """
 
-import pytest
 from tests.views.message.utils import post_and_get_response
 
 COMPONENT_URL = "/message/tests.views.fake_components.FakeFormClassesComponent"

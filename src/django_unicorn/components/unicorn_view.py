@@ -11,6 +11,7 @@ import shortuuid
 from django.apps import apps as django_apps_module
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.db.models import Model
+from django.forms.models import model_to_dict  # lazy import
 from django.forms.widgets import CheckboxInput, Select
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.utils.decorators import classonlymethod
@@ -589,7 +590,6 @@ class Component(TemplateView):
                 form_data = {}
             elif isinstance(obj, Model):
                 # Use model-to-dict so we get plain Python values
-                from django.forms.models import model_to_dict  # lazy import
 
                 form_data = model_to_dict(obj)
                 # model_to_dict skips non-editable fields; also include raw attribute values
@@ -599,7 +599,7 @@ class Component(TemplateView):
                     for form_field_name in form_instance.fields:
                         if form_field_name not in form_data:
                             form_data[form_field_name] = getattr(obj, form_field_name, None)
-                except Exception:
+                except Exception:  # noqa: S110
                     pass
             elif isinstance(obj, dict):
                 form_data = obj
