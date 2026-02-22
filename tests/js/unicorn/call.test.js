@@ -5,7 +5,7 @@ import { getComponent } from "../utils.js";
 
 test("call triggers loading show", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <div u:loading>Loading</div>
 </div>`;
   const component = getComponent(html);
@@ -22,7 +22,7 @@ test("call triggers loading show", (t) => {
 
 test("call triggers loading hide", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <div u:loading.remove>Loading</div>
 </div>`;
   const component = getComponent(html);
@@ -39,7 +39,7 @@ test("call triggers loading hide", (t) => {
 
 test("call triggers loading class", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <div u:loading.class="loading">Loading</div>
 </div>`;
   const component = getComponent(html);
@@ -57,7 +57,7 @@ test("call triggers loading class", (t) => {
 
 test("call triggers loading attr", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button u:loading.attr="disabled">Submit</button>
 </div>`;
   const component = getComponent(html);
@@ -74,7 +74,7 @@ test("call triggers loading attr", (t) => {
 
 test("call does not trigger targeted loading element", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button id="myBtn" unicorn:click="test()">Click</button>
   <div u:loading u:target="myBtn">Loading</div>
 </div>`;

@@ -29,7 +29,7 @@ test("scan initializes component from dom", (t) => {
     componentRoot.setAttribute("unicorn:id", "test-scan-id");
     componentRoot.setAttribute("unicorn:name", "test-name");
     componentRoot.setAttribute("unicorn:key", "test-key");
-    componentRoot.setAttribute("unicorn:checksum", "test-checksum");
+    componentRoot.setAttribute("unicorn:meta", "test-checksum");
     componentRoot.setAttribute("unicorn:data", "{}");
     componentRoot.setAttribute("unicorn:calls", "[]");
     document.body.appendChild(componentRoot);
@@ -46,7 +46,7 @@ test("init observes document automatically", async (t) => {
     componentRoot.setAttribute("unicorn:id", "test-auto-id");
     componentRoot.setAttribute("unicorn:name", "test-name");
     componentRoot.setAttribute("unicorn:key", "test-key");
-    componentRoot.setAttribute("unicorn:checksum", "test-checksum");
+    componentRoot.setAttribute("unicorn:meta", "test-checksum");
     componentRoot.setAttribute("unicorn:data", "{}");
     componentRoot.setAttribute("unicorn:calls", "[]");
 

@@ -412,7 +412,7 @@ class Component(TemplateView):
         pass
 
     @timed
-    def render(self, *, init_js=False, extra_context=None, request=None) -> str:
+    def render(self, *, init_js=False, extra_context=None, request=None, epoch=None) -> str:
         """
         Renders a UnicornView component with the public properties available. Delegates to a
         UnicornTemplateResponse to actually render a response.
@@ -423,6 +423,7 @@ class Component(TemplateView):
             param request: Set the `request` for rendering. Usually it will be in the context,
                 but it is missing when the component is re-rendered as a direct view, so it needs
                 to be set explicitly.
+            param epoch: Set the `epoch` for rendering.
         """
 
         if extra_context is not None:
@@ -439,6 +440,7 @@ class Component(TemplateView):
             context=self.get_context_data(),
             component=self,
             init_js=init_js,
+            epoch=epoch,
         )
 
         # render_to_response() could only return a HttpResponse, so check for render()

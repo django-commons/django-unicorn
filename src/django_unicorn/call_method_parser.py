@@ -119,7 +119,7 @@ def parse_kwarg(kwarg: str, *, raise_if_unparseable=False) -> dict[str, Any]:
                 # context when the templatetag is rendered, so just return the expr
                 # as a string.
                 value = _get_expr_string(assign.value)
-                return {target.id: value}  # type: ignore
+                return {key: value}  # type: ignore
         else:
             raise InvalidKwargError(f"'{kwarg}' is invalid")
     except SyntaxError as e:
@@ -157,7 +157,7 @@ def parse_call_method_name(
 
     if tree.body and isinstance(statement, ast.Call):
         call = tree.body[0].value  # type: ignore
-        method_name = call.func.id
+        method_name = _get_expr_string(call.func)
         args = [eval_value(arg) for arg in call.args]
         kwargs = {kw.arg: eval_value(kw.value) for kw in call.keywords}
 

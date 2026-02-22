@@ -15,8 +15,8 @@ from django_unicorn.errors import (
     MultipleRootComponentElementError,
     NoRootComponentElementError,
 )
-from django_unicorn.settings import get_minify_html_enabled, get_script_location
-from django_unicorn.utils import generate_checksum, html_element_to_string, sanitize_html
+from django_unicorn.settings import get_minify_html_enabled
+from django_unicorn.utils import generate_checksum, html_element_to_string
 
 logger = logging.getLogger(__name__)
 
@@ -159,6 +159,7 @@ class UnicornTemplateResponse(TemplateResponse):
         using=None,
         component=None,
         init_js=False,
+        epoch="",
         **kwargs,  # noqa: ARG002
     ):
         super().__init__(
@@ -173,6 +174,7 @@ class UnicornTemplateResponse(TemplateResponse):
 
         self.component = component
         self.init_js = init_js
+        self.epoch = epoch or ""
 
     def resolve_template(self, template):
         """Override the TemplateResponseMixin to resolve a list of Templates.
@@ -213,82 +215,25 @@ class UnicornTemplateResponse(TemplateResponse):
         # Prepare Data
         frontend_context_variables = self.component.get_frontend_context_variables()
         frontend_context_variables_dict = orjson.loads(frontend_context_variables)
-        checksum = generate_checksum(frontend_context_variables_dict)
+        data_checksum = generate_checksum(frontend_context_variables_dict)
 
         # Modify Attributes
         root_element.set("unicorn:id", self.component.component_id)
         if hasattr(self.component, "component_name"):
             root_element.set("unicorn:name", self.component.component_name)
         root_element.set("unicorn:key", str(self.component.component_key or ""))
-        root_element.set("unicorn:checksum", checksum)
         root_element.set("unicorn:data", frontend_context_variables)
         root_element.set("unicorn:calls", orjson.dumps(self.component.calls).decode("utf-8"))
 
-        # Calculate content hash (without script)
+        # Calculate content hash (without script and without checksum)
         rendered_template_no_script = html_element_to_string(root_element)
         content_hash = generate_checksum(rendered_template_no_script)
+        self.component._content_hash = content_hash
 
-        rendered_template = rendered_template_no_script
+        # Set the data checksum on the root element
+        root_element.set("unicorn:meta", data_checksum)
 
-        # Inject Scripts
-        if self.init_js:
-            init = {
-                "id": self.component.component_id,
-                "name": self.component.component_name,
-                "key": self.component.component_key,
-                "data": orjson.loads(frontend_context_variables),
-                "calls": self.component.calls,
-                "hash": content_hash,
-            }
-            init_json = orjson.dumps(init).decode("utf-8")
-            init_json_safe = sanitize_html(init_json)
-            json_element_id = f"unicorn:data:{self.component.component_id}"
-            init_script = (
-                f"Unicorn.componentInit(JSON.parse(document.getElementById('{json_element_id}').textContent));"
-            )
-
-            # Create JSON script tag
-            json_tag = html.Element("script", type="application/json", id=json_element_id)
-            json_tag.text = init_json_safe
-
-            if self.component.parent:
-                self.component._init_script = init_script
-                self.component._json_tag = json_tag
-            else:
-                json_tags = [json_tag]
-
-                descendants = []
-                descendants.append(self.component)
-                while descendants:
-                    descendant = descendants.pop()
-                    for child in descendant.children:
-                        init_script = f"{init_script} {child._init_script}"
-
-                        if hasattr(child, "_json_tag"):
-                            json_tags.append(child._json_tag)
-                            del child._json_tag
-
-                        descendants.append(child)
-
-                script_tag = html.Element("script", type="module")
-                script_content = (
-                    "if (typeof Unicorn === 'undefined') { "
-                    "console.error('Unicorn is missing. Do you need {% load unicorn %} or {% unicorn_scripts %}?') "
-                    "} else { " + init_script + " }"
-                )
-                script_tag.text = script_content
-
-                if get_script_location() == "append":
-                    root_element.append(script_tag)
-                    for t in json_tags:
-                        root_element.append(t)
-                    rendered_template = html_element_to_string(root_element)
-                else:
-                    root_html = html_element_to_string(root_element)
-                    script_html = html_element_to_string(script_tag)
-                    for t in json_tags:
-                        script_html += html_element_to_string(t)
-                    rendered_template = root_html + script_html
+        rendered_template = html_element_to_string(root_element)
 
         self.component.rendered(rendered_template)
         response.content = rendered_template

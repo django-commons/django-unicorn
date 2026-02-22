@@ -5,7 +5,7 @@ test("setModelValues setValue called", (t) => {
   t.plan(4);
 
   const html = `
-  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input u:model='name'></input>
   </div>`;
   const component = getComponent(html);
@@ -33,7 +33,7 @@ test("setModelValues triggeringElement setValue not called", (t) => {
   t.plan(3);
 
   const html = `
-    <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+    <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
       <input u:model='name'></input>
     </div>`;
   const component = getComponent(html);
@@ -61,7 +61,7 @@ test("setModelValues triggeringElement forceModelUpdates setValue called", (t) =
   t.plan(4);
 
   const html = `
-      <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+      <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
         <input u:model='name'></input>
       </div>`;
   const component = getComponent(html);
@@ -89,7 +89,7 @@ test("setModelValues multiple models setValue called once", (t) => {
   t.plan(2);
 
   const html = `
-        <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+        <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
           <input u:model='name'></input>
           <input u:model='blob'></input>
         </div>`;

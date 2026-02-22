@@ -49,6 +49,8 @@ export function init(
     });
   }
 
+  scan();
+
   return {
     messageUrl,
     csrfTokenHeaderName,
@@ -83,11 +85,31 @@ export function insertComponentFromDom(node) {
   const nodeId = node.getAttribute("unicorn:id");
 
   if (!components[nodeId]) {
+    const fullMeta = node.getAttribute("unicorn:meta");
+    let meta = fullMeta;
+    let hash = "";
+    let epoch = "";
+
+    if (fullMeta && fullMeta.indexOf(":") > -1) {
+      const parts = fullMeta.split(":");
+      meta = parts[0];
+
+      if (parts.length > 1) {
+        hash = parts[1];
+      }
+
+      if (parts.length > 2) {
+        epoch = parts[2];
+      }
+    }
+
     const args = {
       id: nodeId,
       name: node.getAttribute("unicorn:name"),
       key: node.getAttribute("unicorn:key"),
-      checksum: node.getAttribute("unicorn:checksum"),
+      checksum: meta,
+      hash,
+      epoch,
       data: JSON.parse(node.getAttribute("unicorn:data")),
       calls: JSON.parse(node.getAttribute("unicorn:calls")),
     };

@@ -6,7 +6,7 @@ import { send } from "../../../src/django_unicorn/static/unicorn/js/messageSende
 test("call_method redirect", async (t) => {
   const html = `
 <input type="hidden" name="csrfmiddlewaretoken" value="asdf">
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input unicorn:model='name'></input>
     <button unicorn:click='test()'><span id="clicker">Click</span></button>
 </div>
@@ -43,7 +43,7 @@ test("call_method redirect", async (t) => {
 test("call_method refresh redirect", async (t) => {
   const html = `
 <input type="hidden" name="csrfmiddlewaretoken" value="asdf">
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input unicorn:model='name'></input>
     <button unicorn:click='test()'><span id="clicker">Click</span></button>
 </div>
@@ -96,7 +96,7 @@ test("call_method refresh redirect", async (t) => {
 test("call_method hash", async (t) => {
   const html = `
 <input type="hidden" name="csrfmiddlewaretoken" value="asdf">
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input unicorn:model='name'></input>
     <button unicorn:click='test()'><span id="clicker">Click</span></button>
 </div>
@@ -139,7 +139,7 @@ test("call_method hash", async (t) => {
 test("call_method forceModelUpdate is true", async (t) => {
   const html = `
 <input type="hidden" name="csrfmiddlewaretoken" value="asdf">
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input unicorn:model='name'></input>
     <button unicorn:click='test()'><span id="clicker">Click</span></button>
 </div>
@@ -182,7 +182,7 @@ test("call_method partial.id", async (t) => {
   // seem to work in JSDom, so this just tests targeting by id
   const html = `
 <input type="hidden" name="csrfmiddlewaretoken" value="asdf">
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input unicorn:model='name'></input>
     <span id="clicker-id">Click</span>
     <button unicorn:click='test()' u:partial.id='clicker-id'>Click</button>
@@ -236,7 +236,7 @@ test("call_method partial target", async (t) => {
   // seem to work in JSDom, so this just tests targeting by id
   const html = `
 <input type="hidden" name="csrfmiddlewaretoken" value="asdf">
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input unicorn:model='name'></input>
     <span id="clicker-id">Click</span>
     <button unicorn:click='test()' u:partial='clicker-id'>Click</button>

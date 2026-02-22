@@ -7,7 +7,7 @@ import { send } from "../../../src/django_unicorn/static/unicorn/js/messageSende
 test("race condition: later response overwrites newer one", async (t) => {
     const html = `
 <input type="hidden" name="csrfmiddlewaretoken" value="asdf">
-<div unicorn:id="race-condition-id" unicorn:name="race-condition" unicorn:checksum="checksum">
+<div unicorn:id="race-condition-id" unicorn:name="race-condition" unicorn:meta="meta">
     <input unicorn:model='name'></input>
 </div>
   `;
