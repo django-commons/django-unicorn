@@ -24,7 +24,7 @@ def test_message_toggle(client):
             {"type": "callMethod", "payload": {"name": "$toggle('check')"}},
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }
@@ -42,7 +42,7 @@ def test_message_nested_toggle(client):
             {"type": "callMethod", "payload": {"name": "$toggle('nested.check')"}},
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }

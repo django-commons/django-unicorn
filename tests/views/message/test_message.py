@@ -43,7 +43,7 @@ def test_message_no_data(client):
     assert_json_error(response, "Invalid JSON body")
 
 
-def test_message_no_checksum(client):
+def test_message_no_meta(client):
     data = {
         "data": {},
         "id": str(uuid4()),
@@ -51,13 +51,13 @@ def test_message_no_checksum(client):
     }
     response = post_json(client, data, url="/message/test-message-no-checksum")
 
-    assert_json_error(response, "Missing checksum")
+    assert_json_error(response, "Missing meta")
 
 
-def test_message_bad_checksum(client):
+def test_message_bad_meta(client):
     data = {
         "data": {},
-        "checksum": "asdf",
+        "meta": "asdf",
         "id": str(uuid4()),
         "epoch": time.time(),
     }
@@ -69,7 +69,7 @@ def test_message_bad_checksum(client):
 def test_message_no_component_id(client):
     data = {
         "data": {},
-        "checksum": "DVVk97cx",
+        "meta": "DVVk97cx",
         "epoch": time.time(),
     }
     response = post_json(client, data, url="/message/test-message-no-component-id")
@@ -78,7 +78,7 @@ def test_message_no_component_id(client):
 
 
 def test_message_no_epoch(client):
-    data = {"data": {}, "checksum": "DVVk97cx", "id": str(uuid4())}
+    data = {"data": {}, "meta": "DVVk97cx", "id": str(uuid4())}
     response = post_json(client, data, url="/message/test-message-no-epoch")
 
     assert_json_error(response, "Missing epoch")
@@ -87,7 +87,7 @@ def test_message_no_epoch(client):
 def test_message_component_module_not_loaded(client):
     data = {
         "data": {},
-        "checksum": "DVVk97cx",
+        "meta": "DVVk97cx",
         "id": str(uuid4()),
         "epoch": time.time(),
     }
@@ -108,7 +108,7 @@ def test_message_component_module_not_loaded(client):
 def test_message_component_class_not_loaded(client):
     data = {
         "data": {},
-        "checksum": "DVVk97cx",
+        "meta": "DVVk97cx",
         "id": str(uuid4()),
         "epoch": time.time(),
     }
@@ -143,7 +143,7 @@ has no attribute 'FakeComponentNotThere'"
 def test_message_component_class_with_attribute_error(client):
     data = {
         "data": {},
-        "checksum": "DVVk97cx",
+        "meta": "DVVk97cx",
         "id": str(uuid4()),
         "epoch": time.time(),
     }
@@ -161,7 +161,7 @@ def test_message_component_class_with_attribute_error(client):
 def test_message_component_with_dash(client):
     data = {
         "data": {},
-        "checksum": "DVVk97cx",
+        "meta": "DVVk97cx",
         "id": str(uuid4()),
         "epoch": time.time(),
     }
@@ -178,7 +178,7 @@ def test_message_component_with_dash(client):
 def test_message_component_with_dot(client):
     data = {
         "data": {},
-        "checksum": "DVVk97cx",
+        "meta": "DVVk97cx",
         "id": str(uuid4()),
         "epoch": time.time(),
     }

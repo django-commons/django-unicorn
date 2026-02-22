@@ -24,7 +24,7 @@ def test_setter(client):
             {"type": "callMethod", "payload": {"name": "check=True"}},
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }
@@ -42,7 +42,7 @@ def test_setter_updated(client):
             {"type": "callMethod", "payload": {"name": "count=2"}},
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }
@@ -69,7 +69,7 @@ def test_setter_resolved(client):
     message = {
         "actionQueue": action_queue,
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }
@@ -93,7 +93,7 @@ def test_nested_setter(client):
             {"type": "callMethod", "payload": {"name": "nested.check=True"}},
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }
@@ -114,7 +114,7 @@ def test_equal_sign(client):
             },
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }

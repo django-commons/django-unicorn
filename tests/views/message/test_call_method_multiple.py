@@ -75,7 +75,7 @@ def test_message_single(client, settings):
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": component_id,
         "epoch": time.time(),
     }
@@ -104,7 +104,7 @@ def test_message_two(client, settings):
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": component_id,
     }
     messages = [(client, 0, message), (client, 0.1, message)]
@@ -136,7 +136,7 @@ def test_message_multiple(client, settings):
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": component_id,
     }
     messages = [(client, 0, message), (client, 0.1, message), (client, 0.2, message)]
@@ -168,7 +168,7 @@ def test_message_multiple_return_is_correct(client, settings):
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": component_id,
     }
     messages = [(client, 0, message), (client, 0.1, message), (client, 0.2, message)]
@@ -206,7 +206,7 @@ def test_message_multiple_with_updated_data(client, settings):
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": component_id,
     }
     messages = [(client, 0, message), (client, 0.1, message), (client, 0.2, message)]
@@ -215,7 +215,7 @@ def test_message_multiple_with_updated_data(client, settings):
     # sure how to reconcile this with resulting data from queued messages
     message_with_new_data = deepcopy(message)
     message_with_new_data["data"] = {"counter": 7}
-    message_with_new_data["checksum"] = generate_checksum(str(message_with_new_data["data"]))
+    message_with_new_data["meta"] = generate_checksum(str(message_with_new_data["data"]))
     messages.append((client, 0.4, message_with_new_data))
 
     with ThreadPool(len(messages)) as pool:
@@ -245,7 +245,7 @@ def test_message_second_request_not_queued_because_after_first(client, settings)
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": component_id,
     }
     messages = [(client, 0, message), (client, 0.4, message)]
@@ -277,7 +277,7 @@ def test_message_second_request_not_queued_because_serial_timeout(client, settin
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": component_id,
     }
     messages = [(client, 0, message), (client, 0.2, message)]
@@ -309,7 +309,7 @@ def test_message_second_request_not_queued_because_serial_disabled(client, setti
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": component_id,
     }
     messages = [(client, 0, message), (client, 0.2, message)]
@@ -342,7 +342,7 @@ def test_message_second_request_not_queued_because_dummy_cache(client, settings)
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": component_id,
     }
     messages = [(client, 0, message), (client, 0.2, message)]

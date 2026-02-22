@@ -14,7 +14,7 @@ test("unicorn:name", (t) => {
   t.is(component.name, "text-inputs");
 });
 
-test("unicorn:checksum", (t) => {
+test("unicorn:meta", (t) => {
   const component = getComponent();
 
   t.is(component.checksum, "GXzew3Km");
@@ -22,7 +22,7 @@ test("unicorn:checksum", (t) => {
 
 test("component on non-div", (t) => {
   const html = `
-  <span unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <span unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   </span>`;
   const component = getComponent(html);
 

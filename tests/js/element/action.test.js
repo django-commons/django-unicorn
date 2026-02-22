@@ -76,7 +76,7 @@ test("click.keyup.enter.debounce", (t) => {
 
 test("click.discard model changes", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model='name'></input>
   <button unicorn:click.discard='cancel'></button>
 </div>`;
@@ -118,7 +118,7 @@ test("multiple actions", (t) => {
 
 test("click on internal element", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model='name'></input>
   <button unicorn:click='test()'><span id="clicker">Click</span></button>
 </div>`;
@@ -134,7 +134,7 @@ test("click on internal element", (t) => {
 
 test("$returnValue", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model='name'></input>
   <button unicorn:click='test($returnValue)'></button>
 </div>`;
@@ -153,7 +153,7 @@ test("$returnValue", (t) => {
 
 test("$returnValue invalid property", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model='name'></input>
   <button unicorn:click='test($returnValue.blob)'></button>
 </div>`;
@@ -172,7 +172,7 @@ test("$returnValue invalid property", (t) => {
 
 test("$returnValue nested property", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model='name'></input>
   <button unicorn:click='test($returnValue.hello)'></button>
 </div>`;
@@ -191,7 +191,7 @@ test("$returnValue nested property", (t) => {
 
 test("$returnValue with method", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model='name'></input>
   <button unicorn:click='test($returnValue.trim())'></button>
 </div>`;
@@ -210,7 +210,7 @@ test("$returnValue with method", (t) => {
 
 test("$event action variable invalid property", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model='name'></input>
   <button unicorn:click='test($event.target.value)' value='1'></button>
 </div>`;
@@ -228,7 +228,7 @@ test("$event action variable invalid property", (t) => {
 
 test("$event invalid variable", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model='name'></input>
   <button unicorn:click='test($event.target.value.blob)' value='2'></button>
 </div>`;
@@ -246,7 +246,7 @@ test("$event invalid variable", (t) => {
 
 test("$event action variable with method", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model='name'></input>
   <button unicorn:click='test($event.target.value.trim())' value=' 3 '></button>
 </div>`;
@@ -264,7 +264,7 @@ test("$event action variable with method", (t) => {
 
 test("$event action variable in middle of args", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model='name'></input>
   <button unicorn:click='test($event.target.value.trim(), 1)' value=' 4 '></button>
 </div>`;
@@ -282,7 +282,7 @@ test("$event action variable in middle of args", (t) => {
 
 test("event action loading attr", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button unicorn:click='test()' u:loading.attr="disabled"></button>
 </div>`;
   const component = getComponent(html);
@@ -299,7 +299,7 @@ test("event action loading attr", (t) => {
 
 test("event action loading class", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button unicorn:click='test()' u:loading.class="loading"></button>
 </div>`;
   const component = getComponent(html);
@@ -317,7 +317,7 @@ test("event action loading class", (t) => {
 
 test("event action loading attr 500 reverts", async (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button unicorn:click='test()' u:loading.attr="disabled"></button>
 </div>`;
   const component = getComponent(html);
@@ -342,7 +342,7 @@ test("event action loading attr 500 reverts", async (t) => {
 
 test("event action loading class 500 reverts", async (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button unicorn:click='test()' u:loading.class="loading-class"></button>
 </div>`;
   const component = getComponent(html);
@@ -368,7 +368,7 @@ test("event action loading class 500 reverts", async (t) => {
 
 test("event action loading remove class", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button unicorn:click='test()' u:loading.class.remove="unloading" class="unloading"></button>
 </div>`;
   const component = getComponent(html);
@@ -386,7 +386,7 @@ test("event action loading remove class", (t) => {
 
 test("event action loading show", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button unicorn:click='test()' id='testId' u:key='testKey'></button>
   <div u:loading>
   Loading
@@ -408,7 +408,7 @@ test("event action loading show", (t) => {
 
 test("event action loading hide", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button unicorn:click='test()' id='testId' u:key='testKey'></button>
   <div u:loading.remove>
   Loading
@@ -430,7 +430,7 @@ test("event action loading hide", (t) => {
 
 test("event action loading by id", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button unicorn:click='test()' id='testId' u:key='testKey'></button>
   <div u:loading u:target='testId'>
   Loading
@@ -452,7 +452,7 @@ test("event action loading by id", (t) => {
 
 test("event action loading by key", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button unicorn:click='test()' id='testId' u:key='testKey'></button>
   <div u:loading u:target='testKey'>
   Loading
@@ -474,7 +474,7 @@ test("event action loading by key", (t) => {
 
 test("event action wildcard loading by id", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button unicorn:click='test()' id='testId-1' u:key='testKey'></button>
   <div>
     <button unicorn:click='test()' id='testId-2' u:key='testKey'></button>
@@ -514,7 +514,7 @@ test("event action wildcard loading by id", (t) => {
 
 test("event action wildcard loading by key", (t) => {
   const html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <button unicorn:click='test()' id='testId' u:key='testKey-1'></button>
   <div>
     <button unicorn:click='test()' id='testId' u:key='testKey-2'></button>

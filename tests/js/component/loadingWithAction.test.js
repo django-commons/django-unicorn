@@ -3,7 +3,7 @@ import { getComponent } from "../utils.js";
 
 test("u:click action detected when child has u:loading", (t) => {
     const html = `
-  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <button unicorn:click="send_otp">
       <span unicorn:loading.remove>Send One Time Password</span>
       <span unicorn:loading>Sending...</span>
@@ -18,7 +18,7 @@ test("u:click action detected when child has u:loading", (t) => {
 
 test("u:click action detected when child has u:loading.class", (t) => {
     const html = `
-  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <button unicorn:click="send_otp">
       <span unicorn:loading.class="loading">Send One Time Password</span>
     </button>
@@ -32,7 +32,7 @@ test("u:click action detected when child has u:loading.class", (t) => {
 
 test("u:click with u:loading on same element still works", (t) => {
     const html = `
-  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <button unicorn:click="send_otp" unicorn:loading.class="loading-wrapper">
       <span>Send One Time Password</span>
     </button>

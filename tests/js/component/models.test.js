@@ -16,7 +16,7 @@ test("modelEls", (t) => {
 
 test("abbreviated name", (t) => {
   const html = `
-  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input u:model='name'></input>
   </div>`;
   const component = getComponent(html);
@@ -26,7 +26,7 @@ test("abbreviated name", (t) => {
 
 test("model.lazy has input and blur events", (t) => {
   const html = `
-  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input u:model.lazy='name'></input>
   </div>`;
   const component = getComponent(html);
@@ -42,7 +42,7 @@ test("model trigger with invalid key", (t) => {
   t.plan(0);
 
   const html = `
-  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input u:model.lazy='name' u:key='nameKey'></input>
   </div>`;
   const component = getComponent(html);
@@ -59,7 +59,7 @@ test("model.lazy trigger", (t) => {
   t.plan(1);
 
   const html = `
-  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input u:model.lazy='name' u:key='nameKey'></input>
   </div>`;
   const component = getComponent(html);
@@ -76,7 +76,7 @@ test("model trigger", (t) => {
   t.plan(1);
 
   const html = `
-  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input u:model='name' u:key='nameKey'></input>
   </div>`;
   const component = getComponent(html);

@@ -4,7 +4,7 @@ import { getEl } from "../utils.js";
 
 test("contains", (t) => {
   const componentRootHtml = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model="name" type="text" id="name"><br />
   Name: 
 </div>
@@ -12,7 +12,7 @@ test("contains", (t) => {
   const componentRoot = getEl(componentRootHtml);
 
   const rerenderedComponentHtml = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model="name" type="text" id="name"><br />
   Name: Test
 </div>
@@ -26,7 +26,7 @@ test("contains", (t) => {
 
 test("ignore element", (t) => {
   const componentRootHtml = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model="name" type="text" id="name"><br />
   Name: 
 
@@ -38,7 +38,7 @@ test("ignore element", (t) => {
   const componentRoot = getEl(componentRootHtml);
 
   const rerenderedComponentHtml = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model="name" type="text" id="name"><br />
   Name: Test
 
@@ -60,7 +60,7 @@ test("ignore element", (t) => {
 
 test("ignore all children elements", (t) => {
   const componentRootHtml = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model="name" type="text" id="name"><br />
   Name: 
 
@@ -77,7 +77,7 @@ test("ignore all children elements", (t) => {
   const componentRoot = getEl(componentRootHtml);
 
   const rerenderedComponentHtml = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model="name" type="text" id="name"><br />
   Name: Test
 

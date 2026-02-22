@@ -80,7 +80,7 @@ function morphdom(initial, merge, options) {
 export function getComponent(html, id, name, data) {
   if (typeof html === "undefined") {
     html = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model='name'></input>
   <button unicorn:click='name="world"'></button>
 </div>
