@@ -157,7 +157,7 @@ def parse_call_method_name(
 
     if tree.body and isinstance(statement, ast.Call):
         call = tree.body[0].value  # type: ignore
-        method_name = call.func.id
+        method_name = _get_expr_string(call.func)
         args = [eval_value(arg) for arg in call.args]
         kwargs = {kw.arg: eval_value(kw.value) for kw in call.keywords}
 
