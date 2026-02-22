@@ -11,13 +11,13 @@ setBrowserMocks();
 
 test("walk any", (t) => {
   const componentRootHtml = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model="name" type="text" id="name">
   <div
     unicorn:id="5jypjiyb:nested.filter"
     unicorn:name="nested.filter"
     unicorn:key=""
-    unicorn:checksum="KtgR7WTb"
+    unicorn:meta="KtgR7WTb"
   >
     <input type="text" unicorn:model="search" id="search" />
   </div>
@@ -38,13 +38,13 @@ test("walk any", (t) => {
 
 test("walk skip nested", (t) => {
   const componentRootHtml = `
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
   <input unicorn:model="name" type="text" id="name">
   <div
     unicorn:id="5jypjiyb:nested.filter"
     unicorn:name="nested.filter"
     unicorn:key=""
-    unicorn:checksum="KtgR7WTb"
+    unicorn:meta="KtgR7WTb"
   >
     <input type="text" unicorn:model="search" id="search" />
   </div>

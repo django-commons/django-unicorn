@@ -38,8 +38,8 @@ test("unicorn:key is not an action", (t) => {
   t.is(element.actions.length, 0);
 });
 
-test("unicorn:checksum is not an action", (t) => {
-  const html = "<div unicorn:checksum='fghj'></div>";
+test("unicorn:meta is not an action", (t) => {
+  const html = "<div unicorn:meta='fghj'></div>";
   const element = getElement(html);
 
   t.true(element.isUnicorn);

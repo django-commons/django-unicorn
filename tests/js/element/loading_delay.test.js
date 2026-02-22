@@ -7,7 +7,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 test("loading delay shows after timeout", async (t) => {
     const html = `
-    <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+    <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
       <button unicorn:click='test()' u:loading.class="loading" u:loading.delay-100></button>
     </div>`;
     const component = getComponent(html);
@@ -34,7 +34,7 @@ test("loading delay shows after timeout", async (t) => {
 
 test("loading delay does not show if action takes less time", async (t) => {
     const html = `
-    <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+    <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
       <button unicorn:click='test()' u:loading.class="loading" u:loading.delay-200></button>
     </div>`;
     const component = getComponent(html);

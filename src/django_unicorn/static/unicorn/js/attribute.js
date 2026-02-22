@@ -60,7 +60,7 @@ export class Attribute {
         if (
           actionEventType !== "id" &&
           actionEventType !== "name" &&
-          actionEventType !== "checksum"
+          actionEventType !== "meta"
         ) {
           this.eventType = actionEventType;
         }

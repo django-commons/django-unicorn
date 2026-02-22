@@ -75,7 +75,7 @@ export class Component {
       throw Error("No id found");
     }
 
-    this.refreshChecksum();
+    this.refreshMeta();
   }
 
   /**
@@ -430,10 +430,25 @@ export class Component {
   }
 
   /**
-   * Refresh the checksum.
+   * Refresh the meta.
    */
-  refreshChecksum() {
-    this.checksum = this.root.getAttribute("unicorn:checksum");
+  refreshMeta() {
+    const meta = this.root.getAttribute("unicorn:meta");
+
+    if (meta && meta.indexOf(":") > -1) {
+      const parts = meta.split(":");
+      this.checksum = parts[0];
+
+      if (parts.length > 1) {
+        this.hash = parts[1];
+      }
+
+      if (parts.length > 2) {
+        this.epoch = parts[2];
+      }
+    } else {
+      this.checksum = meta;
+    }
   }
 
   /**
