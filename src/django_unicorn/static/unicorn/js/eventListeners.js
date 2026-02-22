@@ -4,14 +4,21 @@ import { Element } from "./element.js";
 /**
  * Handles loading elements in the component.
  * @param {Component} component Component.
- * @param {Element} targetElement Targetted element.
+ * @param {Element} targetElement Targetted element. Can be null when called via Unicorn.call().
  */
-function handleLoading(component, targetElement) {
-  targetElement.handleLoading();
+export function handleLoading(component, targetElement) {
+  if (targetElement) {
+    targetElement.handleLoading();
+  }
 
   // Look at all elements with a loading attribute
   component.loadingEls.forEach((loadingElement) => {
     if (loadingElement.target) {
+      // Targeted loading elements only apply when there is a specific triggering element
+      if (!targetElement) {
+        return;
+      }
+
       // Get all ID matches
       if (loadingElement.target.includes("*")) {
         const targetRegex = toRegExp(loadingElement.target);
@@ -131,6 +138,18 @@ export function addActionEventListener(component, eventType) {
     // Handles events fired from an element inside a unicorn element
     // e.g. <button u:click="click"><span>Click!</span></button>
     if (targetElement && !targetElement.isUnicorn) {
+      targetElement = targetElement.getUnicornParent();
+    }
+
+    // If the target element is a unicorn element but has no actions
+    // (e.g. it only has u:loading), traverse up to find the nearest
+    // ancestor that has actions for this event type.
+    // Fixes: u:loading on child elements intercepting clicks meant for parent u:click
+    if (
+      targetElement &&
+      targetElement.isUnicorn &&
+      targetElement.actions.length === 0
+    ) {
       targetElement = targetElement.getUnicornParent();
     }
 

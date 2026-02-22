@@ -3,6 +3,93 @@ import { call } from "../../../src/django_unicorn/static/unicorn/js/unicorn.js";
 import { components } from "../../../src/django_unicorn/static/unicorn/js/store.js";
 import { getComponent } from "../utils.js";
 
+test("call triggers loading show", (t) => {
+  const html = `
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div u:loading>Loading</div>
+</div>`;
+  const component = getComponent(html);
+  components[component.id] = component;
+  component.callMethod = () => {};
+
+  t.is(component.loadingEls.length, 1);
+  const loadingEl = component.loadingEls[0];
+  t.true(loadingEl.el.hidden);
+
+  call("text-inputs", "testMethod");
+  t.false(loadingEl.el.hidden);
+});
+
+test("call triggers loading hide", (t) => {
+  const html = `
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div u:loading.remove>Loading</div>
+</div>`;
+  const component = getComponent(html);
+  components[component.id] = component;
+  component.callMethod = () => {};
+
+  t.is(component.loadingEls.length, 1);
+  const loadingEl = component.loadingEls[0];
+  t.false(loadingEl.el.hidden);
+
+  call("text-inputs", "testMethod");
+  t.true(loadingEl.el.hidden);
+});
+
+test("call triggers loading class", (t) => {
+  const html = `
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div u:loading.class="loading">Loading</div>
+</div>`;
+  const component = getComponent(html);
+  components[component.id] = component;
+  component.callMethod = () => {};
+
+  t.is(component.loadingEls.length, 1);
+  const loadingEl = component.loadingEls[0];
+  t.is(loadingEl.el.classList.length, 0);
+
+  call("text-inputs", "testMethod");
+  t.is(loadingEl.el.classList.length, 1);
+  t.is(loadingEl.el.classList[0], "loading");
+});
+
+test("call triggers loading attr", (t) => {
+  const html = `
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <button u:loading.attr="disabled">Submit</button>
+</div>`;
+  const component = getComponent(html);
+  components[component.id] = component;
+  component.callMethod = () => {};
+
+  t.is(component.loadingEls.length, 1);
+  const loadingEl = component.loadingEls[0];
+  t.true(typeof loadingEl.el.attributes.disabled === "undefined");
+
+  call("text-inputs", "testMethod");
+  t.false(typeof loadingEl.el.attributes.disabled === "undefined");
+});
+
+test("call does not trigger targeted loading element", (t) => {
+  const html = `
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <button id="myBtn" unicorn:click="test()">Click</button>
+  <div u:loading u:target="myBtn">Loading</div>
+</div>`;
+  const component = getComponent(html);
+  components[component.id] = component;
+  component.callMethod = () => {};
+
+  t.is(component.loadingEls.length, 1);
+  const loadingEl = component.loadingEls[0];
+  t.true(loadingEl.el.hidden);
+
+  call("text-inputs", "testMethod");
+  t.true(loadingEl.el.hidden);
+});
+
 test("call a method", (t) => {
   const component = getComponent();
   components[component.id] = component;

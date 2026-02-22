@@ -275,7 +275,17 @@ def _fix_floats(current: dict, data: dict | None = None, paths: list | None = No
             paths.append(key)
             _fix_floats(val, data, paths=paths)
             paths.pop()
-    elif isinstance(current, list):
+    elif isinstance(current, (list, tuple)):
+        if isinstance(current, tuple) and paths:
+            # Tuples are immutable; convert to list in the parent container so
+            # we can mutate float values inside it.
+            _piece = data
+            for idx, path in enumerate(paths):
+                if idx == len(paths) - 1:
+                    _piece[path] = list(current)
+                else:
+                    _piece = _piece[path]
+            current = _piece[paths[-1]]
         for idx, item in enumerate(current):
             paths.append(idx)
             _fix_floats(item, data, paths=paths)

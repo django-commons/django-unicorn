@@ -46,3 +46,36 @@ MIDDLEWARE = [
   </body>
 </html>
 ```
+
+## Tables and invalid HTML
+
+Browsers are very strict about table structure (e.g. `<tr>` can only be a direct child of `<tbody>`, `<thead>`, `<tfoot>`, or `<table>`, and `<div>` is not allowed as a direct child of `<tr>`). If you have a component that renders a table row, unexpected behavior can occur because the browser will "foster parent" invalid elements out of the table structure before `Unicorn` can seemingly react to them.
+
+For example, this valid-looking component template will cause issues:
+
+```html
+<!-- invalid-table-row.html -->
+<tr>
+  <td>{{ name }}</td>
+  {% if show_modal %}
+    <div class="modal">...</div>
+  {% endif %}
+</tr>
+```
+
+The browser will move the `div` out of the `tr` (and likely out of the `table` entirely), so when `Unicorn` tries to update the component, it will be confused by the missing element.
+
+To fix this, ensure that all content is inside a valid table element, like a `td`:
+
+```html
+<!-- valid-table-row.html -->
+<tr>
+  <td>{{ name }}</td>
+  <td>
+    {% if show_modal %}
+      <div class="modal">...</div>
+    {% endif %}
+  </td>
+</tr>
+```
+

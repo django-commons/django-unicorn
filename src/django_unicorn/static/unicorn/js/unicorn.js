@@ -2,6 +2,7 @@ import { Component } from "./component.js";
 import { isEmpty, hasValue } from "./utils.js";
 import { components, lifecycleEvents } from "./store.js";
 import { getMorpher } from "./morpher.js";
+import { handleLoading } from "./eventListeners.js";
 
 let messageUrl = "";
 let csrfTokenHeaderName = "X-CSRFToken";
@@ -154,10 +155,17 @@ export function getComponent(componentNameOrKey) {
 }
 
 /**
- * Deletes the component from the component store.
+ * Removes the component's root element from the DOM and deletes it from the
+ * component store.
  * @param {String} componentId.
  */
 export function deleteComponent(componentId) {
+  const root = document.querySelector(`[unicorn\\:id="${componentId}"]`);
+
+  if (root) {
+    root.remove();
+  }
+
   delete components[componentId];
 }
 
@@ -186,6 +194,7 @@ export function call(componentNameOrKey, methodName, ...args) {
     methodName = `${methodName}(${argString})`;
   }
 
+  handleLoading(component, null);
   component.callMethod(methodName, 0, null, (err) => {
     console.error(err);
   });

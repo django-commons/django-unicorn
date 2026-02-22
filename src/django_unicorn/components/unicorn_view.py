@@ -147,7 +147,6 @@ def construct_component(
     )
 
     component.calls = []
-    
 
     component._mount_result = component.mount()
     component.hydrate()
@@ -330,6 +329,14 @@ class Component(TemplateView):
         Add a JavaScript method name and arguments to be called after the component is rendered.
         """
         self.calls.append({"fn": function_name, "args": args})
+
+    def remove(self):
+        """
+        Remove this component's root element from the DOM and delete it from the
+        internal component store. Equivalent to calling
+        ``self.call("Unicorn.deleteComponent", self.component_id)``.
+        """
+        self.call("Unicorn.deleteComponent", self.component_id)
 
     def mount(self):
         """
@@ -917,6 +924,7 @@ class Component(TemplateView):
             "parent",
             "children",
             "call",
+            "remove",
             "calls",
             "component_cache_key",
             "component_kwargs",

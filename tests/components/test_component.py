@@ -210,6 +210,32 @@ def test_get_context_data_component_key():
     assert actual["unicorn"]["component_key"] == "key-key-key"
 
 
+def test_call_queues_js_function(component):
+    component.call("myFunction")
+    assert component.calls == [{"fn": "myFunction", "args": ()}]
+
+
+def test_call_queues_js_function_with_args(component):
+    component.call("myFunction", "hello", 42)
+    assert component.calls == [{"fn": "myFunction", "args": ("hello", 42)}]
+
+
+def test_remove_queues_delete_component_call(component):
+    component.remove()
+    assert len(component.calls) == 1
+    assert component.calls[0]["fn"] == "Unicorn.deleteComponent"
+    assert component.calls[0]["args"] == (component.component_id,)
+
+
+def test_remove_uses_own_component_id(component):
+    component.remove()
+    assert component.calls[0]["args"][0] == "asdf1234"
+
+
+def test_remove_is_not_public_attribute(component):
+    assert component._is_public("remove") is False
+
+
 def test_is_public(component):
     assert component._is_public("test_name")
 
