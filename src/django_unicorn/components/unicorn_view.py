@@ -739,6 +739,18 @@ class Component(TemplateView):
                 self.errors.update(form_errors)
 
         # ── form_classes path ────────────────────────────────────────────────
+        self._validate_object_forms(model_names)
+
+        return self.errors
+
+    @timed
+    def _validate_object_forms(self, model_names: list | None = None) -> None:
+        """
+        Validates object fields using ``form_classes`` and merges dotted-path
+        errors (e.g. ``"book.title"``) into ``self.errors``.
+
+        Called by :meth:`validate`; split out for readability.
+        """
         object_forms = self._get_object_forms()
 
         for field_name, obj_form in object_forms.items():
@@ -766,8 +778,6 @@ class Component(TemplateView):
                         self.errors[key] = value
             else:
                 self.errors.update(dotted_errors)
-
-        return self.errors
 
     @timed
     def _attribute_names(self) -> list[str]:
@@ -978,6 +988,7 @@ class Component(TemplateView):
             "login_not_required",
             "form_class",
             # Form validation configuration (server-side only, not synced to frontend)
+            "form_class",
             "form_classes",
         )
         excludes = []
