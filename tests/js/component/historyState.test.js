@@ -3,7 +3,7 @@ import { getComponent } from "../utils.js";
 
 const html = `
 <input type="hidden" name="csrfmiddlewaretoken" value="asdf">
-<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+<div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input unicorn:model='name'></input>
     <button unicorn:click='test()'><span id="clicker">Click</span></button>
 </div>

@@ -27,7 +27,7 @@ def test_message_generated_checksum_matches_dom_checksum(client):
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }
@@ -46,7 +46,13 @@ def test_message_generated_checksum_matches_dom_checksum(client):
     assert body.get("data", {}).get("clicked") is True
 
     root_element = get_root_element(dom)
-    assert root_element.attrib.get("unicorn:checksum") == body.get("checksum")
+    expected_meta = body.get("meta")
+
+    if ":" in expected_meta:
+        expected_meta = expected_meta.split(":")[0]
+
+    actual_meta = root_element.attrib.get("unicorn:meta")
+    assert actual_meta == expected_meta
 
 
 def test_message_target_invalid(client):
@@ -60,7 +66,7 @@ def test_message_target_invalid(client):
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }
@@ -89,7 +95,7 @@ def test_message_target_id(client):
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }
@@ -120,7 +126,7 @@ def test_message_target_only_id(client):
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }
@@ -151,7 +157,7 @@ def test_message_target_only_key(client):
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }
@@ -182,7 +188,7 @@ def test_message_target_key(client):
             }
         ],
         "data": data,
-        "checksum": generate_checksum(str(data)),
+        "meta": generate_checksum(str(data)),
         "id": shortuuid.uuid()[:8],
         "epoch": time.time(),
     }

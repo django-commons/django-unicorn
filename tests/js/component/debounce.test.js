@@ -5,7 +5,7 @@ import { getComponent } from "../utils.js";
 // Needs to be serial because we are mocking global fetch
 test.serial("keyup.debounce should not fire immediately", async (t) => {
     const html = `
-  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:checksum="GXzew3Km">
+  <div unicorn:id="5jypjiyb" unicorn:name="text-inputs" unicorn:meta="GXzew3Km">
     <input unicorn:keyup.debounce-100='test()'></input>
   </div>`;
     const component = getComponent(html);
