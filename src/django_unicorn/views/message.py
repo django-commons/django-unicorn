@@ -10,6 +10,13 @@ from django_unicorn.components import UnicornView
 from django_unicorn.components.unicorn_template_response import get_root_element
 from django_unicorn.errors import RenderNotModifiedError, UnicornViewError
 from django_unicorn.settings import get_cache_alias, get_serial_enabled, get_serial_timeout
+from django_unicorn.signals import (
+    component_completed,
+    component_hydrated,
+    component_post_parsed,
+    component_pre_parsed,
+    component_rendered,
+)
 from django_unicorn.utils import html_element_to_string
 from django_unicorn.views.action import Action, CallMethod, Refresh, Reset, SyncInput, Toggle
 from django_unicorn.views.action_parsers import call_method, sync_input
@@ -129,13 +136,16 @@ class UnicornMessageHandler:
         original_data = copy.deepcopy(component_request.data)
 
         component.pre_parse()
+        component_pre_parsed.send(sender=component.__class__, component=component)
 
         for property_name, property_value in component_request.data.items():
             set_property_from_data(component, property_name, property_value, ignore_m2m=True)
 
         component.post_parse()
+        component_post_parsed.send(sender=component.__class__, component=component)
 
         component.hydrate()
+        component_hydrated.send(sender=component.__class__, component=component)
 
         validate_all_fields = False
         is_reset_called = False
@@ -186,6 +196,7 @@ class UnicornMessageHandler:
                     logger.warning(f"Unknown action_type '{action.action_type}'")
 
         component.complete()
+        component_completed.send(sender=component.__class__, component=component)
 
         # Re-load frontend context variables
         component_request.data = orjson.loads(component.get_frontend_context_variables())
@@ -213,6 +224,7 @@ class UnicornMessageHandler:
         # Render
         rendered_component = component.render(request=self.request, epoch=component_request.epoch)
         component.rendered(rendered_component)
+        component_rendered.send(sender=component.__class__, component=component, html=rendered_component)
 
         # Restore queued messages
         self._restore_queued_messages(component)

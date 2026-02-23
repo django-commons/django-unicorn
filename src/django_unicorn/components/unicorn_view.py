@@ -28,6 +28,11 @@ from django_unicorn.errors import (
     UnicornCacheError,
 )
 from django_unicorn.settings import get_setting
+from django_unicorn.signals import (
+    component_completed,
+    component_hydrated,
+    component_mounted,
+)
 from django_unicorn.typer import cast_attribute_value, get_type_hints
 from django_unicorn.utils import create_template, is_non_string_sequence
 
@@ -149,8 +154,11 @@ def construct_component(
     component.calls = []
 
     component._mount_result = component.mount()
+    component_mounted.send(sender=component.__class__, component=component)
     component.hydrate()
+    component_hydrated.send(sender=component.__class__, component=component)
     component.complete()
+    component_completed.send(sender=component.__class__, component=component)
     component._validate_called = False
 
     return component
@@ -342,73 +350,61 @@ class Component(TemplateView):
         """
         Hook that gets called when the component is first created.
         """
-        pass
 
     def hydrate(self):
         """
         Hook that gets called when the component's data is hydrated.
         """
-        pass
 
     def complete(self):
         """
         Hook that gets called after all component methods are executed.
         """
-        pass
 
     def rendered(self, html):
         """
         Hook that gets called after the component has been rendered.
         """
-        pass
 
     def parent_rendered(self, html):
         """
         Hook that gets called after the component's parent has been rendered.
         """
-        pass
 
     def updating(self, name, value):
         """
         Hook that gets called when a component's data is about to get updated.
         """
-        pass
 
     def updated(self, name, value):
         """
         Hook that gets called when a component's data is updated.
         """
-        pass
 
     def resolved(self, name, value):
         """
         Hook that gets called when a component's data is resolved.
         """
-        pass
 
     def calling(self, name, args):
         """
         Hook that gets called when a component's method is about to get called.
         """
-        pass
 
     def called(self, name, args):
         """
         Hook that gets called when a component's method is called.
         """
-        pass
 
     def pre_parse(self):
         """
         Hook that gets called before the data is parsed and applied to the component.
         """
-        pass
 
     def post_parse(self):
         """
         Hook that gets called after the data is parsed and applied to the component.
         """
-        pass
 
     @timed
     def render(self, *, init_js=False, extra_context=None, request=None, epoch=None) -> str:
@@ -456,10 +452,12 @@ class Component(TemplateView):
         """
 
         self._mount_result = self.mount()
+        component_mounted.send(sender=self.__class__, component=self)
         if self._mount_result and isinstance(self._mount_result, HttpResponse):
             return self._mount_result
 
         self.hydrate()
+        component_hydrated.send(sender=self.__class__, component=self)
 
         return self.render_to_response(
             context=self.get_context_data(),
@@ -948,6 +946,7 @@ class Component(TemplateView):
 
             # Call hydrate because the component will be re-rendered
             cached_component.hydrate()
+            component_hydrated.send(sender=cached_component.__class__, component=cached_component)
 
             return cached_component
 

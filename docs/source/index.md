@@ -50,6 +50,7 @@ pagination
 javascript
 queue-requests
 custom-morphers
+signals
 ```
 
 ```{toctree}

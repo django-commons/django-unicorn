@@ -14,6 +14,7 @@ from django_unicorn.call_method_parser import (
 )
 from django_unicorn.components import UnicornView
 from django_unicorn.decorators import timed
+from django_unicorn.signals import component_method_called, component_method_calling
 from django_unicorn.typer import cast_value, get_type_hints
 from django_unicorn.utils import get_method_arguments
 from django_unicorn.views.action_parsers.utils import set_property_value
@@ -115,8 +116,37 @@ def handle(component_request: ComponentRequest, component: UnicornView, payload:
         component_with_method = parent_component or component
 
         component_with_method.calling(method_name, args)
-        return_data.value = _call_method_name(component_with_method, method_name, args, kwargs)
-        component_with_method.called(method_name, args)
+        component_method_calling.send(
+            sender=component_with_method.__class__,
+            component=component_with_method,
+            name=method_name,
+            args=args,
+        )
+        try:
+            return_data.value = _call_method_name(component_with_method, method_name, args, kwargs)
+            component_with_method.called(method_name, args)
+            component_method_called.send(
+                sender=component_with_method.__class__,
+                component=component_with_method,
+                method_name=method_name,
+                args=args,
+                kwargs=kwargs,
+                result=return_data.value,
+                success=True,
+                error=None,
+            )
+        except Exception as exc:
+            component_method_called.send(
+                sender=component_with_method.__class__,
+                component=component_with_method,
+                method_name=method_name,
+                args=args,
+                kwargs=kwargs,
+                result=None,
+                success=False,
+                error=exc,
+            )
+            raise
 
     return (
         component,
