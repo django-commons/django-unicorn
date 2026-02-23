@@ -156,6 +156,31 @@ def test_message_component_class_with_attribute_error(client):
         )
 
     assert e.value.__cause__
+    # The original AttributeError should be included in the message so the
+    # developer can see what actually went wrong, not just that loading failed.
+    assert "not_a_valid_attribute" in e.exconly()
+
+
+def test_message_component_module_with_broken_import(client):
+    """A component that exists but contains a broken import should surface the
+    underlying ModuleNotFoundError rather than masking it with a generic
+    "component module could not be loaded" message (issue #380)."""
+    data = {
+        "data": {},
+        "meta": "DVVk97cx",
+        "id": str(uuid4()),
+        "epoch": time.time(),
+    }
+
+    with pytest.raises(ComponentModuleLoadError) as e:
+        post_json(
+            client,
+            data,
+            url="/message/tests.views.fake_components_with_broken_import.FakeComponentWithBrokenImport",
+        )
+
+    assert e.value.__cause__
+    assert "nonexistent_package_xyz_abc" in e.exconly()
 
 
 def test_message_component_with_dash(client):
