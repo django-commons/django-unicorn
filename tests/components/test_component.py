@@ -2,6 +2,7 @@ import types
 
 import orjson
 import pytest
+from django import forms
 from tests.views.fake_components import (
     FakeAuthenticationComponent,
     FakeValidationComponent,
@@ -345,3 +346,58 @@ def test_get_frontend_context_variables_authentication_form(component):
     )
 
     component.get_frontend_context_variables()
+
+
+class SimpleForm(forms.Form):
+    name = forms.CharField()
+
+
+def test_get_frontend_context_variables_excludes_form_instance():
+    """
+    A Django Form instance passed as a component attribute should be automatically
+    excluded from the serialized frontend context variables (issue #165).
+    """
+
+    class ComponentWithForm(UnicornView):
+        name = "test"
+        form = None
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+    component = ComponentWithForm(
+        component_id="test_excludes_form_instance",
+        component_name="example",
+    )
+    component.form = SimpleForm()
+
+    frontend_context_variables = component.get_frontend_context_variables()
+    frontend_context_variables_dict = orjson.loads(frontend_context_variables)
+
+    # The form instance must not be included in the JSON (not serialisable)
+    assert "form" not in frontend_context_variables_dict
+    # Other public attributes are still present
+    assert "name" in frontend_context_variables_dict
+
+
+def test_get_frontend_context_variables_form_available_in_context():
+    """
+    Even though the form is excluded from the JSON frontend context, it should still
+    be accessible in the template context via get_context_data().
+    """
+
+    class ComponentWithForm(UnicornView):
+        form = None
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+    component = ComponentWithForm(
+        component_id="test_form_in_context_data",
+        component_name="example",
+    )
+    form_instance = SimpleForm()
+    component.form = form_instance
+
+    context = component.get_context_data()
+    assert context["form"] is form_instance

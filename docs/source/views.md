@@ -195,6 +195,45 @@ class HelloKwargView(UnicornView):
       assert self.component_kwargs["hello"] == "World"
 ```
 
+### Passing a Django Form
+
+A Django `Form` (or `ModelForm`) instance can be passed directly from a template into a unicorn component as a keyword argument. The form will be available in the component's template context for rendering, but it is automatically excluded from the JSON state sent to the browser (since forms cannot be serialized to JSON).
+
+```html
+<!-- index.html -->
+{% unicorn 'my-form-component' form=my_django_form %}
+```
+
+```python
+# my_form_component.py
+from django_unicorn.components import UnicornView
+
+class MyFormComponentView(UnicornView):
+    form = None  # will hold the passed-in form instance
+
+    def mount(self):
+        # self.form is available here on the initial render
+        pass
+```
+
+```html
+<!-- unicorn/my-form-component.html -->
+<div>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button unicorn:click="submit">Submit</button>
+  </form>
+</div>
+```
+
+```{note}
+Because forms cannot be pickled, `self.form` will be `None` on subsequent AJAX
+interactions (after the initial page load). If you need to process submitted form
+data reactively, declare a `form_class` on the component and use
+[component validation](validation.md) instead.
+```
+
 ### request
 
 The current `request`.
@@ -392,7 +431,12 @@ class HelloStateView(UnicornView):
 
 ### javascript_exclude
 
-To allow an attribute to be included in the the context to be used by a Django template, but not exposed to JavaScript, add it to the `Meta` class's `javascript_exclude` tuple.
+To allow an attribute to be included in the context to be used by a Django template, but not exposed to JavaScript, add it to the `Meta` class's `javascript_exclude` tuple.
+
+```{note}
+Django `Form` and `ModelForm` instances are **automatically** excluded from the
+JavaScript context — you do not need to add them to `javascript_exclude`.
+```
 
 ```html
 <!-- hello-state.html -->
@@ -464,5 +508,13 @@ Do not store unpickleable objects (e.g. generators) on the component instance.
 ```
 
 If you need to use an unpickleable object, either convert it to a pickleable type (e.g. convert a generator to a list) or re-initialize it within the method that needs it without storing it on `self`.
+
+```{note}
+Django `Form` and `ModelForm` instances are handled automatically — they are stripped
+from the component before pickling and restored afterwards, so passing a form as a
+template kwarg (see [Passing a Django Form](#passing-a-django-form)) will not cause
+pickling errors. The form will be `None` after a cache restore (i.e. on subsequent
+AJAX requests).
+```
 
 

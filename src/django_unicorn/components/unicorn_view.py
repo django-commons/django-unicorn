@@ -11,6 +11,7 @@ import shortuuid
 from django.apps import apps as django_apps_module
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.db.models import Model
+from django.forms import BaseForm
 from django.forms.widgets import CheckboxInput, Select
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.utils.decorators import classonlymethod
@@ -530,6 +531,12 @@ class Component(TemplateView):
                             )
 
                         del frontend_context_variables[field_name]
+
+        # Auto-exclude Django Form instances (they can't be serialized to JSON).
+        # This lets forms be passed as template kwargs for rendering without causing errors.
+        for field_name in list(frontend_context_variables.keys()):
+            if isinstance(frontend_context_variables[field_name], BaseForm):
+                del frontend_context_variables[field_name]
 
         # Add cleaned values to `frontend_content_variables` based on the widget in form's fields
         form = self._get_form(attributes)

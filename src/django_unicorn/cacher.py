@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from django_unicorn.components.unicorn_view import UnicornView
 
 from django.core.cache import caches
+from django.forms import BaseForm
 from django.http import HttpRequest
 
 from django_unicorn.errors import UnicornCacheError
@@ -66,6 +67,14 @@ class CacheableComponent:
             if not isinstance(component.template_name, str):
                 component.template_name = None
 
+            # Strip Django Form instances before pickling — forms contain unpicklable
+            # references (e.g. lazily-bound validators) and are only needed for rendering.
+            form_attributes: dict = {}
+            for attr_name, attr_val in list(vars(component).items()):
+                if isinstance(attr_val, BaseForm):
+                    form_attributes[attr_name] = attr_val
+                    setattr(component, attr_name, None)
+
             self._state[component.component_id] = (
                 component,
                 request,
@@ -73,6 +82,7 @@ class CacheableComponent:
                 component.parent,
                 component.children.copy(),
                 template_name,
+                form_attributes,
             )
 
             if component.parent:
@@ -104,11 +114,15 @@ class CacheableComponent:
         return self
 
     def __exit__(self, *args):
-        for component, request, extra_context, parent, children, template_name in self._state.values():
+        for component, request, extra_context, parent, children, template_name, form_attributes in self._state.values():
             component.request = request
             component.parent = parent
             component.children = children
             component.template_name = template_name
+
+            # Restore any form instances that were stripped before pickling
+            for attr_name, attr_val in form_attributes.items():
+                setattr(component, attr_name, attr_val)
 
             # Re-create the template_name `Template` object if it is `None`
             if component.template_name is None and hasattr(component, "template_html"):
