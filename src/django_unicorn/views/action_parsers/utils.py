@@ -4,6 +4,11 @@ from django.db.models import QuerySet
 
 from django_unicorn.components import UnicornView
 from django_unicorn.decorators import timed
+from django_unicorn.signals import (
+    component_property_resolved,
+    component_property_updated,
+    component_property_updating,
+)
 
 
 @timed
@@ -35,6 +40,9 @@ def set_property_value(
         data = {}
 
     component.updating(property_name, property_value)
+    component_property_updating.send(
+        sender=component.__class__, component=component, name=property_name, value=property_value
+    )
 
     """
     Handles nested properties. For example, for the following component:
@@ -139,6 +147,12 @@ def set_property_value(
             break
 
     component.updated(property_name, property_value)
+    component_property_updated.send(
+        sender=component.__class__, component=component, name=property_name, value=property_value
+    )
 
     if call_resolved_method:
         component.resolved(property_name, property_value)
+        component_property_resolved.send(
+            sender=component.__class__, component=component, name=property_name, value=property_value
+        )

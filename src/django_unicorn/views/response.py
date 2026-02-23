@@ -4,6 +4,7 @@ from django_unicorn.components import UnicornView
 from django_unicorn.components.unicorn_template_response import get_root_element
 from django_unicorn.errors import RenderNotModifiedError
 from django_unicorn.serializer import loads
+from django_unicorn.signals import component_parent_rendered
 from django_unicorn.utils import generate_checksum, html_element_to_string
 from django_unicorn.views.request import ComponentRequest
 
@@ -144,6 +145,9 @@ class ComponentResponse:
                     # Get re-generated child checksum and update the child component inside the parent DOM
                     parent_dom = parent_component.render()
                     self.component.parent_rendered(parent_dom)
+                    component_parent_rendered.send(
+                        sender=self.component.__class__, component=self.component, html=parent_dom
+                    )
 
                     if root_element is None:
                         # Re-get the root_element since it might have been modified

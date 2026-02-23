@@ -16,6 +16,7 @@ from django_unicorn.errors import (
     NoRootComponentElementError,
 )
 from django_unicorn.settings import get_minify_html_enabled
+from django_unicorn.signals import component_rendered
 from django_unicorn.utils import generate_checksum, html_element_to_string
 
 logger = logging.getLogger(__name__)
@@ -236,6 +237,7 @@ class UnicornTemplateResponse(TemplateResponse):
         rendered_template = html_element_to_string(root_element)
 
         self.component.rendered(rendered_template)
+        component_rendered.send(sender=self.component.__class__, component=self.component, html=rendered_template)
         response.content = rendered_template
 
         if get_minify_html_enabled():
