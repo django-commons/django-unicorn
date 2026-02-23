@@ -337,6 +337,7 @@ class Component(TemplateView):
         Add a JavaScript method name and arguments to be called after the component is rendered.
         """
         self.calls.append({"fn": function_name, "args": args})
+        pass
 
     def remove(self):
         """
@@ -350,61 +351,73 @@ class Component(TemplateView):
         """
         Hook that gets called when the component is first created.
         """
+        pass
 
     def hydrate(self):
         """
         Hook that gets called when the component's data is hydrated.
         """
+        pass
 
     def complete(self):
         """
         Hook that gets called after all component methods are executed.
         """
+        pass
 
     def rendered(self, html):
         """
         Hook that gets called after the component has been rendered.
         """
+        pass
 
     def parent_rendered(self, html):
         """
         Hook that gets called after the component's parent has been rendered.
         """
+        pass
 
     def updating(self, name, value):
         """
         Hook that gets called when a component's data is about to get updated.
         """
+        pass
 
     def updated(self, name, value):
         """
         Hook that gets called when a component's data is updated.
         """
+        pass
 
     def resolved(self, name, value):
         """
         Hook that gets called when a component's data is resolved.
         """
+        pass
 
     def calling(self, name, args):
         """
         Hook that gets called when a component's method is about to get called.
         """
+        pass
 
     def called(self, name, args):
         """
         Hook that gets called when a component's method is called.
         """
+        pass
 
     def pre_parse(self):
         """
         Hook that gets called before the data is parsed and applied to the component.
         """
+        pass
 
     def post_parse(self):
         """
         Hook that gets called after the data is parsed and applied to the component.
         """
+        pass
 
     @timed
     def render(self, *, init_js=False, extra_context=None, request=None, epoch=None) -> str:
