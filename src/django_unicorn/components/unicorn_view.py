@@ -1017,8 +1017,15 @@ class Component(TemplateView):
 
                 return component
             except ModuleNotFoundError as e:
-                logger.debug(e)
-                pass
+                # Only silently skip when the module we're looking for simply doesn't
+                # exist.  If a *different* module is missing it means the component file
+                # was found and started executing but contains a broken import - that
+                # error should be surfaced rather than swallowed.
+                if e.name is None or module_name == e.name or module_name.startswith(e.name + "."):
+                    logger.debug(e)
+                else:
+                    message = f"The component module '{module_name}' could not be loaded: {e}"
+                    raise ComponentModuleLoadError(message, locations=locations) from e
             except AttributeError as e:
                 logger.debug(e)
                 attribute_exception = e
