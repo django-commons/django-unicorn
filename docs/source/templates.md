@@ -116,6 +116,62 @@ component state.  As a result morphdom will clear the input's value.
 Use `items.{{ forloop.counter0 }}.name` instead.
 ```
 
+## Rendering choice fields
+
+Django models often use `TextChoices` (or `IntegerChoices`) to constrain a field to a fixed set of values. To render a reactive `<select>` that is bound to a Unicorn component field, expose the choices list as a component attribute and exclude it from the JavaScript context (since the choices are static and do not need to be reactive).
+
+```python
+# new_course.py
+from django_unicorn.components import UnicornView
+from curriculum.models import Course
+
+
+class NewCourseView(UnicornView):
+    grade_level = Course.GradeLevel.UNDEFINED
+    subject = Course.Subject.UNDEFINED
+
+    # Static choices — kept out of the JSON state sent to the browser
+    grade_level_choices = Course.GradeLevel.choices
+    subject_choices = Course.Subject.choices
+
+    class Meta:
+        javascript_exclude = ("grade_level_choices", "subject_choices")
+
+    def save(self):
+        Course.objects.create(
+            grade_level=self.grade_level,
+            subject=self.subject,
+        )
+```
+
+```html
+<!-- unicorn/new-course.html -->
+<div>
+  <select unicorn:model="grade_level">
+    {% for value, label in grade_level_choices %}
+    <option value="{{ value }}">{{ label }}</option>
+    {% endfor %}
+  </select>
+
+  <select unicorn:model="subject">
+    {% for value, label in subject_choices %}
+    <option value="{{ value }}">{{ label }}</option>
+    {% endfor %}
+  </select>
+
+  <button unicorn:click="save">Save</button>
+</div>
+```
+
+Adding the choices to [`Meta.javascript_exclude`](views.md#javascript_exclude) keeps them in the Django template context (so the `{% for %}` loop works) without serialising them into the `unicorn:data` JSON attribute on every render. The `grade_level` and `subject` fields remain fully reactive — Unicorn syncs the selected value back to the component on each change.
+
+```{note}
+If you also need validation, set `form_class` on the component to a Django `ModelForm` or `Form`.
+Unicorn will validate `grade_level` and `subject` against the form's field definitions when
+`$validate` is called or when an action method calls `self.validate()`. See
+[validation](validation.md) for details.
+```
+
 ## Model modifiers
 
 ### Lazy
