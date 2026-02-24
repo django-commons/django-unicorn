@@ -1,4 +1,4 @@
-import morphdom from "../morphdom/2.6.1/morphdom.js";
+import morphdom from "../morphdom/2.7.8/morphdom.js";
 
 export class MorphdomMorpher {
   constructor(options) {
