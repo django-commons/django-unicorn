@@ -337,7 +337,7 @@ class Component(TemplateView):
         Add a JavaScript method name and arguments to be called after the component is rendered.
         """
         self.calls.append({"fn": function_name, "args": args})
-        
+
 
     def remove(self):
         """
