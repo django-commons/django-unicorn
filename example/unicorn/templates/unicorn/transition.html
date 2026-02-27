@@ -1,0 +1,15 @@
+<div>
+    <button unicorn:click="toggle">Toggle</button>
+    
+    {% if show %}
+    <div u:transition:enter="transition ease-out duration-300"
+         u:transition:enter-start="opacity-0 transform scale-90"
+         u:transition:enter-end="opacity-100 transform scale-100"
+         u:transition:leave="transition ease-in duration-300"
+         u:transition:leave-start="opacity-100 transform scale-100"
+         u:transition:leave-end="opacity-0 transform scale-90"
+         style="background: #f0f0f0; padding: 20px; margin-top: 10px;">
+        Transitional Content
+    </div>
+    {% endif %}
+</div>

@@ -1,4 +1,6 @@
 import morphdom from "../morphdom/2.6.1/morphdom.js";
+import { Transition } from "../transition.js";
+import { Element as UnicornElement } from "../element.js";
 
 export class MorphdomMorpher {
   constructor(options) {
@@ -57,6 +59,10 @@ export class MorphdomMorpher {
         return true;
       },
       onNodeAdded(node) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          Transition.enter(node);
+        }
+
         if (reloadScriptElements) {
           if (node.nodeName === "SCRIPT") {
             // https://github.com/patrick-steele-idem/morphdom/issues/178#issuecomment-652562769
@@ -70,6 +76,21 @@ export class MorphdomMorpher {
             node.replaceWith(script);
           }
         }
+      },
+      onBeforeNodeDiscarded(node) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const element = new UnicornElement(node);
+
+          if (element.transitions.leave) {
+            Transition.leave(node).then(() => {
+              node.remove();
+            });
+
+            return false;
+          }
+        }
+
+        return true;
       },
     };
   }

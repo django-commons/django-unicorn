@@ -20,7 +20,6 @@
     #menu li:first-child {
       border-left: none !important;
     }
-
   </style>
 
   <script defer src="https://unpkg.com/@alpinejs/morph@3.x.x/dist/cdn.min.js"></script>
@@ -48,6 +47,7 @@
       <li><a href="{% url 'www:direct-view' %}">Direct View</a></li>
       <li><a href="{% url 'www:redirects' %}">Redirects</a></li>
       <li><a href="{% url 'www:template' 'wizard' %}">Wizard</a></li>
+      <li><a href="{% url 'www:template' 'transition' %}">Transitions</a></li>
     </ul>
 
     {% block content %}{% endblock content %}

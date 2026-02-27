@@ -20,6 +20,7 @@ export class Attribute {
     this.isError = false;
     this.modifiers = {};
     this.eventType = null;
+    this.isTransition = false
 
     this.init();
   }
@@ -52,6 +53,8 @@ export class Attribute {
         this.isKey = true;
       } else if (contains(this.name, ":error:")) {
         this.isError = true;
+      } else if (contains(this.name, ":transition")) {
+        this.isTransition = true;
       } else {
         const actionEventType = this.name
           .replace("unicorn:", "")
