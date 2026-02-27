@@ -20,7 +20,7 @@
 | src/django\_unicorn/components/fields.py                             |        3 |        1 |        0 |        0 |     67% |         7 |
 | src/django\_unicorn/components/mixins.py                             |        7 |        1 |        2 |        1 |     78% |        15 |
 | src/django\_unicorn/components/unicorn\_template\_response.py        |      117 |       11 |       50 |        8 |     89% |74, 89, 93, 120-122, 140, 188, 197, 203, 210-211, 222->224, 245->248 |
-| src/django\_unicorn/components/unicorn\_view.py                      |      479 |       40 |      194 |       23 |     89% |104->107, 204, 244-245, 274, 277->exit, 280, 283, 290->295, 292->291, 297->295, 313-325, 435->438, 446->449, 462-464, 492-493, 509->524, 528->527, 569-570, 600, 629-638, 643, 703->706, 726-727, 779->774, 782-784, 905, 907, 944-945, 1038->1041, 1041->1049 |
+| src/django\_unicorn/components/unicorn\_view.py                      |      481 |       40 |      196 |       23 |     89% |104->107, 204, 244-245, 274, 277->exit, 280, 283, 290->295, 292->291, 297->295, 313-325, 435->438, 446->449, 462-464, 492-493, 509->524, 528->527, 569-570, 600, 629-638, 643, 703->706, 726-727, 779->774, 782-784, 905, 907, 944-945, 1045->1048, 1048->1056 |
 | src/django\_unicorn/components/updaters.py                           |       18 |        0 |        0 |        0 |    100% |           |
 | src/django\_unicorn/decorators.py                                    |       25 |        0 |       10 |        1 |     97% |    35->38 |
 | src/django\_unicorn/errors.py                                        |       24 |        0 |        0 |        0 |    100% |           |
@@ -87,12 +87,13 @@
 | tests/views/action\_parsers/utils/\_\_init\_\_.py                    |        0 |        0 |        0 |        0 |    100% |           |
 | tests/views/action\_parsers/utils/test\_set\_property\_value.py      |       86 |        0 |        0 |        0 |    100% |           |
 | tests/views/fake\_components.py                                      |      131 |        5 |        4 |        2 |     95% |94, 121, 137, 174, 183 |
+| tests/views/fake\_components\_with\_broken\_import.py                |        4 |        3 |        0 |        0 |     25% |       3-7 |
 | tests/views/message/test\_call\_method.py                            |      181 |        0 |        2 |        0 |    100% |           |
 | tests/views/message/test\_call\_method\_multiple.py                  |      170 |      136 |        6 |        0 |     19% |20-23, 32-41, 50-61, 66-90, 95-122, 127-154, 159-187, 197-231, 236-263, 268-295, 300-327, 333-360 |
 | tests/views/message/test\_calls.py                                   |       91 |        0 |       12 |        3 |     97% |111->110, 158->157, 176->175 |
 | tests/views/message/test\_get\_property\_value.py                    |       18 |        0 |        0 |        0 |    100% |           |
 | tests/views/message/test\_hash.py                                    |      115 |        0 |        0 |        0 |    100% |           |
-| tests/views/message/test\_message.py                                 |       73 |        0 |        0 |        0 |    100% |           |
+| tests/views/message/test\_message.py                                 |       80 |        0 |        0 |        0 |    100% |           |
 | tests/views/message/test\_nested\_method\_call.py                    |       25 |        0 |        0 |        0 |    100% |           |
 | tests/views/message/test\_set\_property.py                           |       39 |        0 |        0 |        0 |    100% |           |
 | tests/views/message/test\_sync\_input.py                             |       13 |        0 |        0 |        0 |    100% |           |
@@ -114,7 +115,7 @@
 | tests/views/utils/\_\_init\_\_.py                                    |        0 |        0 |        0 |        0 |    100% |           |
 | tests/views/utils/test\_construct\_model.py                          |       47 |       10 |        0 |        0 |     79% |     44-60 |
 | tests/views/utils/test\_set\_property\_from\_data.py                 |      139 |        2 |        0 |        0 |     99% |     29-30 |
-| **TOTAL**                                                            | **6421** |  **542** | **1078** |  **146** | **90%** |           |
+| **TOTAL**                                                            | **6434** |  **545** | **1080** |  **146** | **90%** |           |
 
 
 ## Setup coverage badge
