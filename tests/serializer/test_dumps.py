@@ -10,10 +10,10 @@ from django.db import models
 from django.db.models import Model
 from django.utils.timezone import now
 from pydantic import BaseModel
+from tests.utils import dicts_equal
 
 from django_unicorn import serializer
 from django_unicorn.serializer import InvalidFieldAttributeError, InvalidFieldNameError
-from django_unicorn.utils import dicts_equal
 from example.coffee.models import Flavor, NewFlavor, Taste
 
 

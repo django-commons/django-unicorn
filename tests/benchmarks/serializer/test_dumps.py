@@ -6,7 +6,7 @@ from django.utils.dateparse import parse_duration
 from django.utils.timezone import now
 
 from django_unicorn import serializer
-from django_unicorn.utils import dicts_equal
+from tests.utils import dicts_equal
 
 
 class SimpleTestModel(models.Model):

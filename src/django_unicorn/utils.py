@@ -2,7 +2,6 @@ import hmac
 import logging
 from collections.abc import Callable, Sequence, Set
 from inspect import signature
-from pprint import pprint
 
 import shortuuid
 from django.conf import settings
@@ -61,23 +60,23 @@ def generate_checksum(data: bytes | str | dict | None) -> str:
     return checksum
 
 
-def dicts_equal(dictionary_one: dict, dictionary_two: dict) -> bool:
+def parse_meta(meta_string: str) -> tuple[str, str, str]:
     """
-    Return True if all keys and values are the same between two dictionaries.
+    Parses a consolidated metadata string into its component parts.
+
+    Args:
+        meta_string: The consolidated string, e.g. "checksum:hash:epoch".
+
+    Returns:
+        A tuple of (checksum, hash, epoch).
     """
 
-    is_valid = all(k in dictionary_two and dictionary_one[k] == dictionary_two[k] for k in dictionary_one) and all(
-        k in dictionary_one and dictionary_one[k] == dictionary_two[k] for k in dictionary_two
-    )
+    parts = meta_string.split(":")
+    checksum = parts[0]
+    hash_val = parts[1] if len(parts) > 1 else ""
+    epoch = parts[2] if len(parts) > 2 else ""  # noqa: PLR2004
 
-    if not is_valid:
-        print("dictionary_one:")  # noqa: T201
-        pprint(dictionary_one)  # noqa: T203
-        print()  # noqa: T201
-        print("dictionary_two:")  # noqa: T201
-        pprint(dictionary_two)  # noqa: T203
-
-    return is_valid
+    return checksum, hash_val, epoch
 
 
 def get_method_arguments(func) -> list[str]:

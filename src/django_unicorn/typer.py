@@ -2,7 +2,6 @@ import inspect
 import logging
 from dataclasses import is_dataclass
 from datetime import date, datetime, time, timedelta, timezone
-from inspect import signature
 from typing import Any, Union
 
 try:
@@ -59,7 +58,6 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 type_hints_cache = LRUCache(maxsize=100)
-function_signature_cache = LRUCache(maxsize=100)
 
 
 def _parse_bool(value):
@@ -226,22 +224,6 @@ def cast_attribute_value(obj, name, value):
                 pass
 
     return value
-
-
-def get_method_arguments(func) -> list[str]:
-    """Gets the arguments for a method.
-
-    Returns:
-        A list of strings, one for each argument.
-    """
-
-    if func in function_signature_cache:
-        return function_signature_cache[func]
-
-    function_signature = signature(func)
-    function_signature_cache[func] = list(function_signature.parameters)
-
-    return function_signature_cache[func]
 
 
 def is_queryset(obj, type_hint, value):

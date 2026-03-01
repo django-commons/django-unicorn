@@ -6,8 +6,8 @@ from django_unicorn.utils import (
     generate_checksum,
     get_method_arguments,
     is_non_string_sequence,
-    sanitize_html,
 )
+from tests.utils import sanitize_html
 
 
 def test_generate_checksum_bytes(settings):

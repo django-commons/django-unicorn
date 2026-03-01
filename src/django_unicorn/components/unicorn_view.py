@@ -262,9 +262,9 @@ class Component(TemplateView):
 
     def _handle_validation_error(self, e):
         # validation error handling
-        min_validation_error_args = 2
+        from django_unicorn.views.message import MIN_VALIDATION_ERROR_ARGS  # noqa: PLC0415
 
-        if len(e.args) < min_validation_error_args or not e.args[1]:
+        if len(e.args) < MIN_VALIDATION_ERROR_ARGS or not e.args[1]:
             raise AssertionError("Error code must be specified") from e
 
         if hasattr(e, "error_list"):
