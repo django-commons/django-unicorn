@@ -6,6 +6,7 @@ from django_unicorn.utils import (
     generate_checksum,
     get_method_arguments,
     is_non_string_sequence,
+    parse_meta,
 )
 from tests.utils import sanitize_html
 
@@ -119,3 +120,21 @@ def test_create_template_callable():
 
     assert actual
     assert isinstance(actual, Template)
+
+
+def test_parse_meta_one_part():
+    actual = parse_meta("checksum")
+
+    assert actual == ("checksum", "", "")
+
+
+def test_parse_meta_two_parts():
+    actual = parse_meta("checksum:hash")
+
+    assert actual == ("checksum", "hash", "")
+
+
+def test_parse_meta_three_parts():
+    actual = parse_meta("checksum:hash:epoch")
+
+    assert actual == ("checksum", "hash", "epoch")
