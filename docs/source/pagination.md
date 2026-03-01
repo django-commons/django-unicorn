@@ -171,7 +171,8 @@ class MoviesView(UnicornView):
         self.load_movies()
 ```
 
-```html
+:::html
+:force: true
 <!-- movies.html -->
 <div>
     <!-- Search and filters -->
@@ -233,7 +234,7 @@ class MoviesView(UnicornView):
     </nav>
     {% endif %}
 </div>
-```
+:::
 
 ## Common pitfalls
 
@@ -336,7 +337,8 @@ class MoviesView(UnicornView):
 
 You can create custom pagination controls to match your design:
 
-```html
+:::html
+:force: true
 <!-- Custom pagination with first/last buttons -->
 <nav>
     <button 
@@ -369,7 +371,7 @@ You can create custom pagination controls to match your design:
         Last
     </button>
 </nav>
-```
+:::
 
 ## Community examples
 
