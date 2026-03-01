@@ -338,7 +338,7 @@ Child components will not *by default* render the parent component anymore. If t
 
 ## v0.35.0
 
-- [Trigger](javascript.md#trigger-model-update) an `input` or `blur` event for a model element from JavaScript.
+- [Trigger](javascript.md) an `input` or `blur` event for a model element from JavaScript.
 - [Visibility](visibility.md) event with `unicorn:visible` attribute.
 
 **Breaking changes**
