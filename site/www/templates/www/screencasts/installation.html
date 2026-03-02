@@ -1,0 +1,96 @@
+{% extends "www/bases/screencasts.html" %}
+
+{% block subtitle %}Installation{% endblock subtitle %}
+
+{% block video_title %}Installation{% endblock video_title %}
+
+{% block video_id %}494214339{% endblock video_id %}
+
+{% block video_description %}How to install <code>Unicorn</code> and create a basic component.{% endblock video_description %}
+
+{% block video_content %}
+<div class="content">
+    <p>
+        The code changes are reflected in <a href="https://github.com/adamghill/magical-creatures/compare/1f4a7a0d08b453e332d544c3efb0e2a4aaf51bee..3e0b85689b8a33ae29218cab277f902131a6b5c8">these changes</a> in the <a href="https://github.com/adamghill/magical-creatures">magical-creatures</a> repository.
+    </p>
+</div>
+
+<div class="content">
+    <p class="title is-6 pt-4">Transcript</p>
+    <p>
+        Hello! Welcome to the <em>very</em> first screencast for Unicorn, the magical full-stack framework for Django.
+    </p>
+
+    <p>
+        In this episode I'll show you how to install Unicorn and create a basic component. You can see I just created a brand new Django project and we can see the fancy rocketship getting ready to blast off!
+    </p>
+
+    <p>
+        So, let's look at the code.
+    </p>
+
+    <p>
+        I already added a "www" app to have a simple index page to put our components on.
+    </p>
+
+    <p>
+        I'm using <code>poetry</code> to install Python packages, but of course installing with <code>pip</code> will work just fine as well.
+    </p>
+
+    <p>
+        Ok! So, the library is installed. There are two steps to start using it in Django.
+    </p>
+
+    <p>
+        First, add "django_unicorn" to the <code>INSTALLED_APPS</code> in your settings file.
+    </p>
+
+    <p>
+        Second, add the url route.
+    </p>
+
+    <p>
+        Now, Unicorn is integrated with Django. Let's create a new component to see how it all works. Built into Unicorn is a Django management command to create new components. Let's create a new component to track magical creature sightings.
+    </p>
+
+    <p>
+        Awesome! So, we have a component. Now what?! For our first component, we need to tell Django where to look for templates. Let's register the "unicorn" folder that just got created in <code>INSTALLED_APPS</code>.
+    </p>
+
+    <p>
+        Alright, now we can start integrating that new component we created earlier into our template.
+    </p>
+
+    <p>
+        We'll need to load the Unicorn template tags so they can be used later on.
+    </p>
+
+    <p>
+        Make sure that the Django CSRF tokens are available because they will protect us from cross-site scripting attacks.
+    </p>
+
+    <p>
+        Load the JavaScript required for Unicorn.
+    </p>
+
+    <p>
+        And finally, our new component!
+    </p>
+
+    <p>
+        Let's update the "sighting" component and refresh the page and voila! we now have a more complicated Django "includes" templatetag. :)
+    </p>
+
+    <p>
+        But, now is where things get more fun!
+    </p>
+
+    <p>
+        Let's add a textbox on our component to count how many times we've seen a magical creature.
+    </p>
+
+    <p>
+        And that wraps up the first screencast on how to install Unicorn!
+    </p>
+</div>
+{% endblock video_content %}

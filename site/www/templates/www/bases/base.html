@@ -1,0 +1,238 @@
+{% load compress static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{% block title %}{% block subtitle %}{% endblock subtitle %} - Unicorn{% endblock title %}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+    <link rel="icon" href="{% static 'img/favicon.svg' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600">
+
+    {% block styles %}{% endblock styles %}
+
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'highlight.js/10.1.1/styles/solarized-light.css' %}">
+    <style>
+        .hljs {
+            background: transparent !important;
+            color: #000 !important;
+        }
+
+        .mt-12 {
+            margin-top: 6rem;
+        }
+    </style>
+    {% endcompress %}
+
+    {% if not debug %}
+    <script async defer data-domain="django-unicorn.com" src="https://plausible.io/js/plausible.outbound-links.js">
+    </script>
+    <script>
+        window.plausible = window.plausible || function () {
+            (window.plausible.q = window.plausible.q || []).push(arguments)
+        }
+    </script>
+
+    <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
+    {% endif %}
+
+    {% compress js %}
+    <script src="{% static 'highlight.js/10.1.1/highlight.pack.js' %}"></script>
+    {% endcompress %}
+
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+    </script>
+
+    {% block head_js %}
+    {% endblock head_js %}
+</head>
+
+<body>
+    <nav class="navbar" role="navigation" aria-label="main navigation" style="background-color: #fafafa;">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/" style="font-size: 24px;">
+                <strong>🦄 ✨</strong>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <style>
+            div.github-button {
+                margin-top: .8rem;
+                margin-right: .8rem;
+            }
+        </style>
+
+        <div class="navbar-menu" id="navMenu">
+            <div class="navbar-end">
+                <a class="navbar-item" href="/docs/">
+                    <img src="{% static 'img/book.svg' %}" style="max-height: 1.5em;" />&nbsp;Docs
+                </a>
+                <a class="navbar-item" href="{% url 'www:screencasts' name='installation' %}">
+                    <img src="{% static 'img/video.svg' %}" style="max-height: 1.5em;" />&nbsp;Screencasts
+                </a>
+                <a class="navbar-item" href="{% url 'www:examples' name='todo' %}">
+                    <img src="{% static 'img/tool.svg' %}" style="max-height: 1.5em;" />&nbsp;Examples
+                </a>
+                <a class="navbar-item" href="{% url 'www:sponsors' %}">
+                    <img src="{% static 'img/heart.svg' %}" style="max-height: 1.5em;" />&nbsp;Sponsors
+                </a>
+                <a class="navbar-item" href="https://fosstodon.org/@unicorn">
+                    <img src="/static/img/mastodon.svg"
+                        style="max-height: 1.5em; margin-top: 6px; vertical-align: bottom;" />&nbsp;&nbsp;
+                </a>
+                <div class="github-button">
+                    <a class="github-button" href="https://github.com/adamghill/django-unicorn/discussions"
+                        data-size="large" aria-label="Discuss adamghill/django-unicorn on GitHub">Discuss</a>
+                </div>
+                <div class="github-button">
+                    <a class="navbar-item github-button" href="https://github.com/adamghill/django-unicorn"
+                        data-icon="octicon-star" data-size="large" data-show-count="true"
+                        aria-label="Star adamghill/django-unicorn on GitHub">Star</a>
+                </div>
+                <div class="github-button">
+                    <a class="github-button" href="https://github.com/sponsors/adamghill" data-icon="octicon-heart"
+                        data-size="large" aria-label="Sponsor @adamghill on GitHub">Sponsor</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div data-ea-publisher="django-unicorncom" data-ea-type="image" data-ea-style="stickybox" id="django-unicorn"
+            style="float: right;">
+        </div>
+
+        {% block sidebar %}{% endblock sidebar %}
+
+        {% block content %}{% endblock content %}
+
+        <footer class="footer mt-4">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-3 is-offset-1">
+                        <ul>
+                            <li>
+                                <img src="{% static 'img/book.svg' %}" style="max-height: 1em;" />
+                                <a href="/docs/">Docs</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/video.svg' %}" style="max-height: 1em;" />
+                                <a href="{% url 'www:screencasts' 'installation' %}">Screencasts</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/tool.svg' %}" style="max-height: 1em;" />
+                                <a href="{% url 'www:examples' 'todo' %}">Examples</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/link.svg' %}" style="max-height: 1em;" />
+                                <a href="{% url 'www:articles' %}">Articles</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/heart.svg' %}" style="max-height: 1em;" />
+                                <a href="{% url 'www:sponsors' %}">Current Sponsors</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="column is-3 is-offset-1">
+                        <ul>
+                            <li>
+                                <img src="{% static 'img/heart.svg' %}" style="max-height: 1em;" />
+                                <a href="https://github.com/sponsors/adamghill">Sponsor</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/mastodon.svg' %}" style="max-height: 1em;" />
+                                <a rel="me" href="https://fosstodon.org/@unicorn">Mastodon</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/link.svg' %}" style="max-height: 1em;" />
+                                <a href="https://alldjango.com">alldjango.com</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/link.svg' %}" style="max-height: 1em;" />
+                                <a href="https://devmarks.io">devmarks.io</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/link.svg' %}" style="max-height: 1em;" />
+                                <a href="https://fediview.com">fediview.com</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/link.svg' %}" style="max-height: 1em;" />
+                                <a href="https://python-utils.adamghill.com/">python-utils</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/link.svg' %}" style="max-height: 1em;" />
+                                <a href="https://unsuckjs.com">unsuckjs.com</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="column is-3 is-offset-1">
+                        <ul>
+                            <li>
+                                <img src="{% static 'img/download.svg' %}" style="max-height: 1em;" />
+                                <a href="https://pypi.org/project/django-unicorn/">PyPI</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/github.svg' %}" style="max-height: 1em;" />
+                                <a href="https://github.com/adamghill/django-unicorn">GitHub</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/zap.svg' %}" style="max-height: 1em;" />
+                                <a href="https://openmoji.org/library/#search=unicorn&emoji=1F984">Unicorn Logo</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/feather.svg' %}" style="max-height: 1em;" />
+                                <a href="https://feathericons.com/">Feather Icons</a>
+                            </li>
+                            <li>
+                                <img src="{% static 'img/layers.svg' %}" style="max-height: 1em;" />
+                                <a href="https://bulma.io">Bulma CSS</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Get all "navbar-burger" elements
+            const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+            // Check if there are any navbar burgers
+            if ($navbarBurgers.length > 0) {
+                // Add a click event on each of them
+                $navbarBurgers.forEach(el => {
+                    el.addEventListener('click', () => {
+
+                        // Get the target from the "data-target" attribute
+                        const target = el.dataset.target;
+                        const $target = document.getElementById(target);
+
+                        // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                        el.classList.toggle('is-active');
+                        $target.classList.toggle('is-active');
+
+                    });
+                });
+            }
+
+        });
+    </script>
+</body>
+
+</html>

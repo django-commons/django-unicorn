@@ -1,0 +1,10 @@
+<div>
+    <select unicorn:model="selected_fruit">
+        {% for fruit in fruits %}
+        <option value="{{ fruit }}">{{ fruit }}</option>
+        {% endfor %}
+    </select>
+    <br />
+
+    Selected fruit: '{{ selected_fruit }}'
+</div>

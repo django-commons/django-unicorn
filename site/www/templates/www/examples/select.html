@@ -1,0 +1,15 @@
+{% extends "www/bases/examples.html" %}
+{% load unicorn utils %}
+
+{% block subtitle %}Select{% endblock subtitle %}
+
+{% block example_title %}Select{% endblock example_title %}
+
+{% block example_content %}
+{% unicorn 'select' %}
+{% endblock example_content %}
+
+{% block example_source %}
+<pre data-lang="html"><code class="language-html">{% code_include 'unicorn/templates/unicorn/select.html' %}</code></pre>
+<pre data-lang="python"><code class="language-python">{% code_include 'unicorn/components/select.py' %}</code></pre>
+{% endblock example_source %}

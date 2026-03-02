@@ -1,0 +1,314 @@
+{% extends "www/bases/base.html" %}
+{% load compress static unicorn utils %}
+
+{% block title %}Unicorn{% endblock title %}
+
+{% block styles %}
+
+{% compress css %}
+<link rel="stylesheet" href="{% static 'css/bulma.min.css' %}">
+<link res="stylesheet" href="{% static 'css/main.css' %}">
+{% endcompress %}
+
+{% endblock styles %}
+
+{% block head_js %}
+<script src="{% static 'roughnotation/rough-notation.iife.js' %}"></script>
+
+<script>
+    window.onload = function (event) {
+        RoughNotation.annotate(document.querySelector('#magical'), {
+            type: 'underline',
+            color: '#f8f4ff',
+            iterations: 2,
+            animationDuration: 500
+        }).show();
+        RoughNotation.annotate(document.querySelector('#magic'), {
+            type: 'underline',
+            color: 'blue',
+            iterations: 2,
+            animationDuration: 500
+        }).show();
+        RoughNotation.annotate(document.querySelector('#other'), {
+            type: 'box',
+            color: '#FF3333',
+            iterations: 2,
+            animationDuration: 500
+        }).show();
+
+        var highlightOptions = {
+            type: 'highlight',
+            color: 'yellow',
+            iterations: 1,
+            animationDuration: 500
+        };
+        RoughNotation.annotate(document.querySelector('#size'), highlightOptions).show();
+
+        RoughNotation.annotationGroup([
+            RoughNotation.annotate(document.querySelector('#add'), highlightOptions),
+            RoughNotation.annotate(document.querySelector('#skip'), highlightOptions),
+            RoughNotation.annotate(document.querySelector('#no'), highlightOptions),
+        ]).show();
+    };
+</script>
+
+{% unicorn_scripts %}
+{% endblock head_js %}
+
+{% block content %}
+
+{% csrf_token %}
+
+<section class="hero is-info is-medium is-bold">
+    <div class="hero-body">
+
+        <div class="container">
+            <img src="{% static 'img/unicorn-logo.svg' %}" height="80" width="80" style="float: left;
+                height: 80px;
+                top: -10px;
+                position: relative;
+                margin-right: 20px;
+                background-color: white;
+                border-radius: 50%;
+                padding: 4px;
+                border: 1px solid #aaa;" />
+            <div>
+                <h1 class="title">
+                    Unicorn
+                </h1>
+                <h2 class="subtitle" id="stuff">
+                    A <span id="magical">magical</span> full-stack framework for Django ✨
+                </h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="box cta">
+    <p class="has-text-centered">
+        <span class="tag is-primary">New</span>
+        0.65.2 fixes a <em>lot</em> of bugs.
+        <br />
+        See the <a href="/docs/changelog/#v0-65-2">changelog</a> for more details. 🎉
+    </p>
+</div>
+
+<section class="container">
+    <div class="columns features">
+        <div class="column is-4">
+            <div class="card is-shady">
+                <div class="card-image has-text-centered">
+                    <img src="{% static 'img/layout.svg' %}" class="pt-4">
+                </div>
+                <div class="card-content">
+                    <div class="content">
+                        <h4><span id="add">Add modern site functionality</span></h4>
+                        <p>
+                            Quickly add in simple interactions to regular Django templates without learning a new
+                            templating language.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="card is-shady">
+                <div class="card-image has-text-centered">
+                    <img src="{% static 'img/watch.svg' %}" class="pt-4">
+                </div>
+                <div class="card-content">
+                    <div class="content">
+                        <h4><span id="skip">Skip the JavaScript build tools</span></h4>
+                        <p>
+                            Stop fighting with a new JavaScript build tool and separate process to use yet another
+                            frontend framework.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="card is-shady">
+                <div class="card-image has-text-centered">
+                    <img src="{% static 'img/zap.svg' %}" class="pt-4">
+                </div>
+                <div class="card-content">
+                    <div class="content">
+                        <h4><span id="no">No API required</span></h4>
+                        <p>
+                            Building a feature-rich API is complicated. Skip creating a bunch of serializers and just
+                            use Django.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="column is-8 is-offset-2 mt-12">
+        <div class="notification is-link is-light" style="padding-right: 1.25rem; border: solid 1px #dfdfdf;">
+            <div style="clear: both;" class="has-text-centered">
+                <h3 style="color: #4a4a4a;" class="title is-5">
+                    Sponsored By
+                </h3>
+
+                <a href="https://www.ohne-makler.net" target="_blank">
+                    <img src="{% static 'img/ohne-makler.svg' %}">
+                </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="intro column is-8 is-offset-2 mt-6">
+        <div class="mt-4">
+            <h2 class="title">Create your first component</h2>
+
+            <ol class="mx-4">
+                <li><a href="/docs/installation/">Install</a> <code>Unicorn</code></li>
+                <li><a href="/docs/components/">Create</a> a component</li>
+                <li>Load the <code>Unicorn</code> templatetag with
+                    {% verbatim %}<code>{% load unicorn %}</code>{% endverbatim %} and add the component to your
+                    template with {% verbatim %}<code>{% unicorn 'component-name' %}</code>{% endverbatim %}</li>
+                <li>🎉</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="intro column is-8 is-offset-2 mt-6">
+        <div>
+            <h2 class="title">Example "todo" component</h2>
+
+            <div class="content mb-4">
+                {% unicorn 'todo-bulma' %}
+            </div>
+
+            {% verbatim %}
+            <pre data-lang="html"><code class="language-html">&lt;!-- unicorn/templates/unicorn/todo.html --&gt;
+&lt;div&gt;
+  &lt;form unicorn:submit.prevent="add">
+    &lt;input type=&quot;text&quot;
+      unicorn:model.defer=&quot;task&quot;
+      unicorn:keyup.escape=&quot;task=&#39;&#39;&quot;
+      placeholder=&quot;New task&quot; id=&quot;task&quot;&gt;&lt;/input&gt;
+  &lt;/form>
+  &lt;button unicorn:click=&quot;add&quot;&gt;Add&lt;/button&gt;
+  &lt;button unicorn:click=&quot;$reset&quot;&gt;Clear all tasks&lt;/button&gt;
+
+  &lt;p&gt;
+    {% if tasks %}
+      &lt;ul&gt;
+        {% for task in tasks %}
+          &lt;li&gt;{{ task }}&lt;/li&gt;
+        {% endfor %}
+      &lt;/ul&gt;
+    {% else %}
+      No tasks 🎉
+    {% endif %}
+  &lt;/p&gt;
+&lt;/div&gt;</code></pre>{% endverbatim %}
+
+            <br />
+
+            <pre data-lang="python"><code class="language-python"># unicorn/components/todo.py
+from django_unicorn.components import UnicornView
+from django import forms
+
+class TodoForm(forms.Form):
+    task = forms.CharField(min_length=2, max_length=20, required=True)
+
+class TodoView(UnicornView):
+    task = ""
+    tasks = []
+
+    def add(self):
+        if self.is_valid():
+            self.tasks.append(self.task)
+            self.task = ""</code></pre>
+        </div>
+
+        <div class="mt-4">
+            <p>
+                Other <a href="{% url 'www:examples' 'todo' %}">example components</a>. Or read all of the <a
+                    href="/docs/">documentation</a> about how to use <code>Unicorn</code>.
+            </p>
+        </div>
+
+        <div class="mt-12">
+            <h2 class="title">Wait, is this <span id="magic">magic</span>?</h2>
+
+            <p>
+                Sort of! At least it might feel like it. 🤩
+            </p>
+
+            <div class="content">
+                <ul>
+                    <li><code>Unicorn</code> progressively enhances a normal Django view, so the initial render of
+                        components is <strong>fast</strong> and great for <strong>SEO</strong>.
+                    <li>Next, <code>Unicorn</code> binds to the elements you specify and automatically makes AJAX calls
+                        when needed.</li>
+                    <li>Then, <code>Unicorn</code> dynamically updates the DOM.</li>
+                </ul>
+
+                <p>
+                    The end result is that you can focus on writing regular Django templates and Python classes without
+                    needing to switch to another language or build unnecessary plumbing. Best of all, the JavaScript
+                    portion is a paltry <span id="size"><strong>~8 KB</strong></span> gzipped.
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-12">
+            <h2 class="title">Sponsoring</h2>
+
+            <p>
+                Help encourage development for more features and bug fixes on <code>Unicorn</code> by <a
+                    href="https://github.com/sponsors/adamghill">sponsoring me on GitHub</a>. Sponsorship benefits (some
+                are dependant on the sponsorship level):
+            </p>
+
+            <div class="content">
+                <ul>
+                    <li>My undying appreciation and a warm glow from helping support open-source projects for Django.
+                    </li>
+                    <li>Listed on <a href="{% url 'www:sponsors' %}">django-unicorn.com/sponsors.</a></li>
+                    <li>Prioritized handling of <a href="https://github.com/adamghill/django-unicorn/issues">bugs and
+                            issues in GitHub.</a></li>
+                    <li>Access to additional <a href="{% url 'www:screencasts' name='installation' %}">screencasts</a>
+                        detailing advanced use-cases for <code>Unicorn</code> (coming soon).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-12">
+            <h2 class="title">Using <span id="other">other</span> frontend frameworks with Django</h2>
+
+            <p>
+                Not convinced using <code>Unicorn</code> is for you? Check out some <a
+                    href="{% url 'www:articles' %}">other approaches to integrate Django with a frontend framework</a>.
+            </p>
+        </div>
+
+        <div class="column is-8 is-offset-2 mt-12">
+            <div class="notification is-link is-light" style="padding-right: 1.25rem; border: solid 1px #dfdfdf;">
+                <div style="clear: both;" class="has-text-centered">
+                    <p style="color: #4a4a4a;" class="has-text-centered">
+                        <strong>Support <code>Unicorn</code> on GitHub</strong>
+                    </p>
+
+                    <p class="has-text-centered mt-4">
+                        <a href="https://github.com/sponsors/adamghill" class="button is-primary"
+                            target="_blank">Sponsor
+                            Unicorn</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4" style="text-align: center;">
+            <img src="{% static 'img/unicorn.svg' %}" height="80" width="80" />
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

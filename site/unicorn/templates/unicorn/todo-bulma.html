@@ -1,0 +1,61 @@
+<div>
+    <style>
+        [unicorn\:error\:invalid] {
+            border-color: #f14668;
+        }
+        [unicorn\:error\:invalid]:hover {
+            border-color: #f14668;
+        }
+        [unicorn\:error\:required] {
+            border-color: #f14668;
+        }
+        [unicorn\:error\:required]:hover {
+            border-color: #f14668;
+        }
+        [unicorn\:error\:min_length] {
+            border-color: #f14668;
+        }
+        [unicorn\:error\:min_length]:hover {
+            border-color: #f14668;
+        }
+        [unicorn\:error\:max_length] {
+            border-color: #f14668;
+        }
+        [unicorn\:error\:max_length]:hover {
+            border-color: #f14668;
+        }
+    </style>
+
+    {% if unicorn.errors %}
+    <div class="notification is-danger is-light">
+        {{ unicorn.errors.task.0.message }}
+    </div>
+    {% endif %}
+
+    <div class="field has-addons">
+        <p class="control">
+            <form unicorn:submit.prevent="add">
+                <input class="input" type="text" unicorn:model.defer="task" unicorn:keyup.escape="task=''" placeholder="New task" id="task"></input>
+            </form>
+        </p>
+        <p class="control">
+            <button unicorn:click="add" class="button is-info">Add</button>&nbsp;&nbsp;
+        </p>
+
+        <div class="control">
+            <button unicorn:click="$reset" class="button is-danger" {% if not tasks %}disabled{% endif %} style="border-radius: 4px;">Clear <span class="is-hidden-mobile">&nbsp;all tasks</span></button>
+        </div>
+    </div>
+
+    <p>
+        {% if tasks %}
+        <ul>
+            {% for task in tasks %}
+            <li>{{ task }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        No tasks 🎉
+        {% endif %}
+    </p>
+</div>
