@@ -121,7 +121,6 @@ if ENVIRONMENT == "live":
         }
     }
 
-    # Prevent django-unicorn.com from using up all the Sentry transactions
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
 

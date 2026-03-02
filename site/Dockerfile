@@ -20,9 +20,9 @@ RUN apt-get update \
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-WORKDIR /repo/site
-COPY site/uv.lock site/pyproject.toml ./
-RUN uv sync --frozen --no-dev --no-install-project
+WORKDIR /repo
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --only-group site --no-install-project
 
 # production stage
 FROM python-base as production

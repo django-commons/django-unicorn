@@ -32,8 +32,8 @@ jobs:
       - name: Set up Python
         run: uv python install 3.12
 
-      - name: Install docs dependencies
-        run: uv sync --extra docs
+      - name: Install dependencies
+        run: uv sync --group docs --group site
 
       - name: Build HTML docs
         run: uv run sphinx-build -E -a -b dirhtml docs/source docs/build
