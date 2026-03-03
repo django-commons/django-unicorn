@@ -14,13 +14,13 @@
 | example/coffee/apps.py                                               |        3 |        0 |        0 |        0 |    100% |           |
 | example/coffee/models.py                                             |       26 |        0 |        0 |        0 |    100% |           |
 | src/django\_unicorn/\_\_init\_\_.py                                  |        0 |        0 |        0 |        0 |    100% |           |
-| src/django\_unicorn/cacher.py                                        |       93 |        1 |       34 |        1 |     98% |        57 |
+| src/django\_unicorn/cacher.py                                        |      101 |        1 |       40 |        1 |     99% |        58 |
 | src/django\_unicorn/call\_method\_parser.py                          |       80 |        1 |       24 |        2 |     97% |31->49, 47 |
 | src/django\_unicorn/components/\_\_init\_\_.py                       |        5 |        0 |        0 |        0 |    100% |           |
 | src/django\_unicorn/components/fields.py                             |        3 |        1 |        0 |        0 |     67% |         7 |
 | src/django\_unicorn/components/mixins.py                             |        7 |        1 |        2 |        1 |     78% |        15 |
 | src/django\_unicorn/components/unicorn\_template\_response.py        |      119 |       11 |       50 |        8 |     89% |75, 90, 94, 121-123, 141, 189, 198, 204, 211-212, 223->225, 247->250 |
-| src/django\_unicorn/components/unicorn\_view.py                      |      490 |       41 |      198 |       23 |     89% |109->112, 212, 252-253, 282, 285->exit, 288, 291, 298->303, 300->299, 305->303, 321-333, 444->447, 455->458, 472-475, 503-504, 520->535, 539->538, 580-581, 611, 640-649, 654, 714->717, 737-738, 790->785, 793-795, 916, 918, 965-966, 1067->1070, 1070->1078 |
+| src/django\_unicorn/components/unicorn\_view.py                      |      494 |       41 |      202 |       23 |     89% |110->113, 213, 253-254, 283, 286->exit, 289, 292, 299->304, 301->300, 306->304, 322-334, 445->448, 456->459, 473-476, 504-505, 521->537, 546->545, 587-588, 618, 647-656, 661, 721->724, 744-745, 797->792, 800-802, 923, 925, 972-973, 1074->1077, 1077->1085 |
 | src/django\_unicorn/components/updaters.py                           |       18 |        0 |        0 |        0 |    100% |           |
 | src/django\_unicorn/decorators.py                                    |       25 |        0 |       10 |        1 |     97% |    35->38 |
 | src/django\_unicorn/errors.py                                        |       24 |        0 |        0 |        0 |    100% |           |
@@ -52,7 +52,7 @@
 | tests/call\_method\_parser/test\_parse\_args.py                      |       96 |        0 |        0 |        0 |    100% |           |
 | tests/call\_method\_parser/test\_parse\_call\_method\_name.py        |       68 |        0 |        0 |        0 |    100% |           |
 | tests/call\_method\_parser/test\_parse\_kwarg.py                     |       44 |        0 |        0 |        0 |    100% |           |
-| tests/components/test\_component.py                                  |      199 |        0 |        0 |        0 |    100% |           |
+| tests/components/test\_component.py                                  |      224 |        0 |        0 |        0 |    100% |           |
 | tests/components/test\_convert\_to\_dash\_case.py                    |        5 |        0 |        0 |        0 |    100% |           |
 | tests/components/test\_convert\_to\_pascal\_case.py                  |        5 |        0 |        0 |        0 |    100% |           |
 | tests/components/test\_convert\_to\_snake\_case.py                   |        5 |        0 |        0 |        0 |    100% |           |
@@ -77,7 +77,7 @@
 | tests/templatetags/test\_unicorn.py                                  |       15 |        0 |        0 |        0 |    100% |           |
 | tests/templatetags/test\_unicorn\_render.py                          |      272 |        0 |        8 |        4 |     99% |52->exit, 61->exit, 70->exit, 79->exit |
 | tests/templatetags/test\_unicorn\_scripts.py                         |       30 |        0 |        0 |        0 |    100% |           |
-| tests/test\_cacher.py                                                |      148 |        4 |       10 |        0 |     97% |133, 136, 254, 286 |
+| tests/test\_cacher.py                                                |      168 |        4 |       10 |        0 |     98% |134, 137, 255, 287 |
 | tests/test\_model\_lifecycle.py                                      |       64 |        0 |        0 |        0 |    100% |           |
 | tests/test\_settings.py                                              |       49 |        0 |        4 |        2 |     96% |69->72, 90->exit |
 | tests/test\_signals.py                                               |      109 |        0 |        0 |        0 |    100% |           |
@@ -119,7 +119,7 @@
 | tests/views/utils/\_\_init\_\_.py                                    |        0 |        0 |        0 |        0 |    100% |           |
 | tests/views/utils/test\_construct\_model.py                          |       47 |       10 |        0 |        0 |     79% |     44-60 |
 | tests/views/utils/test\_set\_property\_from\_data.py                 |      139 |        2 |        0 |        0 |     99% |     29-30 |
-| **TOTAL**                                                            | **6685** |  **547** | **1092** |  **148** | **90%** |           |
+| **TOTAL**                                                            | **6742** |  **547** | **1102** |  **148** | **90%** |           |
 
 
 ## Setup coverage badge
