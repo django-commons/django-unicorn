@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.66.0
+
+**Features**
+- Implement `unicorn:dirty` targeting support.
+- Add signals for lifecycle hooks.
+- Implement script tag loading from newly added child components.
+- Implement popstate support for history navigation.
+- Implement a timestamp-based (epoch) tracking mechanism to identify and discard stale responses on the frontend.
+
+**Fixes**
+- Surface broken import errors when loading components.
+- Handle nested method calls in `parse_call_method_name`.
+- Restore float values in nested `tuple[dict]` fields.
+- Fix: `u:loading` on child elements no longer disables parent `u:click`.
+- Fix: Trigger loading states for actions called via `Unicorn.call()`.
+- Fix: Include child component JavaScript calls in response.
+- Fix `ValueError` when deserializing `ForeignKey` fields on models loaded outside `mount`.
+
+**Refactors**
+- Consolidate component metadata (checksum, hash, epoch) into 'meta' identifier.
+- Remove redundant per-component script tags and enable global DOM scanning.
+
+**Documentation**
+- Add tutorial documentation covering inputs, actions, and polling.
+- Add guide on table structure limitations.
+- Clarify Unicorn can be adopted incrementally.
+- Add Context Processors and Component Re-rendering section.
+- Improve Installation Tutorial and Add Pagination Documentation.
+
 ## 0.65.0
 
 - Properly escape single quotes in Unicorn.call() arguments [#773](https://github.com/adamghill/django-unicorn/pull/773) by [JohananOppongAmoateng](https://github.com/JohananOppongAmoateng).
