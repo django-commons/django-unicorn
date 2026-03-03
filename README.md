@@ -20,7 +20,7 @@
 | src/django\_unicorn/components/fields.py                             |        3 |        1 |        0 |        0 |     67% |         7 |
 | src/django\_unicorn/components/mixins.py                             |        7 |        1 |        2 |        1 |     78% |        15 |
 | src/django\_unicorn/components/unicorn\_template\_response.py        |      119 |       11 |       50 |        8 |     89% |75, 90, 94, 121-123, 141, 189, 198, 204, 211-212, 223->225, 247->250 |
-| src/django\_unicorn/components/unicorn\_view.py                      |      488 |       41 |      196 |       23 |     89% |109->112, 212, 252-253, 282, 285->exit, 288, 291, 298->303, 300->299, 305->303, 321-333, 444->447, 455->458, 472-475, 503-504, 520->535, 539->538, 580-581, 611, 640-649, 654, 714->717, 737-738, 790->785, 793-795, 916, 918, 955-956, 1057->1060, 1060->1068 |
+| src/django\_unicorn/components/unicorn\_view.py                      |      490 |       41 |      198 |       23 |     89% |109->112, 212, 252-253, 282, 285->exit, 288, 291, 298->303, 300->299, 305->303, 321-333, 444->447, 455->458, 472-475, 503-504, 520->535, 539->538, 580-581, 611, 640-649, 654, 714->717, 737-738, 790->785, 793-795, 916, 918, 965-966, 1067->1070, 1070->1078 |
 | src/django\_unicorn/components/updaters.py                           |       18 |        0 |        0 |        0 |    100% |           |
 | src/django\_unicorn/decorators.py                                    |       25 |        0 |       10 |        1 |     97% |    35->38 |
 | src/django\_unicorn/errors.py                                        |       24 |        0 |        0 |        0 |    100% |           |
@@ -40,7 +40,7 @@
 | src/django\_unicorn/views/action\_parsers/call\_method.py            |      137 |       13 |       66 |       11 |     87% |5-6, 26-31, 41, 50->53, 85, 114, 191, 206->180, 219->180, 242, 248->exit, 254->248, 258 |
 | src/django\_unicorn/views/action\_parsers/sync\_input.py             |       13 |        0 |        4 |        0 |    100% |           |
 | src/django\_unicorn/views/action\_parsers/utils.py                   |       78 |        9 |       50 |        9 |     86% |35, 37, 63, 87, 93->116, 120, 123, 141-142, 147 |
-| src/django\_unicorn/views/message.py                                 |      169 |       36 |       74 |       13 |     74% |61-62, 75, 89->97, 98-116, 129, 132, 135, 188-196, 217, 239, 245-247, 250-252, 262->236, 280-281, 287-288 |
+| src/django\_unicorn/views/message.py                                 |      171 |       36 |       74 |       13 |     74% |62-63, 76, 90->98, 99-117, 130, 133, 136, 189-197, 218, 245, 251-253, 256-258, 268->242, 286-287, 293-294 |
 | src/django\_unicorn/views/objects.py                                 |      101 |       55 |       40 |        0 |     41% |19-22, 25, 29-35, 44-90, 93, 105-116, 170-173 |
 | src/django\_unicorn/views/request.py                                 |       68 |        4 |       34 |        5 |     91% |43, 47, 62->65, 65->68, 94, 97 |
 | src/django\_unicorn/views/response.py                                |       90 |        6 |       36 |        7 |     90% |95, 144->197, 154, 165, 170, 180, 200 |
@@ -59,6 +59,7 @@
 | tests/components/test\_create.py                                     |       13 |        0 |        0 |        0 |    100% |           |
 | tests/components/test\_get\_locations.py                             |       74 |        0 |        4 |        2 |     97% |15->19, 21->exit |
 | tests/components/test\_is\_html\_well\_formed.py                     |       37 |        0 |        0 |        0 |    100% |           |
+| tests/components/test\_issue\_236.py                                 |       32 |        0 |        2 |        1 |     97% |  32->exit |
 | tests/components/test\_issue\_650.py                                 |       27 |        0 |        0 |        0 |    100% |           |
 | tests/components/test\_issue\_668\_repro.py                          |       14 |        2 |        0 |        0 |     86% |     18-19 |
 | tests/components/test\_mount\_redirect.py                            |       32 |        0 |        0 |        0 |    100% |           |
@@ -93,6 +94,7 @@
 | tests/views/message/test\_call\_method.py                            |      181 |        0 |        2 |        0 |    100% |           |
 | tests/views/message/test\_call\_method\_multiple.py                  |      170 |      136 |        6 |        0 |     19% |20-23, 32-41, 50-61, 66-90, 95-122, 127-154, 159-187, 197-231, 236-263, 268-295, 300-327, 333-360 |
 | tests/views/message/test\_calls.py                                   |       91 |        0 |       12 |        3 |     97% |111->110, 158->157, 176->175 |
+| tests/views/message/test\_child\_state\_propagation.py               |       65 |        1 |        8 |        1 |     97% |36->35, 40 |
 | tests/views/message/test\_get\_property\_value.py                    |       18 |        0 |        0 |        0 |    100% |           |
 | tests/views/message/test\_hash.py                                    |      115 |        0 |        0 |        0 |    100% |           |
 | tests/views/message/test\_message.py                                 |       80 |        0 |        0 |        0 |    100% |           |
@@ -117,7 +119,7 @@
 | tests/views/utils/\_\_init\_\_.py                                    |        0 |        0 |        0 |        0 |    100% |           |
 | tests/views/utils/test\_construct\_model.py                          |       47 |       10 |        0 |        0 |     79% |     44-60 |
 | tests/views/utils/test\_set\_property\_from\_data.py                 |      139 |        2 |        0 |        0 |     99% |     29-30 |
-| **TOTAL**                                                            | **6584** |  **546** | **1080** |  **146** | **90%** |           |
+| **TOTAL**                                                            | **6685** |  **547** | **1092** |  **148** | **90%** |           |
 
 
 ## Setup coverage badge
