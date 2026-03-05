@@ -1,9 +1,11 @@
+from typing import ClassVar
+
 from django_unicorn.components import UnicornView
 
 
 class SelectView(UnicornView):
     selected_fruit = ""
-    fruits = [
+    fruits: ClassVar[list] = [
         "Apple",
         "Grape",
         "Banana",

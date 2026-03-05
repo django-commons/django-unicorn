@@ -1,5 +1,8 @@
-from django_unicorn.components import UnicornView
+from typing import ClassVar
+
 from django import forms
+
+from django_unicorn.components import UnicornView
 
 
 class TodoForm(forms.Form):
@@ -10,7 +13,7 @@ class TodoBulmaView(UnicornView):
     form_class = TodoForm
 
     task = ""
-    tasks = []
+    tasks: ClassVar[list] = []
 
     def add(self):
         if self.is_valid():

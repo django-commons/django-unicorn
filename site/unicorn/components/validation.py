@@ -1,7 +1,7 @@
-from django_unicorn.components import UnicornView
-
 from django import forms
 from django.utils import timezone
+
+from django_unicorn.components import UnicornView
 
 
 class ValidationForm(forms.Form):

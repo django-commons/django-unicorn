@@ -338,7 +338,6 @@ class Component(TemplateView):
         """
         self.calls.append({"fn": function_name, "args": args})
 
-
     def remove(self):
         """
         Remove this component's root element from the DOM and delete it from the

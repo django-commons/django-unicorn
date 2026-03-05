@@ -11,7 +11,7 @@ REPO_ROOT = os.path.dirname(BASE_DIR)
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "django-unicorn.com", "www.django-unicorn.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "django-unicorn.com", "www.django-unicorn.com"]  # noqa: S104
 
 ALLOWED_HOST = os.getenv("ALLOWED_HOST")
 

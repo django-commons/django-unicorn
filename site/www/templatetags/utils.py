@@ -1,7 +1,5 @@
-from django import template
-
 from cache_memoize import cache_memoize
-
+from django import template
 
 register = template.Library()
 

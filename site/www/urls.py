@@ -1,7 +1,6 @@
 from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
-
-from . import views
+from www import views
 
 app_name = "www"
 

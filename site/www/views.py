@@ -7,13 +7,13 @@ from fbv.decorators import render_html
 @cache_page(60 * 15)
 @csrf_protect
 @render_html("www/index.html")
-def index(request):
+def index(_request):
     return {}
 
 
 @cache_page(60 * 15)
 @render_html("www/articles.html")
-def articles(request):
+def articles(_request):
     return {}
 
 
@@ -30,14 +30,14 @@ def examples(request, name="todo"):
 
 @cache_page(60 * 15)
 @render_html("www/sponsors.html")
-def sponsors(request):
+def sponsors(_request):
     return {}
 
 
 @csrf_protect
-def documentation(request, name="introduction"):
+def documentation(_request, _name="introduction"):
     return redirect("/docs/")
 
 
-def docs_redirect(request, name):
+def docs_redirect(_request, name):
     return redirect(name + "/")
