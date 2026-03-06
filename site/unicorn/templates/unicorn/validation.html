@@ -1,0 +1,56 @@
+{% load unicorn %}
+
+<div>
+    <style>
+        [unicorn\:error\:invalid] {
+            border: 1px solid red !important;
+        }
+        [unicorn\:error\:required] {
+            border: 1px solid red !important;
+        }
+        [unicorn\:error\:max_length] {
+            border: 1px solid red !important;
+        }
+        [unicorn\:error\:min_length] {
+            border: 1px solid red !important;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .unicorn-errors {
+            background-color: #feecf0;
+            color: #cc0f35;
+            border-radius: 4px;
+            position: relative;
+            padding: .25rem 2.5rem 1.25rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+
+    <div>
+        {% unicorn_errors %}
+
+        <h2>Plain text (minimum of 3 characters, max of 10)</h2>
+        <input unicorn:model="text" type="text" id="text"><br />
+        <code>text</code>: {{ text }}
+        
+        <h2>Number validation</h2>
+        <input unicorn:model="number" type="text" id="number"><br />
+        <code>number</code>: {{ number }}<br />
+        
+        <h2>Datetime with property setter</h2>
+        <input unicorn:model="now" type="text" id="now" unicorn:key="now"><br />
+        <span class="error">{{ unicorn.errors.now.0.message }}</span>
+        <code>now</code>: {{ now }}<br />
+        <code>now|date:"s"</code>: {{ now|date:"s" }}<br />
+
+        <h2>Actions</h2>
+        <button unicorn:click="set_text_no_validation">set_text_no_validation()</button>
+        <button unicorn:click="set_text_with_validation">set_text_with_validation()</button>
+        <button unicorn:click="$validate">validate()</button>
+        <!-- <button unicorn:click="$reset">reset()</button>
+        <button unicorn:click="$refresh">refresh()</button> -->
+    </div>
+</div>

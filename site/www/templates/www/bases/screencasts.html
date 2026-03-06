@@ -1,0 +1,87 @@
+{% extends "www/bases/base.html" %}
+{% load compress static unicorn utils %}
+
+{% block title %}{% block subtitle %}{% endblock subtitle %} Screencast - Unicorn{% endblock title %}
+
+{% block styles %}
+
+{% compress css %}
+<link rel="stylesheet" href="{% static 'css/bulma.min.css' %}">
+<link res="stylesheet" href="{% static 'css/main.css' %}">
+{% endcompress %}
+
+{% endblock styles %}
+
+{% block content %}
+
+<section class="container pt-4">
+    <div class="columns features">
+        <div class="column is-two-thirds">
+            <div class="card">
+                <div class="card-image" style="text-align: center;">
+                  <figure class="image">
+                    <iframe src="https://player.vimeo.com/video/{% block video_id %}{% endblock video_id %}" width="640" height="362" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                  </figure>
+                </div>
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">{% block video_title %}{% endblock video_title %}</p>
+                            <p class="subtitle is-6">{% block video_description %}{% endblock video_description %}</p>
+                        </div>
+                    </div>
+
+                    {% block video_content %}{% endblock video_content %}
+                </div>
+            </div>
+        </div>
+        <div class="column is-one-third">
+            <nav class="panel">
+                <p class="panel-heading">
+                  Screencasts
+                </p>
+                <!-- <p class="panel-tabs">
+                  <a class="is-active">All</a>
+                  <a>Free</a>
+                  <a>Requires Sponsor</a>
+                </p> -->
+                <a class="panel-block" href="{% url 'www:screencasts' 'installation' %}">
+                  Installation
+                </a>
+                <a class="panel-block is-active" href="{% url 'www:screencasts' 'models' %}">
+                    Models
+                </a>
+                <div class="panel-block">
+                    <span style="color: grey;">Actions &nbsp;(coming soon)</span>
+                </div>
+                <div class="panel-block">
+                    <span style="color: grey;">Using Django Models &nbsp;(coming soon)</span>
+                </div>
+            </nav>
+
+            <nav class="panel">
+                <p class="panel-heading">
+                    Sponsorship required
+                    <span style="margin-left: 1rem;"><a class="github-button" href="https://github.com/sponsors/adamghill" data-icon="octicon-heart" data-size="large" aria-label="Sponsor @adamghill on GitHub">Sponsor</a></span>
+                </p>
+                <div class="panel-block">
+                    <span style="color: grey;">Polling &nbsp;(coming soon)</span>
+                </div>
+                <div class="panel-block">
+                    <span style="color: grey;">Validation &nbsp;(coming soon)</span>
+                </div>
+                <div class="panel-block">
+                    <span style="color: grey;">Redirecting &nbsp;(coming soon)</span>
+                </div>
+                <div class="panel-block">
+                    <span style="color: grey;">Loading states &nbsp;(coming soon)</span>
+                </div>
+                <div class="panel-block">
+                    <span style="color: grey;">Advanced components &nbsp;(coming soon)</span>
+                </div>
+            </nav>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

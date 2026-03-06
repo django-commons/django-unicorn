@@ -3,15 +3,6 @@ import? '../dotfiles/just/justfile'
 
 src := "src/django_unicorn"
 
-# Install pre-commit hooks
-install-pre-commit:
-    uv run --all-extras pre-commit install
-
-# Run pre-commit on all files
-lint:
-    uv run --all-extras pre-commit run --all-files
-
-
 # List commands
 _default:
     just --list --unsorted --justfile {{ justfile() }} --list-heading $'Available commands:\n'
@@ -23,6 +14,14 @@ fetch:
 # Run the dev server for the example project
 runserver:
     -uv run --all-extras example/manage.py runserver 0:8080
+
+# Install pre-commit hooks
+install-pre-commit:
+    uv run --all-extras pre-commit install
+
+# Run pre-commit on all files
+lint:
+    uv run --all-extras pre-commit run --all-files
 
 # Run the Python matrix test suite
 test-python-matrix:
@@ -66,11 +65,11 @@ type:
 
 # Sphinx autobuild
 docs-serve:
-    -uv run --all-extras sphinx-autobuild -W docs/source docs/build
+    -uv run --all-extras sphinx-autobuild -W docs/source site/docs
 
 # Build documentation
 docs-build:
-    -uv run --all-extras sphinx-build -W docs/source docs/build
+    -uv run --all-extras sphinx-build -W docs/source site/docs
 
 # Build everything (checks, JS, docs)
 build:
@@ -87,3 +86,8 @@ test-e2e:
 # Run e2e tests with headed browser
 test-e2e-headed:
     uv run pytest tests/integration -m integration --headed
+
+# Run the dev server for the website
+site-serve:
+    just docs-build
+    cd site && uv run --all-extras manage.py migrate && uv run --all-extras manage.py runserver 0:8081

@@ -3,7 +3,7 @@ Django signals for django-unicorn component lifecycle events.
 
 All signals are sent with ``sender=component.__class__`` and at minimum a
 ``component`` kwarg containing the live ``UnicornView`` instance.  Connect a
-receiver to observe events without monkey-patching internal methods:
+receiver to observe events without monkey-patching internal methods::
 
     from django.dispatch import receiver
     from django_unicorn.signals import component_rendered

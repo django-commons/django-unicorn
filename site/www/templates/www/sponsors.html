@@ -1,0 +1,89 @@
+{% extends "www/bases/base.html" %}
+{% load compress static unicorn utils %}
+
+{% block title %}Sponsors - Unicorn{% endblock title %}
+
+{% block styles %}
+
+{% compress css %}
+<link rel="stylesheet" href="{% static 'css/bulma.min.css' %}">
+<link res="stylesheet" href="{% static 'css/main.css' %}">
+{% endcompress %}
+
+<style>
+    .sponsorama-avatar img {
+        width: 52px;
+        border-radius: 50%;
+        padding: 8px;
+        height: auto;
+        max-width: 100%;
+    }
+
+    .sponsorama-entity {
+        height: 10px;
+    }
+
+    .sponsorama-entity .sponsorama-login {
+        display: block;
+        position: relative;
+        top: -45px;
+        left: 55px;
+    }
+
+    .sponsorama-entity .sponsorama-name {
+        display: none;
+    }
+
+    .sponsorama-logo {
+        padding-top: 40px;
+    }
+
+    #sponsorama-active-sponsors {
+        width: 600px;
+    }
+</style>
+
+{% endblock styles %}
+
+{% block content %}
+
+<section class="container pt-4">
+    <div class="columns features">
+        <div class="column">
+            <p class="mt-2">
+                <code>Unicorn</code> appreciates all GitHub sponsors who help to encourage continued development.
+            </p>
+
+            <p class="has-text-centered mt-4">
+                <a href="https://github.com/sponsors/adamghill" class="button is-link" target="_blank">Sponsor
+                    Unicorn</a>
+            </p>
+
+            <p class="mt-6">
+                All <code>Individual Advocates</code> and higher tier sponsors:
+            </p>
+
+            <div id="sponsorama-active-sponsors" class="mt-2 mb-6">
+                <ul>
+                    <li>
+                        <div class="sponsorama-avatar">
+                            <img src="https://avatars.githubusercontent.com/u/2604686?s=52&v=4"></img>
+                        </div>
+                        <div class="sponsorama-entity">
+                            <a href="https://github.com/zurtri" class="sponsorama-login">zurtri</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="sponsorama-avatar">
+                            <img src="https://avatars.githubusercontent.com/u/91255425?s=52&v=4"></img>
+                        </div>
+                        <div class="sponsorama-entity">
+                            <a href="https://github.com/om-proptech" class="sponsorama-login">om-proptech</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

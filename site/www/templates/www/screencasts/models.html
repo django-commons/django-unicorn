@@ -1,0 +1,71 @@
+{% extends "www/bases/screencasts.html" %}
+
+{% block subtitle %}Models{% endblock subtitle %}
+
+{% block video_title %}Models{% endblock video_title %}
+
+{% block video_id %}495363382{% endblock video_id %}
+
+{% block video_description %}How to use models in <code>Unicorn</code>.{% endblock video_description %}
+
+{% block video_content %}
+<!--
+<div class="content">
+    <p>
+        The code changes are reflected in <a href="https://github.com/adamghill/magical-creatures/compare/1f4a7a0d08b453e332d544c3efb0e2a4aaf51bee..3e0b85689b8a33ae29218cab277f902131a6b5c8">these changes</a> in the <a href="https://github.com/adamghill/magical-creatures">magical-creatures</a> repository.
+    </p>
+</div>
+-->
+
+<div class="content">
+    <p class="title is-6 pt-4">Transcript</p>
+
+    <p>
+        This screencast is going to be about <em>models</em>. These are not Django database models (we'll get to those later), but if you have ever used <code>Vue</code> or <code>Livewire</code>, the <em>model</em> attribute in your HTML will probably look familiar.
+    </p>
+
+    <p>
+        A <em>model</em> refers to a field on a component. So, <code>count</code> here refers to the compnent field here. Models have a two-way binding between the HTML and the component class.
+    </p>
+
+    <p>
+        Let's add some more models to see how it all works.
+    </p>
+
+    <p>
+        So, let's update this HTML. So, now we have a <code>select</code> form field, a <code>text</code> input, a <code>number</code> input, and some Django template code. Let's update our component to include <code>creature</code> and <code>name</code>.
+    </p>
+    
+    <p>
+        Ok. Let's refresh our component; we can see our new fields. Let's choose "Unicorn", let's name it "Filbert" because <em>why not</em>, and if we increase the count, we can see that our template now renders out "1 unicorn named Filbert" and if we increase the count again, this conditional gets rendered out.
+    </p>
+    
+    <p>
+        We can see that every time an input changes there is a new AJAX call. Let me open this [developer toolbar] up real quick. On the request, there is an action and some book-keeping that <code>Unicorn</code> uses to keep things in sync. And then on the response there is some data that comes back, there is the HTML that gets merged into our current index page.
+    </p>
+
+    <p>
+        Listening to every input change is great for simple use-cases, but it might be too chatty or slow in some instances. <code>Unicorn</code> has a few modifiers that can be used to change how models interact with the backend.
+    </p>
+
+    <p>
+        The first modifier is to change how long to <em>debounce</em> the input. By default, <code>Unicorn</code> waits for 250ms before sending the input over the wire. However, we can change that with this modifier.
+    </p>
+
+    <p>
+        This will change the time that <code>Unicorn</code> waits to send an input to 1 second. Let's try that out. Let's try "Bigfoot". Let's use "Albert". I'll clear [these XHR network calls]. We can tell that it took a little bit longer. Let's change it to 5 just to make sure that I'm not lying to you. 😉  Alright, that looks like it is working as expected.
+    </p>
+
+    <p>
+        Another modifier that <code>Unicorn</code> has is to use "lazy" on the mode. This will basically only fire the event when the input goes <em>on blur</em> instead of <em>on change</em>. Let's call it "Albert" again and this time we can increase the count over and over again and no AJAX calls happen, but once we clicked outside of it, it will send an AJAX call. Let's try that again; nothing happens. Let's click outside and there goes the event.
+    </p>
+
+    <p>
+        They can even be chained together, so if you wanted to have something wait for <em>on blur</em> and then also wait for 3 seconds than you can do something like that. And let's test that out. Let's say "Dragon", let's say "Tommy", and 3. I'm going to click out and we'll wait for 3 seconds and then it'll get updated. Perfect.
+    </p>
+
+    <p>
+        The last modifier is "defer" and to demonstrate that I'll give you a sneak peak into "actions" as well. Alright, so I'm going to get rid of this "lazy" and "debounce" and I'm going to say "defer" and I'm going to put a button down here at the bottom with a click action of "save" and I'm going to add a method that is just going to print out something. Let's refresh our component. "Yeti", his name was "Albert", we can increase the count over and over again, we can click outside and nothing happens. I can clear [these network XHR calls]. You can see nothing is going until I hit [the] "save" [button]. And then we look at this [XHR network calls], we can see that there are 2 actions that get sent over the wire. 1 is to set the count, and 1 is to set the method.
+    </p>
+</div>
+{% endblock video_content %}
