@@ -35,6 +35,7 @@ export class Element {
     this.key = null;
     this.events = [];
     this.errors = [];
+    this.transitions = {};
 
     if (!this.el.attributes) {
       return;
@@ -154,6 +155,17 @@ export class Element {
 
       if (attribute.isKey) {
         this.key = attribute.value;
+      }
+
+      if (attribute.isTransition) {
+        let transitionType = attribute.name.replace("unicorn:transition:", "").replace("u:transition:", "");
+
+        // If no type is specified, default to "enter" (though usually it's explicitly specified)
+        if (transitionType === "unicorn:transition" || transitionType === "u:transition") {
+          transitionType = "enter";
+        }
+
+        this.transitions[transitionType] = attribute.value;
       }
 
       if (attribute.isError) {

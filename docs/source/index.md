@@ -40,6 +40,7 @@ polling
 visibility
 messages
 pagination
+transitions
 ```
 
 ```{toctree}

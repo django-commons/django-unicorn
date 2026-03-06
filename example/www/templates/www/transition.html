@@ -1,0 +1,13 @@
+{% extends "www/base.html" %}
+{% load unicorn %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Transitions</h1>
+            {% unicorn 'transition' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
