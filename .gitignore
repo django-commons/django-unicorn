@@ -114,3 +114,5 @@ TODO.md
 node_modules/
 tags
 staticfiles/
+
+site/docs

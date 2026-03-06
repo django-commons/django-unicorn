@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -6,8 +7,7 @@ load_dotenv()
 
 
 ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-REPO_ROOT = os.path.dirname(BASE_DIR)
+BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 
@@ -74,14 +74,14 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = str(BASE_DIR / "staticfiles")
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
     "compressor.finders.CompressorFinder",
 )
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"), os.path.join(REPO_ROOT, "docs", "build", "_static"))
+STATICFILES_DIRS = (str(BASE_DIR / "static"), str(BASE_DIR / "docs" / "_static"))
 
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
@@ -101,7 +101,7 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 # django-sphinx-docs settings
-DOCS_ROOT = os.path.join(REPO_ROOT, "docs", "build")
+DOCS_ROOT = str(BASE_DIR / "docs")
 DOCS_DIRHTML = True
 
 INTERNAL_IPS = (

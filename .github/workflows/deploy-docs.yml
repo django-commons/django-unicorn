@@ -36,10 +36,10 @@ jobs:
         run: uv sync --group docs --group site
 
       - name: Build HTML docs
-        run: uv run sphinx-build -E -a -b dirhtml docs/source docs/build
+        run: uv run sphinx-build -E -a -b dirhtml docs/source site/docs
 
       - name: Build PDF docs
-        run: uv run sphinx-build -E -a -b pdf docs/source docs/build
+        run: uv run sphinx-build -E -a -b pdf docs/source site/docs
 
       - name: Login to ghcr.io
         uses: docker/login-action@v3

@@ -20,7 +20,7 @@ RUN apt-get update \
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-WORKDIR /repo
+WORKDIR /app
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --only-group site --no-install-project
 
@@ -29,14 +29,10 @@ FROM python-base as production
 
 COPY --from=builder-base /opt/venv /opt/venv
 
-# Mirror the repo structure so REPO_ROOT resolves correctly in settings.py:
-#   BASE_DIR  = /repo/site/
-#   REPO_ROOT = /repo/
-#   DOCS_ROOT = /repo/docs/build/
-COPY site/ /repo/site/
-COPY docs/build/ /repo/docs/build/
+# Copy the site directory into /app/
+COPY site/ /app/
 
-WORKDIR /repo/site
+WORKDIR /app
 
 EXPOSE 80
 

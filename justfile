@@ -65,11 +65,11 @@ type:
 
 # Sphinx autobuild
 docs-serve:
-    -uv run --all-extras sphinx-autobuild -W docs/source docs/build
+    -uv run --all-extras sphinx-autobuild -W docs/source site/docs
 
 # Build documentation
 docs-build:
-    -uv run --all-extras sphinx-build -W docs/source docs/build
+    -uv run --all-extras sphinx-build -W docs/source site/docs
 
 # Build everything (checks, JS, docs)
 build:
@@ -89,4 +89,5 @@ test-e2e-headed:
 
 # Run the dev server for the website
 site-serve:
-    mkdir -p site/docs && cp -r docs/build/* site/docs/ && cd site && uv run --all-extras manage.py runserver 0:8081
+    just docs-build
+    cd site && uv run --all-extras manage.py migrate && uv run --all-extras manage.py runserver 0:8081
