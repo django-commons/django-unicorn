@@ -243,33 +243,27 @@ class TestSetPropertyFromDataBypass:
     without SECRET_KEY. These tests document the defense-in-depth gap.
     """
 
-    def test_set_property_from_data_sets_template_name_if_present(self):
+    def test_set_property_from_data_rejects_template_name(self):
         """
-        set_property_from_data will set template_name if the attribute exists,
-        because it doesn't check _is_public. The checksum is the primary defense.
+        set_property_from_data will NOT set template_name because it now checks _is_public.
+        The checksum is no longer the sole primary defense.
         """
         component = _make_component()
         original_template = component.template_name
 
-        # This would be blocked by set_property_value (action handler),
-        # but set_property_from_data doesn't have the same guard.
-        # The only defense is the checksum validation on the incoming data.
+        # This is now blocked by set_property_from_data's _is_public guard.
         set_property_from_data(component, "template_name", "evil.html")
 
-        # If this assertion passes, it confirms the gap exists
-        # (the only protection is the checksum)
-        assert component.template_name == "evil.html"
+        # Confirm the value was NOT changed
+        assert component.template_name == original_template
 
-        # Restore for subsequent tests
-        component.template_name = original_template
-
-    def test_set_property_from_data_sets_force_render(self):
-        """force_render is a protected property but can be set via set_property_from_data."""
+    def test_set_property_from_data_rejects_force_render(self):
+        """force_render is a protected property and cannot be set via set_property_from_data."""
         component = _make_component()
         assert component.force_render is False
 
         set_property_from_data(component, "force_render", True)
-        assert component.force_render is True
+        assert component.force_render is False
 
     def test_set_property_from_data_respects_hasattr(self):
         """Properties that don't exist won't be set (hasattr returns False)."""
