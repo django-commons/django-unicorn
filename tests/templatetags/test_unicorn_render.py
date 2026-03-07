@@ -84,14 +84,14 @@ class FakeComponentCalls(UnicornView):
     template_name = "templates/test_component.html"
 
     def mount(self):
-        self.call("testCall")
+        self.call("Unicorn.testCall")
 
 
 class FakeComponentCalls2(UnicornView):
     template_name = "templates/test_component.html"
 
     def mount(self):
-        self.call("testCall2", "hello")
+        self.call("Unicorn.testCall2", "hello")
 
 
 def test_unicorn_template_renders(client):
@@ -389,7 +389,7 @@ def test_unicorn_render_calls(settings):
     context = {}
     html = unicorn_node.render(Context(context))
 
-    assert 'unicorn:calls=\'[{"fn":"testCall","args":[]}]\'' in html
+    assert 'unicorn:calls=\'[{"fn":"Unicorn.testCall","args":[]}]\'' in html
 
 
 def test_unicorn_render_calls_with_arg(settings):
@@ -402,7 +402,7 @@ def test_unicorn_render_calls_with_arg(settings):
     context = {}
     html = unicorn_node.render(Context(context))
 
-    assert 'unicorn:calls=\'[{"fn":"testCall2","args":["hello"]}]\'' in html
+    assert 'unicorn:calls=\'[{"fn":"Unicorn.testCall2","args":["hello"]}]\'' in html
 
 
 def test_unicorn_render_calls_no_mount_call(settings):

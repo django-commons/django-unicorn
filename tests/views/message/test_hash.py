@@ -268,7 +268,7 @@ def test_message_hash_no_change_but_calls(client):
 
     # check that the response is JSON and not a 304
     assert isinstance(response, dict)
-    assert response.get("calls") == [{"args": [], "fn": "testCall"}]
+    assert response.get("calls") == [{"args": [], "fn": "Unicorn.testCall"}]
 
 
 def test_message_hash_no_change_but_parent(client):
