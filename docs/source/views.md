@@ -620,6 +620,9 @@ backwards compatibility.
 
 Components are pickled and cached for the duration of the AJAX request. This means that any instance variable on the component must be pickleable.
 
+> [!CAUTION]
+> Because `django-unicorn` uses Python's `pickle` to serialize component state into the caching backend, it is critical that your cache backend (e.g., Redis, Memcached) is properly secured against unauthorized write access to prevent remote code execution (RCE) vulnerabilities.
+
 ```{warning}
 Do not store unpickleable objects (e.g. generators) on the component instance.
 ```
