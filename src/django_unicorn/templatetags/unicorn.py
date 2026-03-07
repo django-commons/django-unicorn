@@ -85,14 +85,6 @@ class UnicornNode(template.Node):
         self.parent = None
 
     def render(self, context):
-        # Ensure that window.Unicorn exists before any component is rendered
-        # so that inline scripts can attach functions to it without errors
-        unicorn_stub = ""
-
-        if not context.get("unicorn_stub_rendered"):
-            unicorn_stub = mark_safe("<script>window.Unicorn = window.Unicorn || {};</script>\n")
-            context["unicorn_stub_rendered"] = True
-
         request = None
 
         if hasattr(context, "request"):
@@ -151,6 +143,14 @@ class UnicornNode(template.Node):
                     self.parent = implicit_parent
             except template.VariableDoesNotExist:
                 pass  # no implicit parent present
+
+        # Ensure that window.Unicorn exists before any component is rendered
+        # so that inline scripts can attach functions to it without errors
+        unicorn_stub = ""
+
+        if not self.parent and not context.get("unicorn_stub_rendered"):
+            unicorn_stub = mark_safe("<script>window.Unicorn = window.Unicorn || {};</script>\n")
+            context["unicorn_stub_rendered"] = True
 
         component_id = None
 

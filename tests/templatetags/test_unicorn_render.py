@@ -100,8 +100,10 @@ def test_unicorn_template_renders(client):
 
     assert response.wsgi_request.path == "/test"
     assert "WSGIRequest" in content
-    assert content.startswith("<div unicorn:id")
-    assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentKwargs"' in content
+    root_element = get_root_element(content)
+    assert root_element.tag == "div"
+    assert "unicorn:id" in root_element.attrib
+    assert root_element.attrib.get("unicorn:name") == "tests.templatetags.test_unicorn_render.FakeComponentKwargs"
 
 
 def test_unicorn_template_renders_with_parent_and_child(client):
@@ -109,8 +111,10 @@ def test_unicorn_template_renders_with_parent_and_child(client):
     content = response.content.decode().strip()
 
     assert response.wsgi_request.path == "/test-parent"
-    assert content.startswith("<div unicorn:id")
-    assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentParent"' in content
+    root_element = get_root_element(content)
+    assert root_element.tag == "div"
+    assert "unicorn:id" in root_element.attrib
+    assert root_element.attrib.get("unicorn:name") == "tests.templatetags.test_unicorn_render.FakeComponentParent"
     assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentChild"' in content
     assert "--parent--" in content
     assert "==child==" in content
@@ -121,8 +125,10 @@ def test_unicorn_template_renders_with_parent_and_child_with_templateview(client
     content = response.content.decode().strip()
 
     assert response.wsgi_request.path == "/test-parent-template"
-    assert content.startswith("<div unicorn:id")
-    assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentParent"' in content
+    root_element = get_root_element(content)
+    assert root_element.tag == "div"
+    assert "unicorn:id" in root_element.attrib
+    assert root_element.attrib.get("unicorn:name") == "tests.templatetags.test_unicorn_render.FakeComponentParent"
     assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentChild"' in content
     assert "--parent--" in content
     assert "==child==" in content
@@ -133,8 +139,12 @@ def test_unicorn_template_renders_with_implicit_parent_and_child(client):
     content = response.content.decode().strip()
 
     assert response.wsgi_request.path == "/test-parent-implicit"
-    assert content.startswith("<div unicorn:id")
-    assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentParentImplicit"' in content
+    root_element = get_root_element(content)
+    assert root_element.tag == "div"
+    assert "unicorn:id" in root_element.attrib
+    assert (
+        root_element.attrib.get("unicorn:name") == "tests.templatetags.test_unicorn_render.FakeComponentParentImplicit"
+    )
     assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentChildImplicit"' in content
     assert "--parent--" in content
     assert "==child==" in content
