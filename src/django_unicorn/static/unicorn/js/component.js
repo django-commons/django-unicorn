@@ -141,11 +141,26 @@ export class Component {
    * Array of results for each method call.
    */
   callCalls(calls) {
+    // Deny-list of dangerous global function roots that should never be called
+    const BLOCKED_ROOTS = new Set([
+      "eval", "Function", "setTimeout", "setInterval",
+      "location", "navigate", "open",
+      "document", "fetch", "XMLHttpRequest", "importScripts",
+    ]);
+
     calls = calls || [];
     const results = [];
 
     calls.forEach((call) => {
       let functionName = call.fn;
+
+      // Block dangerous global function calls
+      const rootName = call.fn.split(".")[0];
+      if (BLOCKED_ROOTS.has(rootName)) {
+        console.warn(`Unicorn: blocked call to '${call.fn}'`);
+        return;
+      }
+
       let module = this.window;
 
       call.fn.split(".").forEach((obj, idx) => {

@@ -4,6 +4,7 @@ from django.db.models import QuerySet
 
 from django_unicorn.components import UnicornView
 from django_unicorn.decorators import timed
+from django_unicorn.errors import UnicornViewError
 from django_unicorn.signals import (
     component_property_resolved,
     component_property_updated,
@@ -35,6 +36,11 @@ def set_property_value(
         raise AssertionError("Property name is required")
     if property_value is None:
         raise AssertionError("Property value is required")
+
+    # Enforce access control: only allow setting public properties
+    property_name_root = property_name.split(".")[0]
+    if not component._is_public(property_name_root):
+        raise UnicornViewError(f"'{property_name_root}' is not a valid property name")
 
     if not data:
         data = {}

@@ -965,6 +965,10 @@ class Component(TemplateView):
         if not component_name:
             raise AssertionError("Component name is required")
 
+        # Validate the component name to prevent path traversal or suspicious patterns
+        if ".." in component_name:
+            raise AssertionError("Invalid component name")
+
         component_args = component_args if component_args is not None else []
         kwargs = kwargs if kwargs is not None else {}
 
