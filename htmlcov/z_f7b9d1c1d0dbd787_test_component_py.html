@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_f7b9d1c1d0dbd787_test_convert_to_dash_case_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.1">coverage.py v7.13.1</a>,
-            created at 2026-03-03 13:25 +0000
+            created at 2026-03-07 18:52 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -297,13 +297,13 @@
     <p class="pln"><span class="n"><a id="t213" href="#t213">213</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t214" href="#t214">214</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t215" href="#t215">215</a></span><span class="t"><span class="key">def</span> <span class="nam">test_call_queues_js_function</span><span class="op">(</span><span class="nam">component</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t216" href="#t216">216</a></span><span class="t">    <span class="nam">component</span><span class="op">.</span><span class="nam">call</span><span class="op">(</span><span class="str">"myFunction"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t217" href="#t217">217</a></span><span class="t">    <span class="key">assert</span> <span class="nam">component</span><span class="op">.</span><span class="nam">calls</span> <span class="op">==</span> <span class="op">[</span><span class="op">{</span><span class="str">"fn"</span><span class="op">:</span> <span class="str">"myFunction"</span><span class="op">,</span> <span class="str">"args"</span><span class="op">:</span> <span class="op">(</span><span class="op">)</span><span class="op">}</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t216" href="#t216">216</a></span><span class="t">    <span class="nam">component</span><span class="op">.</span><span class="nam">call</span><span class="op">(</span><span class="str">"Unicorn.myFunction"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t217" href="#t217">217</a></span><span class="t">    <span class="key">assert</span> <span class="nam">component</span><span class="op">.</span><span class="nam">calls</span> <span class="op">==</span> <span class="op">[</span><span class="op">{</span><span class="str">"fn"</span><span class="op">:</span> <span class="str">"Unicorn.myFunction"</span><span class="op">,</span> <span class="str">"args"</span><span class="op">:</span> <span class="op">(</span><span class="op">)</span><span class="op">}</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t218" href="#t218">218</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t219" href="#t219">219</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t220" href="#t220">220</a></span><span class="t"><span class="key">def</span> <span class="nam">test_call_queues_js_function_with_args</span><span class="op">(</span><span class="nam">component</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t221" href="#t221">221</a></span><span class="t">    <span class="nam">component</span><span class="op">.</span><span class="nam">call</span><span class="op">(</span><span class="str">"myFunction"</span><span class="op">,</span> <span class="str">"hello"</span><span class="op">,</span> <span class="num">42</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t222" href="#t222">222</a></span><span class="t">    <span class="key">assert</span> <span class="nam">component</span><span class="op">.</span><span class="nam">calls</span> <span class="op">==</span> <span class="op">[</span><span class="op">{</span><span class="str">"fn"</span><span class="op">:</span> <span class="str">"myFunction"</span><span class="op">,</span> <span class="str">"args"</span><span class="op">:</span> <span class="op">(</span><span class="str">"hello"</span><span class="op">,</span> <span class="num">42</span><span class="op">)</span><span class="op">}</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t221" href="#t221">221</a></span><span class="t">    <span class="nam">component</span><span class="op">.</span><span class="nam">call</span><span class="op">(</span><span class="str">"Unicorn.myFunction"</span><span class="op">,</span> <span class="str">"hello"</span><span class="op">,</span> <span class="num">42</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t222" href="#t222">222</a></span><span class="t">    <span class="key">assert</span> <span class="nam">component</span><span class="op">.</span><span class="nam">calls</span> <span class="op">==</span> <span class="op">[</span><span class="op">{</span><span class="str">"fn"</span><span class="op">:</span> <span class="str">"Unicorn.myFunction"</span><span class="op">,</span> <span class="str">"args"</span><span class="op">:</span> <span class="op">(</span><span class="str">"hello"</span><span class="op">,</span> <span class="num">42</span><span class="op">)</span><span class="op">}</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t223" href="#t223">223</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t224" href="#t224">224</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t225" href="#t225">225</a></span><span class="t"><span class="key">def</span> <span class="nam">test_remove_queues_delete_component_call</span><span class="op">(</span><span class="nam">component</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -619,7 +619,7 @@
             <a class="nav" href="z_f7b9d1c1d0dbd787_test_convert_to_dash_case_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.1">coverage.py v7.13.1</a>,
-            created at 2026-03-03 13:25 +0000
+            created at 2026-03-07 18:52 +0000
         </p>
     </div>
 </footer>

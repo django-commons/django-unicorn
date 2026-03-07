@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_6dad0f429c848504_unicorn_view_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.1">coverage.py v7.13.1</a>,
-            created at 2026-03-03 13:25 +0000
+            created at 2026-03-07 18:52 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -163,7 +163,7 @@
     <p class="pln"><span class="n"><a id="t79" href="#t79">79</a></span><span class="t">        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t80" href="#t80">80</a></span><span class="t">            <span class="com"># lxml.html.fragments_fromstring returns a list of elements/strings</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t81" href="#t81">81</a></span><span class="t">            <span class="nam">fragments</span> <span class="op">=</span> <span class="nam">html</span><span class="op">.</span><span class="nam">fragments_fromstring</span><span class="op">(</span><span class="nam">content</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t82" href="#t82">82</a></span><span class="t">            <span class="nam">elements</span> <span class="op">=</span> <span class="op">[</span><span class="nam">f</span> <span class="key">for</span> <span class="nam">f</span> <span class="key">in</span> <span class="nam">fragments</span> <span class="key">if</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">f</span><span class="op">,</span> <span class="nam">html</span><span class="op">.</span><span class="nam">HtmlElement</span><span class="op">)</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t82" href="#t82">82</a></span><span class="t">            <span class="nam">elements</span> <span class="op">=</span> <span class="op">[</span><span class="nam">f</span> <span class="key">for</span> <span class="nam">f</span> <span class="key">in</span> <span class="nam">fragments</span> <span class="key">if</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">f</span><span class="op">,</span> <span class="nam">html</span><span class="op">.</span><span class="nam">HtmlElement</span><span class="op">)</span> <span class="key">and</span> <span class="nam">f</span><span class="op">.</span><span class="nam">tag</span> <span class="op">!=</span> <span class="str">"script"</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t83" href="#t83">83</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t84" href="#t84">84</a></span><span class="t">            <span class="key">if</span> <span class="key">not</span> <span class="nam">elements</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t85" href="#t85">85</a></span><span class="t">                <span class="key">raise</span> <span class="nam">MissingComponentElementError</span><span class="op">(</span><span class="str">"No root element for the component was found"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -201,7 +201,7 @@
     <p class="run"><span class="n"><a id="t117" href="#t117">117</a></span><span class="t">            <span class="nam">elements</span> <span class="op">=</span> <span class="op">[</span><span class="nam">content</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t118" href="#t118">118</a></span><span class="t">        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t119" href="#t119">119</a></span><span class="t">            <span class="nam">fragments</span> <span class="op">=</span> <span class="nam">html</span><span class="op">.</span><span class="nam">fragments_fromstring</span><span class="op">(</span><span class="nam">content</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t120" href="#t120">120</a></span><span class="t">            <span class="nam">elements</span> <span class="op">=</span> <span class="op">[</span><span class="nam">f</span> <span class="key">for</span> <span class="nam">f</span> <span class="key">in</span> <span class="nam">fragments</span> <span class="key">if</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">f</span><span class="op">,</span> <span class="nam">html</span><span class="op">.</span><span class="nam">HtmlElement</span><span class="op">)</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t120" href="#t120">120</a></span><span class="t">            <span class="nam">elements</span> <span class="op">=</span> <span class="op">[</span><span class="nam">f</span> <span class="key">for</span> <span class="nam">f</span> <span class="key">in</span> <span class="nam">fragments</span> <span class="key">if</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">f</span><span class="op">,</span> <span class="nam">html</span><span class="op">.</span><span class="nam">HtmlElement</span><span class="op">)</span> <span class="key">and</span> <span class="op">(</span><span class="nam">f</span><span class="op">.</span><span class="nam">tag</span> <span class="op">!=</span> <span class="str">"script"</span> <span class="key">or</span> <span class="nam">f</span><span class="op">.</span><span class="nam">attrib</span><span class="op">)</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t121" href="#t121">121</a></span><span class="t">    <span class="key">except</span> <span class="nam">Exception</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t122" href="#t122">122</a></span><span class="t">        <span class="com"># Should have been caught by get_root_element usually</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t123" href="#t123">123</a></span><span class="t">        <span class="key">return</span>&nbsp;</span><span class="r"></span></p>
@@ -341,7 +341,7 @@
             <a class="nav" href="z_6dad0f429c848504_unicorn_view_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.1">coverage.py v7.13.1</a>,
-            created at 2026-03-03 13:25 +0000
+            created at 2026-03-07 18:52 +0000
         </p>
     </div>
 </footer>
