@@ -15,7 +15,7 @@ The easiest and most secure way to execute custom Javascript from your Python co
 <!-- call-javascript.html -->
 <div>
   <script>
-    window.Unicorn.hello = function(name) {
+    Unicorn.hello = function(name) {
       alert("Hello, " + name);
     }
   </script>

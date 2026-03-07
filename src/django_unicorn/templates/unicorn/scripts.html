@@ -19,7 +19,7 @@
   import { getMorpher } from "{% static 'unicorn/js/morpher.js' %}";
 
   // Set Unicorn to the global, so it can be used by components
-  window.Unicorn = Unicorn;
+  window.Unicorn = Object.assign(window.Unicorn || {}, Unicorn);
 
   const url = "{% url 'django_unicorn:message' %}";
   const morpherSettings = JSON.parse(document.getElementById("unicorn:settings:morpher").textContent);
