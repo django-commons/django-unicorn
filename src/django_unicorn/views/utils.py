@@ -37,6 +37,10 @@ def set_property_from_data(
     try:
         if not hasattr(component_or_field, name):
             return
+
+        # Defend against bulk data tampering overwriting private properties
+        if isinstance(component_or_field, UnicornView) and not component_or_field._is_public(name):
+            return
     except ValueError:
         # Treat ValueError the same as a missing field because trying to access a many-to-many
         # field before the model's pk will throw this exception
