@@ -1,6 +1,10 @@
 import test from "ava";
-import morphdom from "../../../src/django_unicorn/static/unicorn/js/morphdom/2.6.1/morphdom.js";
+import { JSDOM } from "jsdom";
+import morphdom from "../../../src/django_unicorn/static/unicorn/js/morphdom/2.7.8/morphdom.js";
 import { getEl } from "../utils.js";
+
+const dom = new JSDOM("<div></div>");
+global.HTMLElement = dom.window.HTMLElement;
 
 test("contains", (t) => {
   const componentRootHtml = `
