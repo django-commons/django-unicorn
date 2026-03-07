@@ -11,3 +11,12 @@ class HelloWorldView(UnicornView):
     def set_name(self):
         self.name = "set_name method called"
         return "set_name called at " + now().strftime("%H:%M:%S.%f")
+
+    @property
+    def user(self):
+        return self.request.user
+
+    class Meta:
+        javascript_exclude = (
+            "user",
+        )
