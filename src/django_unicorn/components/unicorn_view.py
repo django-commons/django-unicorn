@@ -354,8 +354,17 @@ class Component(TemplateView):
         """
         Add a JavaScript method name and arguments to be called after the component is rendered.
         """
-        self.calls.append({"fn": function_name, "args": args})
+        allowed_list = get_setting("ALLOWED_JS_CALL_LIST", ["Unicorn"])
+        root_name = function_name.split(".")[0]
 
+        if allowed_list and root_name not in allowed_list:
+            logger.warning(
+                f"Unicorn: blocked call to '{function_name}'. Only functions on the {allowed_list} "
+                f"namespaces are permitted. Configure 'ALLOWED_JS_CALL_LIST' in UNICORN settings to allow."
+            )
+            return
+
+        self.calls.append({"fn": function_name, "args": args})
 
     def remove(self):
         """

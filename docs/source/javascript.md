@@ -4,11 +4,18 @@
 
 To integrate with other JavaScript functions, view methods can call an arbitrary JavaScript function after it gets rendered.
 
+> [!WARNING]
+> For security reasons to protect against Cross-Site Scripting (XSS), `django-unicorn` utilizes a strict server-side allowlist for `Component.call()`. By default, only functions within the `Unicorn.` namespace are permitted to be executed.
+
+### Option A: Use the Default Namespace (Recommended)
+
+The easiest and most secure way to execute custom Javascript from your Python component is to attach your custom functions to the `window.Unicorn` object in your Javascript layer.
+
 ```html
 <!-- call-javascript.html -->
 <div>
   <script>
-    function hello(name) {
+    window.Unicorn.hello = function(name) {
       alert("Hello, " + name);
     }
   </script>
@@ -26,11 +33,36 @@ class CallJavascriptView(UnicornView):
     name = ""
 
     def mount(self):
-        self.call("hello", "world")
+        self.call("Unicorn.hello", "world")
 
     def hello(self):
-        self.call("hello", self.name)
+        self.call("Unicorn.hello", self.name)
 ```
+
+### Option B: Add a Custom Namespace to settings.py
+
+If you need to call third-party functions directly (like `Swal.fire()`) or wish to use your own namespace, you must explicitly opt-in by configuring the `ALLOWED_JS_CALL_LIST` inside your `settings.py` file.
+
+```python
+# settings.py
+UNICORN = {
+    # Allow functions starting with Unicorn. and Swal.
+    "ALLOWED_JS_CALL_LIST": ["Unicorn", "Swal"],
+}
+```
+
+```python
+# call_javascript.py
+from django_unicorn.components import UnicornView
+
+class CallJavascriptView(UnicornView):
+    def show_alert(self):
+        # Now permitted since 'Swal' is in the allowlist
+        self.call("Swal.fire", "Success!")
+```
+
+> [!CAUTION]
+> Never add raw execution functions like `eval` or `setTimeout` to your allowlist. `django-unicorn`'s frontend parser will actively block them as an additional defense-in-depth measure, but allowing them server-side bypasses critical XSS defenses.
 
 ## Remove a Component
 

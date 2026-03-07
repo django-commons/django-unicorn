@@ -7,13 +7,13 @@ class FakeCallsComponent(UnicornView):
     template_name = "templates/test_component.html"
 
     def test_call(self):
-        self.call("testCall")
+        self.call("Unicorn.testCall")
 
     def test_call2(self):
-        self.call("testCall2")
+        self.call("Unicorn.testCall2")
 
     def test_call3(self):
-        self.call("testCall3", "hello")
+        self.call("Unicorn.testCall3", "hello")
 
     def test_remove(self):
         self.remove()
@@ -33,7 +33,7 @@ def test_message_calls(client):
 
     response = post_and_get_response(client, url=FAKE_CALLS_COMPONENT_URL, action_queue=action_queue)
 
-    assert response.get("calls") == [{"args": [], "fn": "testCall"}]
+    assert response.get("calls") == [{"args": [], "fn": "Unicorn.testCall"}]
 
 
 def test_message_multiple_calls(client):
@@ -52,8 +52,8 @@ def test_message_multiple_calls(client):
     response = post_and_get_response(client, url=FAKE_CALLS_COMPONENT_URL, action_queue=action_queue)
 
     assert response.get("calls") == [
-        {"args": [], "fn": "testCall"},
-        {"args": [], "fn": "testCall2"},
+        {"args": [], "fn": "Unicorn.testCall"},
+        {"args": [], "fn": "Unicorn.testCall2"},
     ]
 
 
@@ -68,7 +68,7 @@ def test_message_calls_with_arg(client):
 
     response = post_and_get_response(client, url=FAKE_CALLS_COMPONENT_URL, action_queue=action_queue)
 
-    assert response.get("calls") == [{"args": ["hello"], "fn": "testCall3"}]
+    assert response.get("calls") == [{"args": ["hello"], "fn": "Unicorn.testCall3"}]
 
 
 def test_message_remove(client):
@@ -92,7 +92,7 @@ class FakeChildComponent(UnicornView):
     template_name = "templates/test_component.html"
 
     def child_method(self):
-        self.call("createChart", {"data": "test"})
+        self.call("Unicorn.createChart", {"data": "test"})
 
 
 class FakeParentComponent(UnicornView):
@@ -129,7 +129,9 @@ def test_message_child_calls_from_parent(client):
 
     # Verify child's JavaScript call is in the response
     calls = response.get("calls", [])
-    assert any(call["fn"] == "createChart" for call in calls), f"Expected 'createChart' in calls, got: {calls}"
+    assert any(call["fn"] == "Unicorn.createChart" for call in calls), (
+        f"Expected 'Unicorn.createChart' in calls, got: {calls}"
+    )
     assert len(calls) == 1
     assert calls[0]["args"] == [{"data": "test"}]
 
@@ -138,7 +140,7 @@ class FakeGrandchildComponent(UnicornView):
     template_name = "templates/test_component.html"
 
     def grandchild_method(self):
-        self.call("grandchildFunction", "nested")
+        self.call("Unicorn.grandchildFunction", "nested")
 
 
 class FakeChildWithGrandchildComponent(UnicornView):
@@ -152,7 +154,7 @@ class FakeChildWithGrandchildComponent(UnicornView):
         self.children.append(grandchild)
 
     def child_method_with_call(self):
-        self.call("childFunction")
+        self.call("Unicorn.childFunction")
         # Also call grandchild's method
         for child in self.children:
             if hasattr(child, "grandchild_method") and callable(child.grandchild_method):
@@ -170,7 +172,7 @@ class FakeParentWithNestedChildren(UnicornView):
         self.children.append(child)
 
     def call_nested_children(self):
-        self.call("parentFunction")
+        self.call("Unicorn.parentFunction")
         # Call child's method which will also call grandchild
         for child in self.children:
             if hasattr(child, "child_method_with_call") and callable(child.child_method_with_call):
@@ -196,7 +198,13 @@ def test_message_nested_child_calls(client):
     calls = response.get("calls", [])
     call_functions = [call["fn"] for call in calls]
 
-    assert "parentFunction" in call_functions, f"Expected 'parentFunction' in calls, got: {call_functions}"
-    assert "childFunction" in call_functions, f"Expected 'childFunction' in calls, got: {call_functions}"
-    assert "grandchildFunction" in call_functions, f"Expected 'grandchildFunction' in calls, got: {call_functions}"
+    assert "Unicorn.parentFunction" in call_functions, (
+        f"Expected 'Unicorn.parentFunction' in calls, got: {call_functions}"
+    )
+    assert "Unicorn.childFunction" in call_functions, (
+        f"Expected 'Unicorn.childFunction' in calls, got: {call_functions}"
+    )
+    assert "Unicorn.grandchildFunction" in call_functions, (
+        f"Expected 'Unicorn.grandchildFunction' in calls, got: {call_functions}"
+    )
     assert len(calls) == 3

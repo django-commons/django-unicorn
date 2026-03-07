@@ -213,13 +213,13 @@ def test_get_context_data_component_key():
 
 
 def test_call_queues_js_function(component):
-    component.call("myFunction")
-    assert component.calls == [{"fn": "myFunction", "args": ()}]
+    component.call("Unicorn.myFunction")
+    assert component.calls == [{"fn": "Unicorn.myFunction", "args": ()}]
 
 
 def test_call_queues_js_function_with_args(component):
-    component.call("myFunction", "hello", 42)
-    assert component.calls == [{"fn": "myFunction", "args": ("hello", 42)}]
+    component.call("Unicorn.myFunction", "hello", 42)
+    assert component.calls == [{"fn": "Unicorn.myFunction", "args": ("hello", 42)}]
 
 
 def test_remove_queues_delete_component_call(component):

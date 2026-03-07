@@ -5,6 +5,7 @@
 ```python
 # settings.py
 UNICORN = {
+    "ALLOWED_JS_CALL_LIST": ["Unicorn"],
     "APPS": ["unicorn",],
     "CACHE_ALIAS": "default",
     "MINIFY_HTML": False,
@@ -20,6 +21,10 @@ UNICORN = {
     },
 }
 ```
+
+## ALLOWED_JS_CALL_LIST
+
+A list of allowed JavaScript function namespaces that can be executed from a Python component's `self.call()` method. This is a primary security defense against Server-Side Cross-Site Scripting (XSS) via Javascript injection. Defaults to `["Unicorn"]`. To allow execution of arbitrary globals, developers must explicitly add them to this list.
 
 ## APPS
 
