@@ -14,6 +14,7 @@ from django_unicorn.call_method_parser import (
 )
 from django_unicorn.components import UnicornView
 from django_unicorn.decorators import timed
+from django_unicorn.errors import UnicornViewError
 from django_unicorn.signals import component_method_called, component_method_calling
 from django_unicorn.typer import cast_value, get_type_hints
 from django_unicorn.utils import get_method_arguments
@@ -69,6 +70,10 @@ def handle(component_request: ComponentRequest, component: UnicornView, payload:
     if setter_method:
         property_name = next(iter(setter_method.keys()))
         property_value = setter_method[property_name]
+
+        # Enforce access control for setter methods
+        if not component._is_public(property_name):
+            raise UnicornViewError(f"'{property_name}' is not a valid property name")
 
         set_property_value(component, property_name, property_value)
         return_data = Return(property_name, [property_value])
@@ -170,6 +175,10 @@ def _call_method_name(component: UnicornView, method_name: str, args: tuple[Any]
     """
 
     if method_name is not None and hasattr(component, method_name):
+        # Enforce access control: only allow calling public methods
+        if not component._is_public(method_name):
+            raise UnicornViewError(f"'{method_name}' is not a valid method name")
+
         func = getattr(component, method_name)
 
         parsed_args: list[Any] = []

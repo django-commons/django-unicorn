@@ -16,7 +16,7 @@ class JsView(UnicornView):
     load_js = False
 
     def call_javascript(self):
-        self.call("callAlert", "world")
+        self.call("Unicorn.callAlert", "world")
 
     def call_javascript_module(self):
         self.call("HelloJs.hello", "world!")
@@ -39,4 +39,4 @@ class JsView(UnicornView):
         self.scroll_counter += 1
 
     class Meta:
-        javascript_excludes = ("states",)
+        javascript_exclude = ("states",)

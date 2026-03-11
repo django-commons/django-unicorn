@@ -1,6 +1,6 @@
 [project]
 name = "django-unicorn"
-version = "0.66.1"
+version = "0.67.0"
 description = "A magical full-stack framework for Django."
 readme = "README.md"
 requires-python = ">=3.10"

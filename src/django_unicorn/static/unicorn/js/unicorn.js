@@ -75,9 +75,34 @@ export function componentInit(args) {
 }
 
 /**
- * Initialize the component from the DOM element if it hasn't been initialized yet.
+ * Parses the unicorn:meta attribute string into its component parts.
  *
- * Used to populate the components object with fresh components, created by the server.
+ * The meta attribute has the format "checksum:hash:epoch" where hash and epoch
+ * are optional.
+ *
+ * @param {string|null} metaAttr The value of the unicorn:meta attribute.
+ * @returns {{ checksum: string, hash: string, epoch: string }}
+ */
+function parseMetaAttribute(metaAttr) {
+  if (!metaAttr) {
+    return { checksum: "", hash: "", epoch: "" };
+  }
+
+  const parts = metaAttr.split(":");
+  return {
+    checksum: parts[0] || "",
+    hash: parts.length > 1 ? parts[1] : "",
+    epoch: parts.length > 2 ? parts[2] : "",
+  };
+}
+
+/**
+ * Initialize the component from the DOM element if it hasn't been initialized yet.
+ * If the component already exists, update its data and checksum if the server has
+ * changed them (detected by a different checksum in unicorn:meta).
+ *
+ * Used to populate the components object with fresh components, created by the server,
+ * and to sync child component state when a parent method modifies children.
  *
  * @param {Object} node The node to check for initialization.
  */
@@ -85,29 +110,15 @@ export function insertComponentFromDom(node) {
   const nodeId = node.getAttribute("unicorn:id");
 
   if (!components[nodeId]) {
-    const fullMeta = node.getAttribute("unicorn:meta");
-    let meta = fullMeta;
-    let hash = "";
-    let epoch = "";
-
-    if (fullMeta && fullMeta.indexOf(":") > -1) {
-      const parts = fullMeta.split(":");
-      meta = parts[0];
-
-      if (parts.length > 1) {
-        hash = parts[1];
-      }
-
-      if (parts.length > 2) {
-        epoch = parts[2];
-      }
-    }
+    const { checksum, hash, epoch } = parseMetaAttribute(
+      node.getAttribute("unicorn:meta")
+    );
 
     const args = {
       id: nodeId,
       name: node.getAttribute("unicorn:name"),
       key: node.getAttribute("unicorn:key"),
-      checksum: meta,
+      checksum,
       hash,
       epoch,
       data: JSON.parse(node.getAttribute("unicorn:data")),
@@ -115,6 +126,25 @@ export function insertComponentFromDom(node) {
     };
 
     componentInit(args);
+  } else {
+    // The component already exists in the store. If the server has updated this
+    // component's state (e.g. a parent method modified it), the DOM will have a
+    // different checksum in unicorn:meta. In that case, sync the JS component's
+    // data so the next request doesn't send stale data that overwrites the update.
+    const { checksum: newChecksum, hash, epoch } = parseMetaAttribute(
+      node.getAttribute("unicorn:meta")
+    );
+
+    if (newChecksum && newChecksum !== components[nodeId].checksum) {
+      const newDataAttr = node.getAttribute("unicorn:data");
+      if (newDataAttr) {
+        components[nodeId].data = JSON.parse(newDataAttr);
+      }
+      components[nodeId].checksum = newChecksum;
+      components[nodeId].hash = hash;
+      components[nodeId].epoch = epoch;
+      components[nodeId].setModelValues();
+    }
   }
 }
 

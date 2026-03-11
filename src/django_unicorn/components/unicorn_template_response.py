@@ -79,7 +79,7 @@ def get_root_element(content: str) -> html.HtmlElement:
         else:
             # lxml.html.fragments_fromstring returns a list of elements/strings
             fragments = html.fragments_fromstring(content)
-            elements = [f for f in fragments if isinstance(f, html.HtmlElement)]
+            elements = [f for f in fragments if isinstance(f, html.HtmlElement) and f.tag != "script"]
 
             if not elements:
                 raise MissingComponentElementError("No root element for the component was found")
@@ -117,7 +117,7 @@ def assert_has_single_wrapper_element(content: str, component_name: str) -> None
             elements = [content]
         else:
             fragments = html.fragments_fromstring(content)
-            elements = [f for f in fragments if isinstance(f, html.HtmlElement)]
+            elements = [f for f in fragments if isinstance(f, html.HtmlElement) and (f.tag != "script" or f.attrib)]
     except Exception:
         # Should have been caught by get_root_element usually
         return

@@ -2,6 +2,7 @@ import shortuuid
 from django import template
 from django.conf import settings
 from django.template.base import FilterExpression
+from django.utils.safestring import mark_safe
 
 from django_unicorn.call_method_parser import InvalidKwargError, parse_kwarg
 from django_unicorn.errors import ComponentNotValidError
@@ -143,6 +144,14 @@ class UnicornNode(template.Node):
             except template.VariableDoesNotExist:
                 pass  # no implicit parent present
 
+        # Ensure that window.Unicorn exists before any component is rendered
+        # so that inline scripts can attach functions to it without errors
+        unicorn_stub = ""
+
+        if not self.parent and not context.get("unicorn_stub_rendered"):
+            unicorn_stub = mark_safe("<script>window.Unicorn = window.Unicorn || {};</script>\n")
+            context["unicorn_stub_rendered"] = True
+
         component_id = None
 
         try:
@@ -195,7 +204,7 @@ class UnicornNode(template.Node):
 
         rendered_component = self.view.render(init_js=True, extra_context=extra_context)
 
-        return rendered_component
+        return unicorn_stub + rendered_component
 
 
 register.tag("unicorn", unicorn)

@@ -117,6 +117,7 @@ UNICORN = {
         "RELOAD_SCRIPT_ELEMENTS": True,
     },
     "MINIFIED": False,
+    "ALLOWED_JS_CALL_LIST": ["Unicorn", "HelloJs"],
 }
 
 

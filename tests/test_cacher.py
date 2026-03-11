@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
+from django import forms
 
 from django_unicorn.cacher import (
     CacheableComponent,
@@ -292,3 +293,48 @@ def test_cacheable_component_restores_nested_state_on_pickle_failure():
     assert not isinstance(parent.parent, PointerUnicornView)
     assert child in parent.children
     assert parent in grandparent.children
+
+
+class SimpleForm(forms.Form):
+    name = forms.CharField()
+
+
+class ComponentWithForm(UnicornView):
+    """Component whose instance attributes include a Django Form."""
+
+    def __init__(self, *args, **kwargs):
+        self.form = kwargs.pop("form", None)
+        super().__init__(*args, **kwargs)
+
+
+def test_cacheable_component_strips_form_before_pickling():
+    """Form instances are stripped before pickling so the component can be cached."""
+    form_instance = SimpleForm()
+    component = ComponentWithForm(
+        component_id="test_form_strip",
+        component_name="with-form",
+        form=form_instance,
+    )
+    assert component.form is form_instance
+
+    with CacheableComponent(component):
+        # Inside context: form should be stripped (set to None) so pickle can succeed
+        assert component.form is None
+
+    # After context: form should be restored
+    assert component.form is form_instance
+
+
+def test_cacheable_component_restores_form_after_context():
+    """Form instances are fully restored on CacheableComponent.__exit__."""
+    form_instance = SimpleForm(data={"name": "Alice"})
+    component = ComponentWithForm(
+        component_id="test_form_restore",
+        component_name="with-form",
+        form=form_instance,
+    )
+
+    with CacheableComponent(component):
+        pass
+
+    assert component.form is form_instance

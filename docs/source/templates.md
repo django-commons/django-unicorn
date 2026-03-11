@@ -65,6 +65,113 @@ class HelloWorldView(UnicornView):
 [Django models](django-models.md) has many more details about using Django models in `Unicorn`.
 ```
 
+## Models inside `{% for %}` loops
+
+When iterating over a list with a Django `{% for %}` loop, the loop variable is **not** the same as the component attribute that holds the list. Unicorn syncs `<input>` values by looking up the `unicorn:model` name in the component's serialised data, so the model name must use the **component attribute path** (e.g. `items.0.name`), not the loop variable name (e.g. `item.name`).
+
+Use `{{ forloop.counter0 }}` to build the correct index-based path:
+
+```python
+# line_items.py
+from django_unicorn.components import UnicornView
+
+class LineItemsView(UnicornView):
+    items: list = []
+
+    def mount(self):
+        self.items = [{"name": "Widget", "qty": 1}, {"name": "Gadget", "qty": 3}]
+
+    def add_item(self):
+        self.items.append({"name": "", "qty": 0})
+```
+
+```html
+<!-- unicorn/line-items.html -->
+<div>
+  {% for item in items %}
+  <div>
+    <input
+      unicorn:model="items.{{ forloop.counter0 }}.name"
+      type="text"
+    />
+    <input
+      unicorn:model="items.{{ forloop.counter0 }}.qty"
+      type="number"
+    />
+  </div>
+  {% endfor %}
+  <button unicorn:click="add_item">Add row</button>
+</div>
+```
+
+The key is `items.{{ forloop.counter0 }}.name` this renders to `items.0.name`, `items.1.name`, etc., which Unicorn can resolve directly against the component data.
+
+```{warning}
+Using the **loop variable name** in `unicorn:model` (e.g. `unicorn:model="item.name"`)
+will **not** work correctly after a re-render.  When the component re-renders,
+Unicorn tries to look up `item` in the component's data, but `item` is only a
+Django template loop variable — it has no corresponding key in the serialised
+component state.  As a result morphdom will clear the input's value.
+
+Use `items.{{ forloop.counter0 }}.name` instead.
+```
+
+## Rendering choice fields
+
+Django models often use `TextChoices` (or `IntegerChoices`) to constrain a field to a fixed set of values. To render a reactive `<select>` that is bound to a Unicorn component field, expose the choices list as a component attribute and exclude it from the JavaScript context (since the choices are static and do not need to be reactive).
+
+```python
+# new_course.py
+from django_unicorn.components import UnicornView
+from curriculum.models import Course
+
+
+class NewCourseView(UnicornView):
+    grade_level = Course.GradeLevel.UNDEFINED
+    subject = Course.Subject.UNDEFINED
+
+    # Static choices — kept out of the JSON state sent to the browser
+    grade_level_choices = Course.GradeLevel.choices
+    subject_choices = Course.Subject.choices
+
+    class Meta:
+        javascript_exclude = ("grade_level_choices", "subject_choices")
+
+    def save(self):
+        Course.objects.create(
+            grade_level=self.grade_level,
+            subject=self.subject,
+        )
+```
+
+```html
+<!-- unicorn/new-course.html -->
+<div>
+  <select unicorn:model="grade_level">
+    {% for value, label in grade_level_choices %}
+    <option value="{{ value }}">{{ label }}</option>
+    {% endfor %}
+  </select>
+
+  <select unicorn:model="subject">
+    {% for value, label in subject_choices %}
+    <option value="{{ value }}">{{ label }}</option>
+    {% endfor %}
+  </select>
+
+  <button unicorn:click="save">Save</button>
+</div>
+```
+
+Adding the choices to [`Meta.javascript_exclude`](views.md#javascript_exclude) keeps them in the Django template context (so the `{% for %}` loop works) without serialising them into the `unicorn:data` JSON attribute on every render. The `grade_level` and `subject` fields remain fully reactive — Unicorn syncs the selected value back to the component on each change.
+
+```{note}
+If you also need validation, set `form_class` on the component to a Django `ModelForm` or `Form`.
+Unicorn will validate `grade_level` and `subject` against the form's field definitions when
+`$validate` is called or when an action method calls `self.validate()`. See
+[validation](validation.md) for details.
+```
+
 ## Model modifiers
 
 ### Lazy

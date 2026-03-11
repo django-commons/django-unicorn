@@ -84,14 +84,14 @@ class FakeComponentCalls(UnicornView):
     template_name = "templates/test_component.html"
 
     def mount(self):
-        self.call("testCall")
+        self.call("Unicorn.testCall")
 
 
 class FakeComponentCalls2(UnicornView):
     template_name = "templates/test_component.html"
 
     def mount(self):
-        self.call("testCall2", "hello")
+        self.call("Unicorn.testCall2", "hello")
 
 
 def test_unicorn_template_renders(client):
@@ -100,8 +100,10 @@ def test_unicorn_template_renders(client):
 
     assert response.wsgi_request.path == "/test"
     assert "WSGIRequest" in content
-    assert content.startswith("<div unicorn:id")
-    assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentKwargs"' in content
+    root_element = get_root_element(content)
+    assert root_element.tag == "div"
+    assert "unicorn:id" in root_element.attrib
+    assert root_element.attrib.get("unicorn:name") == "tests.templatetags.test_unicorn_render.FakeComponentKwargs"
 
 
 def test_unicorn_template_renders_with_parent_and_child(client):
@@ -109,8 +111,10 @@ def test_unicorn_template_renders_with_parent_and_child(client):
     content = response.content.decode().strip()
 
     assert response.wsgi_request.path == "/test-parent"
-    assert content.startswith("<div unicorn:id")
-    assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentParent"' in content
+    root_element = get_root_element(content)
+    assert root_element.tag == "div"
+    assert "unicorn:id" in root_element.attrib
+    assert root_element.attrib.get("unicorn:name") == "tests.templatetags.test_unicorn_render.FakeComponentParent"
     assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentChild"' in content
     assert "--parent--" in content
     assert "==child==" in content
@@ -121,8 +125,10 @@ def test_unicorn_template_renders_with_parent_and_child_with_templateview(client
     content = response.content.decode().strip()
 
     assert response.wsgi_request.path == "/test-parent-template"
-    assert content.startswith("<div unicorn:id")
-    assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentParent"' in content
+    root_element = get_root_element(content)
+    assert root_element.tag == "div"
+    assert "unicorn:id" in root_element.attrib
+    assert root_element.attrib.get("unicorn:name") == "tests.templatetags.test_unicorn_render.FakeComponentParent"
     assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentChild"' in content
     assert "--parent--" in content
     assert "==child==" in content
@@ -133,8 +139,12 @@ def test_unicorn_template_renders_with_implicit_parent_and_child(client):
     content = response.content.decode().strip()
 
     assert response.wsgi_request.path == "/test-parent-implicit"
-    assert content.startswith("<div unicorn:id")
-    assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentParentImplicit"' in content
+    root_element = get_root_element(content)
+    assert root_element.tag == "div"
+    assert "unicorn:id" in root_element.attrib
+    assert (
+        root_element.attrib.get("unicorn:name") == "tests.templatetags.test_unicorn_render.FakeComponentParentImplicit"
+    )
     assert 'unicorn:name="tests.templatetags.test_unicorn_render.FakeComponentChildImplicit"' in content
     assert "--parent--" in content
     assert "==child==" in content
@@ -389,7 +399,7 @@ def test_unicorn_render_calls(settings):
     context = {}
     html = unicorn_node.render(Context(context))
 
-    assert 'unicorn:calls=\'[{"fn":"testCall","args":[]}]\'' in html
+    assert 'unicorn:calls=\'[{"fn":"Unicorn.testCall","args":[]}]\'' in html
 
 
 def test_unicorn_render_calls_with_arg(settings):
@@ -402,7 +412,7 @@ def test_unicorn_render_calls_with_arg(settings):
     context = {}
     html = unicorn_node.render(Context(context))
 
-    assert 'unicorn:calls=\'[{"fn":"testCall2","args":["hello"]}]\'' in html
+    assert 'unicorn:calls=\'[{"fn":"Unicorn.testCall2","args":["hello"]}]\'' in html
 
 
 def test_unicorn_render_calls_no_mount_call(settings):

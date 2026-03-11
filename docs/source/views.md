@@ -125,26 +125,32 @@ Never put sensitive data into a public property because that information will pu
 
 ### template_name
 
-By default, the component name is used to determine what template should be used. For example, `hello_world.HelloWorldView` would by default use `unicorn/hello-world.html`. However, you can specify a particular template by setting `template_name` in the component.
+By default, the component name is used to determine what template should be used. For example, `hello_world.HelloWorldView` would by default use `unicorn/hello-world.html`. Set `template_name` inside `Meta` to override it.
 
 ```python
 # hello_world.py
 from django_unicorn.components import UnicornView
 
 class HelloWorldView(UnicornView):
-    template_name = "unicorn/hello-world.html"
+    class Meta:
+        template_name = "unicorn/hello-world.html"
+```
+
+```{note}
+Setting `template_name` directly as a class attribute also works and is supported for backwards compatibility.
 ```
 
 ### template_html
 
-Template HTML can be defined inline on the component instead of using an external HTML file.
+Template HTML can be defined inline on the component instead of using an external HTML file. Set it inside `Meta`.
 
 ```python
 # hello_world.py
 from django_unicorn.components import UnicornView
 
 class HelloWorldView(UnicornView):
-    template_html = """<div>
+    class Meta:
+        template_html = """<div>
     <div>
         Count: {{ count }}
     </div>
@@ -155,6 +161,10 @@ class HelloWorldView(UnicornView):
 """
 
     ...
+```
+
+```{note}
+Setting `template_html` directly as a class attribute also works and is supported for backwards compatibility.
 ```
 
 ## Instance properties
@@ -193,6 +203,45 @@ from django_unicorn.components import UnicornView
 class HelloKwargView(UnicornView):
     def mount(self):
       assert self.component_kwargs["hello"] == "World"
+```
+
+### Passing a Django Form
+
+A Django `Form` (or `ModelForm`) instance can be passed directly from a template into a unicorn component as a keyword argument. The form will be available in the component's template context for rendering, but it is automatically excluded from the JSON state sent to the browser (since forms cannot be serialized to JSON).
+
+```html
+<!-- index.html -->
+{% unicorn 'my-form-component' form=my_django_form %}
+```
+
+```python
+# my_form_component.py
+from django_unicorn.components import UnicornView
+
+class MyFormComponentView(UnicornView):
+    form = None  # will hold the passed-in form instance
+
+    def mount(self):
+        # self.form is available here on the initial render
+        pass
+```
+
+```html
+<!-- unicorn/my-form-component.html -->
+<div>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button unicorn:click="submit">Submit</button>
+  </form>
+</div>
+```
+
+```{note}
+Because forms cannot be pickled, `self.form` will be `None` on subsequent AJAX
+interactions (after the initial page load). If you need to process submitted form
+data reactively, declare a `form_class` on the component and use
+[component validation](validation.md) instead.
 ```
 
 ### request
@@ -392,7 +441,12 @@ class HelloStateView(UnicornView):
 
 ### javascript_exclude
 
-To allow an attribute to be included in the the context to be used by a Django template, but not exposed to JavaScript, add it to the `Meta` class's `javascript_exclude` tuple.
+To allow an attribute to be included in the context to be used by a Django template, but not exposed to JavaScript, add it to the `Meta` class's `javascript_exclude` tuple.
+
+```{note}
+Django `Form` and `ModelForm` instances are **automatically** excluded from the
+JavaScript context — you do not need to add them to `javascript_exclude`.
+```
 
 ```html
 <!-- hello-state.html -->
@@ -455,14 +509,132 @@ A context variable can also be marked as `safe` in the template with the normal 
 ```
 ````
 
+### login_not_required
+
+By default, every component requires the user to be authenticated when Django's
+[`LoginRequiredMiddleware`](https://docs.djangoproject.com/en/stable/ref/middleware/#django.contrib.auth.middleware.LoginRequiredMiddleware)
+is active (Django 5.1+). Set `login_not_required = True` inside the `Meta` class to allow
+unauthenticated users to interact with the component on public pages.
+
+```python
+# newsletter_signup.py
+from django_unicorn.components import UnicornView
+
+class NewsletterSignupView(UnicornView):
+    email = ""
+
+    class Meta:
+        login_not_required = True
+
+    def subscribe(self):
+        ...
+```
+
+```{note}
+`Meta.login_not_required` has no effect on Django versions older than 5.1 because
+`LoginRequiredMiddleware` was not available before that release.
+```
+
+```{warning}
+Only set `Meta.login_not_required = True` on components whose actions are safe to
+execute without authentication. Any sensitive operation (e.g. accessing private
+data, modifying records) should still verify `self.request.user.is_authenticated`
+inside the relevant component methods.
+```
+
+### template_name
+
+Override the template path used to render the component.
+
+```python
+# hello_world.py
+from django_unicorn.components import UnicornView
+
+class HelloWorldView(UnicornView):
+    class Meta:
+        template_name = "unicorn/hello-world.html"
+```
+
+### template_html
+
+Define the component template as an inline HTML string instead of a separate file.
+
+```python
+# hello_world.py
+from django_unicorn.components import UnicornView
+
+class HelloWorldView(UnicornView):
+    count = 0
+
+    class Meta:
+        template_html = """<div>
+    <div>Count: {{ count }}</div>
+    <button unicorn:click="increment">+</button>
+</div>"""
+```
+
+### component_key
+
+Set a default key for the component class. This is applied when the template tag
+does not supply a `key=` argument and is useful when you always want a specific
+component to be keyed the same way.
+
+```python
+# signup.py
+from django_unicorn.components import UnicornView
+
+class SignupView(UnicornView):
+    class Meta:
+        component_key = "signup"
+```
+
+```{note}
+A `key=` value provided in the template tag always takes precedence over
+`Meta.component_key`.
+```
+
+### form_class
+
+Attach a Django form for validation. Errors from the form are merged into the
+component's `errors` dict.
+
+```python
+# book_form.py
+from django_unicorn.components import UnicornView
+from .forms import BookForm
+
+class BookFormView(UnicornView):
+    title = ""
+    year = None
+
+    class Meta:
+        form_class = BookForm
+```
+
+```{note}
+Setting `form_class` directly as a class attribute also works and is supported for
+backwards compatibility.
+```
+
 ## Pickling and Caching
 
 Components are pickled and cached for the duration of the AJAX request. This means that any instance variable on the component must be pickleable.
+
+> [!CAUTION]
+> Because `django-unicorn` uses Python's `pickle` to serialize component state into the caching backend, it is critical that your cache backend (e.g., Redis, Memcached) is properly secured against unauthorized write access to prevent remote code execution (RCE) vulnerabilities.
 
 ```{warning}
 Do not store unpickleable objects (e.g. generators) on the component instance.
 ```
 
 If you need to use an unpickleable object, either convert it to a pickleable type (e.g. convert a generator to a list) or re-initialize it within the method that needs it without storing it on `self`.
+
+```{note}
+Django `Form` and `ModelForm` instances are handled automatically — they are stripped
+from the component before pickling and restored afterwards, so passing a form as a
+template kwarg (see [Passing a Django Form](#passing-a-django-form)) will not cause
+pickling errors. The form will be `None` after a cache restore (i.e. on subsequent
+AJAX requests).
+```
 
 

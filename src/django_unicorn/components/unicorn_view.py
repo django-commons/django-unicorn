@@ -11,6 +11,7 @@ import shortuuid
 from django.apps import apps as django_apps_module
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.db.models import Model
+from django.forms import BaseForm
 from django.forms.widgets import CheckboxInput, Select
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.utils.decorators import classonlymethod
@@ -236,6 +237,12 @@ class Component(TemplateView):
         self._init_script: str = ""
         self._validate_called = False
         self.errors: dict[Any, Any] = {}
+
+        # Apply Meta.component_key as a class-level default when the template
+        # tag has not provided a key (i.e. self.component_key is still empty).
+        if not self.component_key and hasattr(self, "Meta") and hasattr(self.Meta, "component_key"):
+            self.component_key = cast(str, self.Meta.component_key)
+
         self._set_default_template_name()
         self._set_caches()
 
@@ -243,14 +250,25 @@ class Component(TemplateView):
     def _set_default_template_name(self) -> None:
         """Sets a default template name based on component's name if necessary.
 
-        Also handles `template_html` if it is set on the component which overrides `template_name`.
+        Also handles `template_html` (via Meta or direct attribute) which overrides
+        `template_name`. Meta attributes take precedence over direct class attributes.
         """
 
-        if hasattr(self, "template_html"):
+        # Resolve template_html — Meta takes precedence over direct attribute
+        template_html = None
+        if hasattr(self, "Meta") and hasattr(self.Meta, "template_html"):
+            template_html = self.Meta.template_html
+        elif hasattr(self, "template_html"):
+            template_html = self.template_html
+
+        if template_html:
             try:
-                self.template_name = create_template(self.template_html)  # type: ignore
+                self.template_name = create_template(template_html)  # type: ignore
             except AssertionError:
                 pass
+        elif hasattr(self, "Meta") and hasattr(self.Meta, "template_name"):
+            # Meta.template_name overrides a direct class attribute when set
+            self.template_name = self.Meta.template_name
 
         get_template_names_is_valid = False
 
@@ -336,6 +354,16 @@ class Component(TemplateView):
         """
         Add a JavaScript method name and arguments to be called after the component is rendered.
         """
+        allowed_list = get_setting("ALLOWED_JS_CALL_LIST", ["Unicorn"])
+        root_name = function_name.split(".")[0]
+
+        if allowed_list and root_name not in allowed_list:
+            logger.warning(
+                f"Unicorn: blocked call to '{function_name}'. Only functions on the {allowed_list} "
+                f"namespaces are permitted. Configure 'ALLOWED_JS_CALL_LIST' in UNICORN settings to allow."
+            )
+            return
+
         self.calls.append({"fn": function_name, "args": args})
 
     def remove(self):
@@ -530,6 +558,12 @@ class Component(TemplateView):
 
                         del frontend_context_variables[field_name]
 
+        # Auto-exclude Django Form instances (they can't be serialized to JSON).
+        # This lets forms be passed as template kwargs for rendering without causing errors.
+        for field_name in list(frontend_context_variables.keys()):
+            if isinstance(frontend_context_variables[field_name], BaseForm):
+                del frontend_context_variables[field_name]
+
         # Add cleaned values to `frontend_content_variables` based on the widget in form's fields
         form = self._get_form(attributes)
 
@@ -570,9 +604,15 @@ class Component(TemplateView):
 
     @timed
     def _get_form(self, data):
-        if hasattr(self, "form_class"):
+        form_class = None
+        if hasattr(self, "Meta") and hasattr(self.Meta, "form_class"):
+            form_class = self.Meta.form_class
+        elif hasattr(self, "form_class"):
+            form_class = self.form_class
+
+        if form_class:
             try:
-                form = cast(Callable, self.form_class)(data=data)
+                form = cast(Callable, form_class)(data=data)
                 form.is_valid()
 
                 return form
@@ -862,8 +902,26 @@ class Component(TemplateView):
             "resolved",
             "calling",
             "called",
+            "login_not_required",
+            "form_class",
         )
         excludes = []
+
+        if hasattr(self, "Meta") and hasattr(self.Meta, "login_not_required"):
+            if not isinstance(self.Meta.login_not_required, bool):
+                raise AssertionError("Meta.login_not_required should be a bool")
+
+        if hasattr(self, "Meta") and hasattr(self.Meta, "template_name"):
+            if not isinstance(self.Meta.template_name, str):
+                raise AssertionError("Meta.template_name should be a str")
+
+        if hasattr(self, "Meta") and hasattr(self.Meta, "template_html"):
+            if not isinstance(self.Meta.template_html, str):
+                raise AssertionError("Meta.template_html should be a str")
+
+        if hasattr(self, "Meta") and hasattr(self.Meta, "component_key"):
+            if not isinstance(self.Meta.component_key, str):
+                raise AssertionError("Meta.component_key should be a str")
 
         if hasattr(self, "Meta") and hasattr(self.Meta, "exclude"):
             if not is_non_string_sequence(self.Meta.exclude):
@@ -916,6 +974,10 @@ class Component(TemplateView):
         if not component_name:
             raise AssertionError("Component name is required")
 
+        # Validate the component name to prevent path traversal or suspicious patterns
+        if ".." in component_name:
+            raise AssertionError("Invalid component name")
+
         component_args = component_args if component_args is not None else []
         kwargs = kwargs if kwargs is not None else {}
 
@@ -947,6 +1009,16 @@ class Component(TemplateView):
 
             cached_component.component_args = component_args
             cached_component.component_kwargs = kwargs
+
+            # Update self.parent to the exact in-memory parent being rendered now.
+            # restore_from_cache() sets self.parent to a *copy* restored from the
+            # Django cache.  That copy has correct data (thanks to cache_full_tree
+            # being called in _process_request before rendering), but it is a
+            # different Python object.  Pointing self.parent at the live parent
+            # object means child methods/templates always see current state even for
+            # changes that happen during the same rendering pass (issue #685).
+            if parent is not None:
+                cached_component.parent = parent
 
             # TODO: How should args be handled?
             # Set kwargs onto the cached component

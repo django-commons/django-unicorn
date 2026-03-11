@@ -132,20 +132,33 @@ export class Component {
    * Call JavaScript functions on the `window`.
    * @param {Array} calls A list of objects that specify the methods to call.
    *
-   * `calls`: [{"fn": "someFunctionName"},]
-   * `calls`: [{"fn": "someFunctionName", args: ["world"]},]
-   * `calls`: [{"fn": "SomeModule.someFunctionName"},]
-   * `calls`: [{"fn": "SomeModule.someFunctionName", args: ["world", "universe"]},]
+   * `calls`: [{"fn": "Unicorn.someFunctionName"},]
+   * `calls`: [{"fn": "Unicorn.someFunctionName", args: ["world"]},]
    *
    * Returns:
    * Array of results for each method call.
    */
   callCalls(calls) {
+    // Deny-list of dangerous global function roots that should never be called
+    const BLOCKED_ROOTS = new Set([
+      "eval", "Function", "setTimeout", "setInterval",
+      "location", "navigate", "open",
+      "document", "fetch", "XMLHttpRequest", "importScripts",
+    ]);
+
     calls = calls || [];
     const results = [];
 
     calls.forEach((call) => {
       let functionName = call.fn;
+      const rootName = call.fn.split(".")[0];
+
+      // Block dangerous global function calls
+      if (BLOCKED_ROOTS.has(rootName)) {
+        console.warn(`Unicorn: blocked call to '${call.fn}'`);
+        return;
+      }
+
       let module = this.window;
 
       call.fn.split(".").forEach((obj, idx) => {
