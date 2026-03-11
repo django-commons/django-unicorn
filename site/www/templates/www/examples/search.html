@@ -1,0 +1,15 @@
+{% extends "www/bases/examples.html" %}
+{% load unicorn utils %}
+
+{% block subtitle %}Search{% endblock subtitle %}
+
+{% block example_title %}Search{% endblock example_title %}
+
+{% block example_content %}
+{% unicorn 'search' %}
+{% endblock example_content %}
+
+{% block example_source %}
+<pre data-lang="html"><code class="language-html">{% code_include 'unicorn/templates/unicorn/search.html' %}</code></pre>
+<pre data-lang="python"><code class="language-python">{% code_include 'unicorn/components/search.py' %}</code></pre>
+{% endblock example_source %}

@@ -42,9 +42,6 @@ dev = [
     "pytest-playwright>=0.7.2",
     "pre-commit>=4.5.1",
 ]
-
-[project.optional-dependencies]
-minify = ["htmlmin"]
 docs = [
     "Sphinx",
     "linkify-it-py",
@@ -58,6 +55,9 @@ docs = [
     "toml",
     "sphinx-design",
 ]
+
+[project.optional-dependencies]
+minify = ["htmlmin"]
 
 [project.urls]
 Homepage = "https://www.django-unicorn.com"

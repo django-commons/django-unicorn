@@ -1,0 +1,15 @@
+{% extends "www/bases/examples.html" %}
+{% load unicorn utils %}
+
+{% block subtitle %}Count characters{% endblock subtitle %}
+
+{% block example_title %}Count characters{% endblock example_title %}
+
+{% block example_content %}
+{% unicorn 'count-characters' %}
+{% endblock example_content %}
+
+{% block example_source %}
+<pre data-lang="html"><code class="language-html">{% code_include 'unicorn/templates/unicorn/count-characters.html' %}</code></pre>
+<pre data-lang="python"><code class="language-python">{% code_include 'unicorn/components/count_characters.py' %}</code></pre>
+{% endblock example_source %}

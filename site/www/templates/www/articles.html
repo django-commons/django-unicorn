@@ -1,0 +1,96 @@
+{% extends "www/bases/base.html" %}
+{% load compress static %}
+
+{% block title %}Articles - Unicorn{% endblock title %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+
+{% compress css %}
+<link res="stylesheet" href="{% static 'css/main.css' %}">
+{% endcompress %}
+{% endblock styles %}
+
+{% block content %}
+
+<section class="container">
+
+    <div class="intro column is-8 is-offset-2 my-6">
+        <h2 class="title">Unicorn</h2>
+        <br />
+
+        <ul>
+            <li><a href="https://dev.to/adamghill/add-some-magic-to-your-django-website-l8k">Add Some Magic to Your
+                    Django Website</a></li>
+        </ul>
+        <ul>
+            <li><a
+                    href="https://dev.to/adamghill/how-to-escape-the-tyranny-of-complicated-javascript-in-4-easy-steps-1eo7">How
+                    to Escape the Tyranny of Complicated JavaScript</a></li>
+        </ul>
+        <ul>
+            <li><a href="https://dev.to/adamghill/lessons-learned-building-a-fullstack-framework-for-django-2cml">Lessons
+                    Learned Building a Full-stack Framework for Django</a></li>
+        </ul>
+    </div>
+
+    <div class="intro column is-8 is-offset-2 my-6">
+        <h2 class="title">Other front-end frameworks</h2>
+        <br />
+
+        <p class="pb-4">
+            Articles detailing how to integrate Django with other full-stack frameworks.
+        </p>
+
+        <ul>
+            <li>
+                <a href="https://www.saaspegasus.com/guides/modern-javascript-for-django-developers/">Modern JavaScript
+                    for Django Developers</a>
+            </li>
+            <li>
+                <a
+                    href="https://dafoster.net/articles/2021/02/16/building-web-apps-with-vue-and-django-the-ultimate-guide/">Building
+                    web apps with Vue and Django - The Ultimate Guide</a>
+            </li>
+            <li>
+                <a href="https://janowski.dev/blog/2020/7/23/creating-do-list-app-django-drf-alpinejs-and-axios/">Creating
+                    A To-Do List App With Django, DRF, Alpine.Js And Axios</a>
+            </li>
+            <li>
+                <a href="https://fractalideas.com/blog/making-react-and-django-play-well-together/">Making React and
+                    Django play well together</a>
+            </li>
+            <li>
+                <a href="https://tkainrad.dev/posts/use-vuejs-with-django/">Using VueJS alongside Django</a>
+            </li>
+            <li>
+                <a href="https://pascalw.me/blog/2020/04/19/webpack-django.html">Using Webpack with Django: no plugins
+                    required!</a>
+            </li>
+            <li>
+                <a href="https://adamghill.com/django/python/2018/02/07/sprinkling-some-magic-into-django.html">Sprinkling
+                    some Magic into Django</a>
+            </li>
+            <li>
+                <a href="https://github.com/EugeneDae/django-vue-cli-webpack-demo">Django + Vue CLI + Webpack demo</a>
+            </li>
+            <li>
+                <a href="https://www.youtube.com/watch?v=wXlMal4BR2Y">DjangoCon 2019 - Frontend Development for Backend
+                    Developers</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="intro column is-8 is-offset-2 my-6">
+        <h2 class="title">Django Channels</h2>
+
+        <ul>
+            <li>
+                <a href="https://mattbasta.medium.com/django-channels-asgi-and-heroku-e1bc9559330b">Django Channels,
+                    ASGI, and Heroku</a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+{% endblock content %}

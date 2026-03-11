@@ -1,0 +1,70 @@
+{% extends "www/bases/base.html" %}
+{% load compress static unicorn utils %}
+
+{% block title %}{% block subtitle %}{% endblock subtitle %} Example - Unicorn{% endblock title %}
+
+{% block styles %}
+{% compress css %}
+<link rel="stylesheet" href="{% static 'css/bulma.min.css' %}">
+<link res="stylesheet" href="{% static 'css/main.css' %}">
+{% endcompress %}
+{% endblock styles %}
+
+{% block head_js %}
+{% unicorn_scripts %}
+{% endblock head_js %}
+
+{% block content %}
+{% csrf_token %}
+
+<section class="container pt-4">
+    <div class="columns features">
+        <div class="column is-two-thirds">
+            <div class="content">
+                <h1>
+                    Examples
+                </h1>
+
+                <p>Note that all examples are deliberately left unstyled to present the simplest implementation.</p>
+
+                <h2>
+                    {% block example_title %}{% endblock example_title %}
+                </h2>
+
+                {% block example_content %}{% endblock example_content %}
+
+                <div class="mt-6">
+                    <h2>Source</h2>
+                    {% block example_source %}{% endblock example_source %}
+                </div>
+            </div>
+        </div>
+        <div class="column is-one-third">
+            <nav class="panel">
+                <p class="panel-heading">
+                  Examples
+                </p>
+                <a class="panel-block" href="{% url 'www:examples' 'todo' %}">
+                  Todo
+                </a>
+                <a class="panel-block" href="{% url 'www:examples' 'count-characters' %}">
+                    Count characters
+                </a>
+                <a class="panel-block" href="{% url 'www:examples' 'search' %}">
+                    Search
+                </a>
+                <a class="panel-block" href="{% url 'www:examples' 'click-counter' %}">
+                    Click counter
+                </a>
+                <a class="panel-block" href="{% url 'www:examples' 'validation' %}">
+                    Validation
+                </a>
+                <a class="panel-block" href="{% url 'www:examples' 'select' %}">
+                    Select
+                </a>
+            </nav>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

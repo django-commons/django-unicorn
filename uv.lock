@@ -500,21 +500,6 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
-docs = [
-    { name = "furo" },
-    { name = "linkify-it-py" },
-    { name = "myst-parser" },
-    { name = "rst2pdf" },
-    { name = "sphinx", version = "8.1.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "sphinx", version = "8.2.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-    { name = "sphinx-autoapi" },
-    { name = "sphinx-autobuild", version = "2024.10.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "sphinx-autobuild", version = "2025.8.25", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-    { name = "sphinx-copybutton" },
-    { name = "sphinx-design" },
-    { name = "sphinxext-opengraph" },
-    { name = "toml" },
-]
 minify = [
     { name = "htmlmin" },
 ]
@@ -537,29 +522,33 @@ dev = [
     { name = "ruff" },
     { name = "ty" },
 ]
+docs = [
+    { name = "furo" },
+    { name = "linkify-it-py" },
+    { name = "myst-parser" },
+    { name = "rst2pdf" },
+    { name = "sphinx", version = "8.1.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "sphinx", version = "8.2.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "sphinx-autoapi" },
+    { name = "sphinx-autobuild", version = "2024.10.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "sphinx-autobuild", version = "2025.8.25", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "sphinx-copybutton" },
+    { name = "sphinx-design" },
+    { name = "sphinxext-opengraph" },
+    { name = "toml" },
+]
 
 [package.metadata]
 requires-dist = [
     { name = "cachetools", specifier = ">=4.1.1" },
     { name = "decorator", specifier = ">=4.4.2" },
     { name = "django", specifier = ">=2.2" },
-    { name = "furo", marker = "extra == 'docs'" },
     { name = "htmlmin", marker = "extra == 'minify'" },
-    { name = "linkify-it-py", marker = "extra == 'docs'" },
     { name = "lxml" },
-    { name = "myst-parser", marker = "extra == 'docs'" },
     { name = "orjson", specifier = ">=3.6.0" },
-    { name = "rst2pdf", marker = "extra == 'docs'" },
     { name = "shortuuid", specifier = ">=1.0.1" },
-    { name = "sphinx", marker = "extra == 'docs'" },
-    { name = "sphinx-autoapi", marker = "extra == 'docs'" },
-    { name = "sphinx-autobuild", marker = "extra == 'docs'" },
-    { name = "sphinx-copybutton", marker = "extra == 'docs'" },
-    { name = "sphinx-design", marker = "extra == 'docs'" },
-    { name = "sphinxext-opengraph", marker = "extra == 'docs'" },
-    { name = "toml", marker = "extra == 'docs'" },
 ]
-provides-extras = ["minify", "docs"]
+provides-extras = ["minify"]
 
 [package.metadata.requires-dev]
 dev = [
@@ -578,6 +567,19 @@ dev = [
     { name = "pywatchman" },
     { name = "ruff" },
     { name = "ty", specifier = ">=0.0.10" },
+]
+docs = [
+    { name = "furo" },
+    { name = "linkify-it-py" },
+    { name = "myst-parser" },
+    { name = "rst2pdf" },
+    { name = "sphinx" },
+    { name = "sphinx-autoapi" },
+    { name = "sphinx-autobuild" },
+    { name = "sphinx-copybutton" },
+    { name = "sphinx-design" },
+    { name = "sphinxext-opengraph" },
+    { name = "toml" },
 ]
 
 [[package]]

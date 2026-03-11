@@ -1,0 +1,15 @@
+{% extends "www/bases/examples.html" %}
+{% load unicorn utils %}
+
+{% block subtitle %}Click{% endblock subtitle %}
+
+{% block example_title %}Click counter{% endblock example_title %}
+
+{% block example_content %}
+{% unicorn 'clicks' %}
+{% endblock example_content %}
+
+{% block example_source %}
+<pre data-lang="html"><code class="language-html">{% code_include 'unicorn/templates/unicorn/clicks.html' %}</code></pre>
+<pre data-lang="python"><code class="language-python">{% code_include 'unicorn/components/clicks.py' %}</code></pre>
+{% endblock example_source %}
