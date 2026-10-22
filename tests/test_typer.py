@@ -37,6 +37,19 @@ def test_get_type_hints_gh_639():
     assert actual["a_date"] == datetime.date
 
 
+def test_get_type_hints_model_instance_hash_mutation_gh_839():
+    flavor = Flavor(id=1, name="Vanilla")
+    actual = get_type_hints(flavor)
+    assert actual == {}
+
+    # Mutating pk changes model hash, but cache is keyed by class so eviction won't fail
+    flavor.id = 2
+
+    for i in range(110):
+        filler_cls = type(f"FillerClass{i}", (), {})
+        get_type_hints(filler_cls())
+
+
 class TestClass:
     integer: int
     boolean: bool

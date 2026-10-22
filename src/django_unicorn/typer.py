@@ -87,9 +87,15 @@ def get_type_hints(obj) -> dict:
 
     type_hints = {}
 
+    key = (
+        obj
+        if (inspect.isclass(obj) or inspect.ismodule(obj) or inspect.isroutine(obj))
+        else getattr(obj, "__class__", obj)
+    )
+
     try:
-        if obj in type_hints_cache:
-            return type_hints_cache[obj]
+        if key in type_hints_cache:
+            return type_hints_cache[key]
     except TypeError:
         # Ignore issues with checking for an object in the cache, e.g. when a Django model is missing a PK
         pass
@@ -112,7 +118,7 @@ def get_type_hints(obj) -> dict:
 
     try:
         # Cache the type hints just in case
-        type_hints_cache[obj] = type_hints
+        type_hints_cache[key] = type_hints
     except TypeError:
         pass
 
